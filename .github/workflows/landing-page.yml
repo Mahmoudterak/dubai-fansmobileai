@@ -1,0 +1,64 @@
+# صفحة هبوط لحملة: يُنشئها Claude من وصف الحملة، وتُنشر على Vercel كمعاينة (preview) فقط.
+# لا يُرقّى أي شيء إلى الإنتاج تلقائياً.
+# يحتاج:
+#   - سر ANTHROPIC_API_KEY
+#   - سر VERCEL_TOKEN: توكن Vercel بصلاحية على حساب المعاينات فقط
+name: Campaign landing page
+on:
+  workflow_dispatch:
+    inputs:
+      brief:
+        description: "وصف الحملة: المنتج، الجمهور، العرض، الرسالة الرئيسية"
+        required: true
+        type: string
+      slug:
+        description: "اسم مختصر بالإنجليزية بدون مسافات، مثل summer-offer"
+        required: true
+        type: string
+permissions:
+  contents: read
+  id-token: write
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Validate slug
+        env:
+          SLUG: ${{ inputs.slug }}
+        run: |
+          if ! [[ "$SLUG" =~ ^[a-z0-9-]{3,40}$ ]]; then
+            echo "اسم الصفحة غير صالح: استخدم حروفاً إنجليزية صغيرة وأرقاماً وشرطات فقط (3 إلى 40 حرفاً)"
+            exit 1
+          fi
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            أنشئ صفحة هبوط واحدة لحملة تسويقية بناءً على هذا الوصف:
+            ${{ inputs.brief }}
+
+            المطلوب:
+            - ملف واحد فقط: landing/${{ inputs.slug }}/index.html
+            - صفحة HTML كاملة بالعربية، واتجاه RTL، وتصميم متجاوب يعمل على الجوال.
+            - CSS داخل الصفحة نفسها، بدون مكتبات خارجية أو سكربتات من مواقع أخرى.
+            - لا تضع أي مفاتيح أو بيانات سرية أو روابط دفع حقيقية. استخدم عناصر نائبة واضحة.
+            - زر دعوة لاتخاذ إجراء واحد واضح.
+
+            لا تعدّل أي ملف آخر في المستودع.
+          claude_args: '--allowedTools "Write,Read,Bash(mkdir:*)"'
+      - name: Check output
+        env:
+          SLUG: ${{ inputs.slug }}
+        run: |
+          test -f "landing/$SLUG/index.html" || { echo "لم تُنشأ الصفحة"; exit 1; }
+      - name: Deploy preview to Vercel
+        env:
+          SLUG: ${{ inputs.slug }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          URL=$(npx --yes vercel@latest deploy "landing/$SLUG" --token "$VERCEL_TOKEN" --yes --name "dfai-lp-$SLUG" 2>/tmp/vercel-err.log | tail -n 1)
+          if [ -z "$URL" ]; then cat /tmp/vercel-err.log; exit 1; fi
+          echo "### معاينة الصفحة" >> "$GITHUB_STEP_SUMMARY"
+          echo "$URL" >> "$GITHUB_STEP_SUMMARY"
+          echo "رابط المعاينة: $URL"
