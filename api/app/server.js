@@ -40,6 +40,7 @@ process.on('unhandledRejection', (e) => { console.error('unhandled', e && e.mess
 const opsMod = require('./ops.js');
 const invoicesMod = require('./invoices.js');
 const chatsMod = require('./chats.js');
+const landing = require('./landing.js');
 // أسئلة المال والموظفين: تُضاف لها أرقام النشاط ولا تُخزَّن في الكاش
 const FINANCE_RE = /دخل|مصروف|مصاريف|ربح|صافي|راتب|رواتب|موظف|ميزانية|مبيعات|فلوس|كسبت|خسرت|حساب/;
 // نفس فكرة FINANCE_RE بالإنجليزي (لو المستخدم كاتب بالإنجليزي)
@@ -113,6 +114,8 @@ const PLANS = {
 const KIND_LABEL = { messages: 'رسائلك', images: 'صورك', search: 'عمليات البحث', slides: 'العروض التقديمية', radar: 'التحليلات (Radar وتحليل النشاط)' };
 // تكلفة كل عملية بالنقاط (credits)
 const CREDIT_COST = { messages: 1, images: 10, search: 5, slides: 10, radar: 5, monitors: 0 };
+// تكلفة صفحة الهبوط الواحدة من رصيد النقاط الشهري (تُخصم بعد النشر الناجح فقط)
+const LANDING_CREDIT_COST = 10;
 // تكلفة الرسالة الواحدة: حسب حجم السياق (قصير / متوسط / طويل) ونوع النموذج (المحلي والصغير أرخص)
 function chatCreditCost(msgs, pick) {
   const chars = msgs.reduce((n, m) => n + m.content.length, 0);
@@ -199,6 +202,7 @@ const AGENTS = {
 // ---------------- قاعدة البيانات ----------------
 const db = new DatabaseSync(CFG.dbPath);
 bgtasks.init(db);
+landing.init(db);
 db.exec(`
   PRAGMA journal_mode = WAL;
   PRAGMA foreign_keys = ON;
@@ -2315,6 +2319,29 @@ async function route(req, res) {
   if (m === 'GET' && jobMatch) {
     const job = jobs.get(user.id, jobMatch[1]);
     return job ? send(res, 200, { job }) : fail(res, 404, 'not_found', 'المهمة مش موجودة.');
+  }
+
+  // صفحات الهبوط: حصة يومية (مجاني 2، مدفوع 10)، وتُخصم من رصيد النقاط بعد النشر فقط
+  if (p === '/api/landing') {
+    if (m === 'GET') {
+      const paid = effectivePlan(user).id !== 'free';
+      const quota = landing.checkQuota(db, user.id, dayKey(), paid);
+      const pages = db.prepare('SELECT id, slug, status, url, error, created_at FROM landing_pages WHERE user_id = ? ORDER BY id DESC LIMIT 20').all(user.id);
+      return send(res, 200, { used: quota.used, limit: quota.limit, costPerPage: LANDING_CREDIT_COST, pages });
+    }
+    if (m === 'POST') {
+      if (rateLimited('landing:' + user.id, 3, 60000)) return fail(res, 429, 'rate', 'طلبات كتير ورا بعض. استنى دقيقة.');
+      const body = await readJson(req, 16 * 1024);
+      const paid = effectivePlan(user).id !== 'free';
+      const credits = creditsFor(user);
+      if (credits.limit !== -1 && credits.left < LANDING_CREDIT_COST) return fail(res, 429, 'credits', `رصيدك لا يكفي لصفحة الهبوط (${LANDING_CREDIT_COST} نقطة).`);
+      const r = await landing.createLandingPage(db, {
+        userId: user.id, paid, brief: body.brief, slug: body.slug, day: dayKey(),
+        charge: (uid) => { q.creditAdd.run(uid, monthKey(), LANDING_CREDIT_COST); },
+      });
+      if (!r.ok) return fail(res, 400, 'landing', r.error);
+      return send(res, 200, { ok: true, url: r.url, used: r.used, limit: r.limit });
+    }
   }
 
   if (m === 'POST' && p === '/api/campaign') return handleCampaign(req, res, user);
