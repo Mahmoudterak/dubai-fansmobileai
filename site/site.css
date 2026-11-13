@@ -1,0 +1,112 @@
+/* Dubai Fans AI — صفحات الموقع العامة */
+:root { --bg: #07080C; --surface: #0F1117; --surface-2: #161925; --line: #1E2230; --line-2: #2A2F42; --text: #F2F4F8; --text-2: #C5CBD6; --muted: #9AA3B5; --faint: #7E879A; --accent: #6D4AFF; --lav: #B9A8FF; --lav-2: #D6CCFF; --green: #34D399; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: 'IBM Plex Sans Arabic', system-ui, sans-serif; line-height: 1.9; -webkit-font-smoothing: antialiased; }
+a { color: var(--lav); text-decoration: none; }
+a:hover { text-decoration: underline; }
+h1, h2, h3 { font-family: 'Readex Pro', 'IBM Plex Sans Arabic', sans-serif; line-height: 1.35; }
+.wrap { width: 100%; max-width: 1120px; margin: 0 auto; padding: 0 20px; }
+.narrow { max-width: 820px; }
+
+/* الهيدر */
+.hdr { position: sticky; top: 0; z-index: 20; background: rgba(7,8,12,.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+.hdr .wrap { display: flex; align-items: center; gap: 22px; min-height: 66px; }
+.logo { display: flex; align-items: center; gap: 10px; color: #fff; font-weight: 700; font-size: 17px; text-decoration: none !important; }
+.logo svg { width: 34px; height: 34px; }
+.logo b { color: var(--lav); }
+.nav { display: flex; gap: 4px; margin-inline-start: 8px; }
+.nav a { color: var(--text-2); font-size: 15px; padding: 8px 12px; border-radius: 10px; text-decoration: none; }
+.nav a:hover, .nav a.on { color: #fff; background: var(--surface-2); }
+.hdr .cta { margin-inline-start: auto; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 999px; background: var(--accent); color: #fff !important; font-weight: 600; font-size: 15px; text-decoration: none !important; box-shadow: 0 0 24px rgba(109,74,255,.4); border: 0; }
+.btn:hover { background: #7C5CFF; }
+.btn.ghost { background: transparent; border: 1px solid var(--line-2); box-shadow: none; color: var(--text) !important; }
+.menu-t { display: none; margin-inline-start: auto; background: none; border: 1px solid var(--line-2); color: var(--text); border-radius: 10px; width: 42px; height: 42px; font-size: 20px; }
+
+/* الصفحات */
+.hero { padding: 80px 0 50px; text-align: center; }
+.hero h1 { font-size: 48px; margin: 0 0 16px; }
+.hero p { font-size: 19px; color: var(--muted); max-width: 680px; margin: 0 auto 28px; }
+.hero .actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.orb { width: 110px; height: 110px; margin: 0 auto 28px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #E9E3FF 0%, #A78BFA 22%, #6D4AFF 55%, #2A1A7A 100%); box-shadow: 0 0 70px rgba(109,74,255,.55), 0 0 140px rgba(34,211,238,.15); }
+.page { padding: 56px 0 70px; }
+.page > .wrap > h1 { font-size: 38px; margin: 0 0 8px; }
+.lead { color: var(--muted); font-size: 18px; margin: 0 0 34px; }
+.page h2 { font-size: 24px; margin: 40px 0 10px; }
+.page h3 { font-size: 18px; margin: 24px 0 6px; }
+.page p, .page li { color: var(--text-2); }
+.page ul, .page ol { padding-inline-start: 22px; }
+.muted { color: var(--muted); }
+.small { font-size: 14px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
+.card { display: block; padding: 22px; border-radius: 20px; background: var(--surface); border: 1px solid var(--line); color: var(--text) !important; text-decoration: none !important; transition: border-color .15s, transform .15s; }
+a.card:hover { border-color: #8B6CFF; transform: translateY(-2px); }
+.card h3 { margin: 10px 0 6px; font-size: 18px; }
+.card p { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.8; }
+.ico { width: 46px; height: 46px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; background: var(--surface-2); border: 1px solid var(--line-2); }
+.band { margin: 30px 0; padding: 34px; border-radius: 24px; background: linear-gradient(135deg, rgba(109,74,255,.2), rgba(34,211,238,.06)); border: 1px solid #3A2F7A; text-align: center; }
+.band h2 { margin-top: 0; }
+.tag { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 10px; border-radius: 999px; background: rgba(109,74,255,.18); color: var(--lav-2); }
+.tag.soon { background: var(--surface-2); color: var(--faint); }
+
+/* الأسعار */
+.plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; max-width: 820px; margin: 0 auto; }
+.plan { padding: 28px; border-radius: 24px; background: var(--surface); border: 1px solid var(--line); display: flex; flex-direction: column; gap: 14px; }
+.plan.pro { border-color: #8B6CFF; box-shadow: 0 0 50px rgba(109,74,255,.25); }
+.plan .price { font-family: 'Readex Pro', sans-serif; font-size: 44px; font-weight: 700; }
+.plan .price span { font-size: 15px; color: var(--muted); font-weight: 400; }
+.plan ul { list-style: none; padding: 0; margin: 0; }
+.plan li { padding: 6px 0; border-bottom: 1px solid var(--line); }
+.plan li::before { content: "✓"; color: var(--green); margin-inline-end: 10px; font-weight: 700; }
+.plan .btn { margin-top: auto; }
+table.cmp { width: 100%; border-collapse: collapse; margin-top: 10px; }
+table.cmp th, table.cmp td { padding: 12px 8px; border-bottom: 1px solid var(--line); text-align: center; }
+table.cmp th:first-child, table.cmp td:first-child { text-align: start; }
+table.cmp thead th { color: var(--muted); font-weight: 600; }
+table.cmp td.pro { color: var(--lav-2); font-weight: 700; }
+
+/* مركز المساعدة */
+.search { position: relative; max-width: 620px; margin: 0 auto 36px; }
+.search input { width: 100%; min-height: 56px; padding: 0 20px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line-2); color: var(--text); font-size: 17px; font-family: inherit; }
+.search input:focus { outline: 2px solid #8B6CFF; border-color: transparent; }
+.results { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+.results a { display: block; padding: 12px 16px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); color: var(--text); }
+.results a span { display: block; font-size: 13px; color: var(--muted); }
+.crumbs { font-size: 14px; color: var(--muted); margin-bottom: 14px; }
+.toc { padding: 16px 20px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); margin-bottom: 28px; }
+.toc ol { margin: 6px 0 0; }
+article.help { padding: 6px 0 22px; border-bottom: 1px solid var(--line); scroll-margin-top: 90px; }
+article.help h2 { font-size: 21px; margin-top: 26px; }
+.note { padding: 14px 18px; border-radius: 14px; background: var(--surface-2); border: 1px solid var(--line-2); color: var(--text-2); }
+
+/* الأخبار */
+.post { padding: 22px 0; border-bottom: 1px solid var(--line); }
+.post time { color: var(--muted); font-size: 14px; }
+.post h2 { margin: 4px 0 8px; font-size: 22px; }
+
+/* الفوتر */
+.ftr { border-top: 1px solid var(--line); padding: 50px 0 30px; margin-top: 40px; background: #05060A; }
+.ftr .cols { display: grid; grid-template-columns: 1.3fr repeat(5, 1fr); gap: 22px; }
+.ftr h4 { margin: 0 0 10px; font-size: 14px; color: var(--muted); font-weight: 600; }
+.ftr ul { list-style: none; padding: 0; margin: 0; }
+.ftr li { margin: 6px 0; }
+.ftr li a { color: var(--text-2); font-size: 14.5px; }
+.ftr .about p { color: var(--muted); font-size: 14px; max-width: 280px; }
+.ftr .bottom { margin-top: 34px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--faint); font-size: 13px; display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+
+@media (max-width: 860px) {
+  .nav { display: none; position: absolute; top: 66px; inset-inline: 0; flex-direction: column; background: #0B0D14; border-bottom: 1px solid var(--line); padding: 10px 16px 16px; margin: 0; }
+  .nav.open { display: flex; }
+  .nav a { padding: 12px; font-size: 16px; }
+  .menu-t { display: block; }
+  .hdr .cta { margin-inline-start: 0; }
+  .hdr .cta .btn { min-height: 40px; padding: 0 14px; font-size: 14px; }
+  .hero { padding: 54px 0 30px; }
+  .hero h1 { font-size: 32px; }
+  .hero p { font-size: 17px; }
+  .page > .wrap > h1 { font-size: 30px; }
+  .ftr .cols { grid-template-columns: 1fr 1fr; }
+  .ftr .about { grid-column: 1 / -1; }
+}
+.plan .tag { align-self: flex-start; }

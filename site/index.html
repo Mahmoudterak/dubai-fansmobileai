@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#07080C">
+<title>Dubai Fans AI | مساعد ذكاء اصطناعي للتسويق الرقمي بالعربي</title>
+<meta name="description" content="مساعد ذكاء اصطناعي عربي للتسويق الرقمي في الإمارات والخليج: كتابة محتوى ومنشورات انستقرام، تصميم إعلانات بالعربي، صوت إماراتي، وتحليل SEO للموقع والمتجر. ابدأ مجاناً.">
+<link rel="canonical" href="https://ai.mtuaefans.com/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ai.mtuaefans.com/">
+<meta property="og:title" content="Dubai Fans AI | مساعد ذكاء اصطناعي للتسويق الرقمي بالعربي">
+<meta property="og:description" content="اكتب محتواك، صمّم إعلاناتك بالعربي، وحلّل موقعك ومتجرك بالذكاء الاصطناعي. ابدأ مجاناً.">
+<meta property="og:image" content="https://ai.mtuaefans.com/icons/icon-512.png">
+<meta property="og:locale" content="ar_AE">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "Dubai Fans AI", "alternateName": "دبي فانز للذكاء الاصطناعي", "url": "https://ai.mtuaefans.com/", "inLanguage": "ar"}</script>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Dubai Fans AI">
+<meta name="application-name" content="Dubai Fans AI">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Readex+Pro:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css?v=__V__">
+<script src="i18n.js?v=__V__"></script>
+<script src="i18n-features-1.js?v=__V__"></script>
+<script src="i18n-features-2.js?v=__V__"></script>
+<script src="i18n-features-3.js?v=__V__"></script>
+<script src="i18n-features-4.js?v=__V__"></script>
+<style>
+.guest-try{margin:14px 0 6px;padding:14px;border:1px solid var(--border,#e5e5e5);border-radius:14px;background:var(--surface,#fff);display:grid;gap:8px}
+.guest-title{margin:0;font-weight:600;font-size:14px}
+.guest-try textarea{width:100%;box-sizing:border-box;resize:vertical;border:1px solid var(--border,#e5e5e5);border-radius:10px;padding:8px 10px;font:inherit}
+.guest-try .btn-ghost{justify-self:start}
+.guest-out{white-space:pre-wrap;font-size:14px;line-height:1.7;padding:10px;border-radius:10px;background:var(--bg,#FAF9F5)}
+.guest-note{margin:0;font-size:12px;opacity:.7}
+#guestSignup{justify-self:start}
+</style>
+</head>
+<body>
+
+<noscript><div style="padding:24px;color:#fff;font-family:sans-serif"><h1>Dubai Fans AI — مساعد ذكاء اصطناعي للتسويق الرقمي بالعربي</h1><p>كتابة محتوى عربي، تصميم إعلانات بالذكاء الاصطناعي، صوت إماراتي، وتحليل SEO للمواقع والمتاجر. فعّل JavaScript لاستخدام المساعد.</p><p><a href="product.html">المنتج</a> · <a href="pricing.html">الأسعار</a> · <a href="help.html">مركز المساعدة</a></p></div></noscript>
+<!-- ============ تسجيل الدخول ============ -->
+<div id="login" class="login" hidden>
+  <section class="login-form-side">
+    <div class="login-box">
+      <div class="brand brand-lg">
+        <span class="logo-slot"></span>
+        <div class="brand-text">
+          <span class="wordmark" dir="ltr">Dubai <b>Fans</b><i>AI</i></span>
+          <span class="brand-sub">دبي فانز</span>
+        </div>
+      </div>
+      <div class="login-head">
+        <h1 id="authTitle">أهلاً بك من جديد</h1>
+        <p id="authSub">سجّل دخولك لمساعدك الذكي في التسويق الرقمي.</p>
+      </div>
+      <div class="auth-tabs" role="tablist" aria-label="الدخول أو إنشاء حساب">
+        <button type="button" id="tabLogin" class="auth-tab active" role="tab" aria-selected="true">تسجيل الدخول</button>
+        <button type="button" id="tabRegister" class="auth-tab" role="tab" aria-selected="false">حساب جديد مجاناً</button>
+      </div>
+      <section class="guest-try" id="guestTry" aria-labelledby="guestTitle">
+        <p class="guest-title" id="guestTitle">جرّب مجاناً بدون تسجيل: اكتب نص إعلاني واحد</p>
+        <textarea id="guestInput" rows="2" maxlength="300" placeholder="مثال: مقهى صغير في دبي بيقدم قهوة مختصة وحلويات بيتية"></textarea>
+        <button id="guestBtn" type="button" class="btn-ghost">ولّد النص</button>
+        <div id="guestOut" class="guest-out" aria-live="polite" hidden></div>
+        <button id="guestSignup" type="button" class="auth-tab" hidden>أنشئ حساب عشان تكمّل</button>
+        <p class="guest-note">3 تجارب كل 24 ساعة.</p>
+      </section>
+      <form id="loginForm" class="login-form" novalidate>
+        <div id="nameField" class="field" hidden>
+          <label for="name">الاسم</label>
+          <input id="name" name="name" type="text" autocomplete="name" placeholder="اسمك أو اسم نشاطك">
+        </div>
+        <label for="email">البريد الإلكتروني</label>
+        <input id="email" name="email" type="email" dir="ltr" autocomplete="username" placeholder="name@example.com" required>
+        <label for="password">كلمة المرور</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" placeholder="••••••••" required>
+        <p id="pwHint" class="field-hint" hidden>8 حروف على الأقل.</p>
+        <p id="loginError" class="form-error" role="alert" hidden></p>
+        <button id="loginBtn" type="submit" class="btn-primary btn-lg">
+          <span>ادخل إلى المساعد</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        </button>
+      </form>
+      <div class="note">
+        <svg viewBox="0 0 24 24" aria-hidden="true" class="ic-green"><path d="M12 3l7 4v5c0 4.5-3 8-7 9-4-1-7-4.5-7-9V7l7-4Z"/><path d="m9 12 2 2 4-4"/></svg>
+        <span data-en-html='<a href="product.html" target="_blank">Learn about Dubai Fans AI</a> · Sign-up is free, with free messages every day. By signing up you agree to the <a href="terms.html" target="_blank">Terms</a> and <a href="privacy.html" target="_blank">Privacy Policy</a>.'><a href="product.html" target="_blank">تعرّف على Dubai Fans AI</a> · التسجيل مجاني، ولك رسائل مجانية كل يوم. بالتسجيل انت موافق على <a href="terms.html" target="_blank">الشروط</a> و<a href="privacy.html" target="_blank">سياسة الخصوصية</a>.</span>
+      </div>
+      <nav class="login-links" aria-label="روابط">
+        <a href="product.html">المنتج</a><a href="pricing.html">الأسعار</a><a id="desktopLoginLink" href="downloads/Dubai-Fans-AI-Setup.exe" download hidden>تطبيق الكمبيوتر</a><a href="ai-marketing-uae.html">الذكاء الاصطناعي للتسويق</a><a href="arabic-content-writer.html">كتابة محتوى عربي</a><a href="ai-ad-design.html">تصميم إعلانات</a><a href="seo-website-analysis.html">تحليل SEO</a><a href="help.html">المساعدة</a>
+      </nav>
+    </div>
+  </section>
+  <section class="login-hero-side" aria-hidden="true">
+    <div class="orb orb-xl"></div>
+    <div class="hero-copy">
+      <h2>عقل تسويقي واحد لكل أعمالك</h2>
+      <p>محتوى، إعلانات، خطط، وعروض تقديمية لأي نشاط تجاري، من مكان واحد.</p>
+    </div>
+  </section>
+</div>
+
+<!-- ============ التطبيق ============ -->
+<div id="app" class="app" hidden>
+  <aside id="sidebar" class="sidebar" aria-label="القائمة الجانبية">
+    <div class="brand">
+      <span class="logo-slot"></span>
+      <div class="brand-text">
+        <span class="wordmark" dir="ltr">Dubai <b>Fans</b><i>AI</i></span>
+        <span class="brand-sub">مساعد التسويق الرقمي</span>
+      </div>
+    </div>
+
+    <button id="newChatBtn" type="button" class="btn-primary">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+      محادثة جديدة
+    </button>
+
+    <nav class="tools" id="toolsNav" aria-label="الأدوات">
+      <button type="button" class="side-label side-toggle" id="toolsToggle" aria-expanded="true" aria-controls="toolList">
+        <span>الأدوات</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
+      <div id="toolList"></div>
+    </nav>
+
+    <div class="history">
+      <span class="side-label">المحادثات</span>
+      <label class="chat-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="chatSearch" type="search" placeholder="ابحث في محادثاتك" aria-label="ابحث في المحادثات"></label>
+      <div id="chatList" class="chat-list"></div>
+    </div>
+
+    <button id="installBtn" type="button" class="install-btn" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M12 7v7M9 11l3 3 3-3M10 18h4"/></svg>
+      <span>ثبّت التطبيق على موبايلك</span>
+    </button>
+
+    <a id="desktopBtn" class="install-btn desktop-dl" href="downloads/Dubai-Fans-AI-Setup.exe" download hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="3.5" width="19" height="13" rx="2"/><path d="M8 21h8M12 16.5V21M12 7v5M9.5 9.5 12 12l2.5-2.5"/></svg>
+      <span>ثبّت تطبيق سطح المكتب (Windows)</span>
+    </a>
+
+
+    <div class="user-card">
+      <button id="userBtn" type="button" class="user-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="userMenu">
+        <div id="userAvatar" class="avatar">م</div>
+        <div class="user-meta">
+          <span id="userName" class="user-name">—</span>
+          <span id="userRole" class="user-role">مستخدم</span>
+        </div>
+      </button>
+      <div id="userMenu" class="user-menu" role="menu" hidden>
+        <a id="adminLink" role="menuitem" href="admin.html" hidden>لوحة الإدارة</a>
+        <button type="button" role="menuitem" data-um="billing">المدفوعات</button>
+        <button type="button" role="menuitem" data-um="usage">الاستخدام</button>
+        <button type="button" role="menuitem" data-um="design">التصميم</button>
+        <button type="button" role="menuitem" data-um="settings">الإعدادات</button>
+        <button type="button" role="menuitem" data-um="plans">الباقات والاشتراك</button>
+        <button type="button" role="menuitem" data-um="referral">ادعُ واكسب</button>
+        <a role="menuitem" href="privacy.html" target="_blank">الخصوصية</a>
+        <a role="menuitem" href="terms.html" target="_blank">الشروط</a>
+        <a role="menuitem" href="help.html" target="_blank">المساعدة</a>
+        <a role="menuitem" href="pricing.html" target="_blank">الأسعار</a>
+        <button type="button" role="menuitem" data-um="logout">تسجيل الخروج</button>
+      </div>
+      <button id="logoutBtn" type="button" class="icon-btn" aria-label="تسجيل الخروج" title="تسجيل الخروج">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l-5-5 5-5M5 12h12"/></svg>
+      </button>
+    </div>
+  </aside>
+  <div id="scrim" class="scrim" hidden></div>
+
+  <main id="main" class="main is-home">
+    <header class="topbar">
+      <button id="menuBtn" type="button" class="icon-btn menu-btn" aria-label="القائمة">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h16M4 16h10"/></svg>
+      </button>
+      <div class="model-pill" title="النموذج المستخدم">
+        <span class="dot-cyan"></span>
+        <span id="modelName">Dubai Fans AI</span>
+      </div>
+      <button id="planPill" type="button" class="plan-pill" title="باقتك الحالية">
+        <svg class="spark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c.6 4.6 2.4 7.4 7 8-4.6.6-6.4 3.4-7 8-.6-4.6-2.4-7.4-7-8 4.6-.6 6.4-3.4 7-8Z"/></svg>
+        <span id="planName">مجاني</span>
+      </button>
+      <button id="topNewChat" type="button" class="icon-btn top-new" aria-label="محادثة جديدة" title="محادثة جديدة">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5a8.5 8.5 0 1 0-7.6-4.7L3.5 20.5l4.8-.9A8.5 8.5 0 0 0 12 20.5Z"/></svg>
+      </button>
+    </header>
+
+    <section id="home" class="home">
+      <div class="orb" role="img" aria-label="المساعد جاهز"></div>
+      <h1 id="greeting">بماذا نبدأ اليوم؟</h1>
+      <p>اختر اقتراحاً أو اكتب طلبك مباشرة، والمساعد يتكفّل بالباقي.</p>
+    </section>
+
+    <section id="thread" class="thread" aria-live="polite"></section>
+
+    <section id="panel" class="panel-view" hidden></section>
+
+    <div class="composer-wrap">
+      <form id="composer" class="composer">
+        <label for="prompt" class="sr-only">اكتب طلبك</label>
+        <div class="composer-tool">
+          <button id="toolChip" type="button" class="chip" hidden>
+            <span id="toolChipLabel"></span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <div class="composer-row">
+          <button id="plusBtn" type="button" class="cmp-plus" aria-label="الأدوات" aria-haspopup="dialog">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          </button>
+          <textarea id="prompt" rows="1" placeholder="اسأل Dubai Fans AI"></textarea>
+          <button id="sendBtn" type="submit" class="send-btn" aria-label="إرسال" disabled>
+            <svg class="ic-send" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+            <svg class="ic-stop" viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="2"/></svg>
+          </button>
+        </div>
+      </form>
+      <div id="cards" class="cards"></div>
+      <p class="disclaimer">قد يخطئ الذكاء الاصطناعي أحياناً، راجِع المعلومات المهمة قبل نشرها.</p>
+    </div>
+  </main>
+</div>
+
+<!-- ============ الباقات ============ -->
+<div id="plansModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="plansTitle" hidden>
+  <div class="modal-box">
+    <button id="plansClose" type="button" class="icon-btn modal-close" aria-label="إغلاق">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <h2 id="plansTitle">اختر الباقة المناسبة لنشاطك</h2>
+    <p id="plansSub" class="modal-sub">ابدأ مجاناً، وطوّر باقتك وقت ما تحتاج. الأسعار بالدرهم الإماراتي.</p>
+    <div id="plansGrid" class="plans-grid"></div>
+    <p id="plansDone" class="plans-done" role="status" hidden></p>
+  </div>
+</div>
+
+<!-- ============ الوكلاء ============ -->
+<div id="agentsModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="agentsTitle" hidden>
+  <div class="modal-box modal-md">
+    <button id="agentsClose" type="button" class="icon-btn modal-close" aria-label="إغلاق">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <h2 id="agentsTitle">استعن بوكيل متخصص</h2>
+    <p class="modal-sub">اختار الخبير المناسب، وقوله محتاج إيه بس.</p>
+    <div id="agentsGrid" class="agents-grid"></div>
+  </div>
+</div>
+
+<!-- ============ معاينة الموقع ============ -->
+<div id="siteModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="siteTitle" hidden>
+  <div class="modal-box modal-site">
+    <div class="site-bar">
+      <h2 id="siteTitle">معاينة الموقع</h2>
+      <div class="site-views" role="group" aria-label="حجم المعاينة">
+        <button type="button" class="site-view active" data-w="100%">كمبيوتر</button>
+        <button type="button" class="site-view" data-w="390px">موبايل</button>
+      </div>
+      <button id="siteDownload" type="button" class="btn-primary sm">تحميل HTML</button>
+      <button id="siteClose" type="button" class="icon-btn" aria-label="إغلاق">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="site-stage"><iframe id="siteFrame" title="معاينة الموقع" sandbox="allow-scripts"></iframe></div>
+  </div>
+</div>
+
+<!-- ============ مولد المحتوى ============ -->
+<div id="contentModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="contentTitle" hidden>
+  <div class="modal-box modal-md">
+    <button id="contentClose" type="button" class="icon-btn modal-close" aria-label="إغلاق">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <h2 id="contentTitle">مولد المحتوى</h2>
+    <p id="contentSub" class="modal-sub">اختار نوع المحتوى، واملأ بيانات بسيطة، والباقي علينا.</p>
+    <div id="contentBody"></div>
+  </div>
+</div>
+
+<!-- ============ محرر المواقع ============ -->
+<div id="editorModal" class="editor" role="dialog" aria-modal="true" aria-labelledby="edTitle" hidden>
+  <div class="ed-bar">
+    <h2 id="edTitle">محرر الموقع</h2>
+    <div class="ed-ai">
+      <label for="edAiInput" class="sr-only">اطلب تعديلاً من الذكاء الاصطناعي</label>
+      <input id="edAiInput" type="text" placeholder="✨ عدّل بالذكاء الاصطناعي: مثال: خلّي الألوان ذهبي وأسود وزوّد قسم أسعار">
+      <button id="edAiBtn" type="button" class="btn-primary sm">نفّذ</button>
+      <button id="edCheckBtn" type="button" class="btn-ghost sm" title="فحص الكود وتصليح الأخطاء وتحسين سرعة التحميل">فحص وتحسين</button>
+    </div>
+    <div class="ed-actions">
+      <button id="edUndo" type="button" class="icon-btn" aria-label="تراجع" title="تراجع">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg>
+      </button>
+      <div class="site-views" role="group" aria-label="حجم المعاينة">
+        <button type="button" class="ed-view active" data-w="100%">كمبيوتر</button>
+        <button type="button" class="ed-view" data-w="390px">موبايل</button>
+      </div>
+      <button id="edDownload" type="button" class="btn-primary sm ghost-btn">تحميل HTML</button>
+      <button id="edSave" type="button" class="btn-primary sm">حفظ</button>
+      <button id="edClose" type="button" class="icon-btn" aria-label="إغلاق المحرر">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="ed-main">
+    <aside class="ed-side" aria-label="أدوات المحرر">
+      <div class="ed-tabs" role="tablist">
+        <button type="button" class="ed-tab active" data-tab="sections" role="tab" aria-selected="true">الأقسام</button>
+        <button type="button" class="ed-tab" data-tab="style" role="tab" aria-selected="false">التنسيق</button>
+      </div>
+      <div class="ed-pane" data-pane="sections">
+        <p class="ed-hint">اسحب الأقسام لترتيبها، واضغط على أي نص في الصفحة عشان تعدّله مباشرة.</p>
+        <ol id="edSections" class="ed-sections"></ol>
+        <h3 class="ed-sub">أقسام جاهزة</h3>
+        <p class="ed-hint">اسحب قسم لأي مكان في القائمة اللي فوق، أو اضغط عليه عشان يتضاف بعد القسم المحدد.</p>
+        <div id="edBlocks" class="ed-blocks"></div>
+      </div>
+      <div class="ed-pane" data-pane="style" hidden>
+        <div id="edStyle"></div>
+      </div>
+    </aside>
+    <div class="ed-stage">
+      <iframe id="edFrame" title="الموقع في المحرر" sandbox="allow-same-origin"></iframe>
+      <div id="edBusy" class="ed-busy" hidden><div class="orb thinking" aria-hidden="true"></div><span>الذكاء الاصطناعي بيعدّل الصفحة…</span></div>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast" role="status" hidden></div>
+
+<script>
+// زر تطبيق سطح المكتب: يظهر في المتصفح والجوال، ويُخفى داخل تطبيق سطح المكتب نفسه.
+(function () {
+  if (/Electron/i.test(navigator.userAgent)) return;
+  ['desktopBtn', 'desktopLoginLink'].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (el) el.hidden = false;
+  });
+})();
+</script>
+<script src="vendor/marked.min.js"></script>
+<script src="vendor/purify.min.js"></script>
+<script src="app.js?v=__V__"></script>
+<script src="growth.js?v=__V__"></script>
+<script src="editor.js?v=__V__"></script>
+<script src="adlayouts.js?v=__V__"></script>
+<script src="adstudio.js?v=__V__"></script>
+<script src="campaign.js?v=__V__"></script>
+<script src="video.js?v=__V__"></script>
+<script src="mockup.js?v=__V__"></script>
+<script src="business.js?v=__V__"></script>
+<script src="darkweb.js?v=__V__"></script>
+<script src="designs.js?v=__V__"></script>
+<script src="voice.js?v=__V__"></script>
+<script src="pay.js?v=__V__"></script>
+<script src="attach.js?v=__V__"></script>
+<script src="settings.js?v=__V__"></script>
+<script src="models.js?v=__V__"></script>
+<script src="onboarding.js?v=__V__"></script>
+<script src="mobile.js?v=__V__"></script>
+<script>
+(function () {
+  try {
+    var ref = new URLSearchParams(location.search).get('ref');
+    if (ref) localStorage.setItem('dfai_ref', ref.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 20));
+  } catch (e) { /* التخزين مقفول: الإحالة بتتجاهل */ }
+  var btn = document.getElementById('guestBtn');
+  if (!btn) return;
+  var inp = document.getElementById('guestInput');
+  var out = document.getElementById('guestOut');
+  var signup = document.getElementById('guestSignup');
+  btn.addEventListener('click', function () {
+    var text = inp.value.trim();
+    out.hidden = false;
+    signup.hidden = true;
+    if (text.length < 5) { out.textContent = 'اكتب وصف قصير الأول.'; return; }
+    btn.disabled = true;
+    out.textContent = 'جارٍ التوليد...';
+    fetch('/api/guest/generate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: text }) })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { ok: r.ok, j: j }; }); })
+      .then(function (res) {
+        if (res.ok && res.j.text) { out.textContent = res.j.text; signup.hidden = false; }
+        else { out.textContent = (res.j.error && res.j.error.message) || 'حصلت مشكلة. جرّب بعدين.'; }
+      })
+      .catch(function () { out.textContent = 'تعذّر الاتصال. جرّب بعدين.'; })
+      .then(function () { btn.disabled = false; });
+  });
+  signup.addEventListener('click', function () {
+    var t = document.getElementById('tabRegister');
+    if (t) t.click();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+})();
+</script>
+<script src="ai-tools/ai-tools.js?v=__V__"></script>
+</body>
+</html>

@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#FAF9F5">
+<script>try{if(localStorage.getItem('dfai_lang')==='en'){document.documentElement.lang='en';document.documentElement.dir='ltr';}}catch(e){}</script>
+<title>Dubai Fans AI API | واجهة المطوّرين</title>
+<link rel="canonical" href="https://ai.mtuaefans.com/api.html">
+<meta name="description" content="Dubai Fans AI Partner API: create ad designs, videos, landing pages, websites and Arabic text from your own server. Overview, authentication, endpoints and webhooks.">
+<meta property="og:title" content="Dubai Fans AI API | واجهة المطوّرين">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ai.mtuaefans.com/product.html">
+<meta property="og:locale" content="ar_AE">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:site_name" content="Dubai Fans AI">
+<meta name="twitter:card" content="summary">
+<meta property="og:description" content="Dubai Fans AI Partner API overview: endpoints, authentication, jobs and webhooks.">
+<meta property="og:image" content="https://ai.mtuaefans.com/icons/icon-512.png">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "name": "Dubai Fans AI", "alternateName": ["دبي فانز للذكاء الاصطناعي", "Dubai Fans"], "url": "https://ai.mtuaefans.com", "logo": "https://ai.mtuaefans.com/icons/icon-512.png", "email": "info@mtuaefans.com", "parentOrganization": {"@type": "Organization", "name": "Dubai Fans — دبي فانز للتسويق الرقمي", "url": "https://mtuaefans.com"}, "areaServed": ["AE", "SA", "KW", "QA", "BH", "OM"], "address": {"@type": "PostalAddress", "addressCountry": "AE"}, "contactPoint": {"@type": "ContactPoint", "contactType": "customer support", "telephone": "+971568952775", "availableLanguage": ["ar", "en"]}}</script>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Readex+Pro:wght@500;600;700&family=Source+Serif+4:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="product.css?v=__V__">
+<style>
+:root{--api-ink:#1F1E1D;--api-mute:#6b675e;--api-line:#E6E3DA;--api-bg2:#F4F2EC}
+.api-wrap{display:grid;grid-template-columns:230px minmax(0,1fr);gap:56px;max-width:1200px;margin:0 auto;padding:44px 20px 90px}
+.api-side{position:sticky;top:96px;align-self:start;font-size:14.5px}
+.api-side h4{font-size:12px;color:var(--api-mute);margin:26px 0 8px 10px;text-transform:uppercase;letter-spacing:.06em;font-weight:700}
+.api-side a{display:block;padding:7px 12px;border-radius:9px;color:var(--api-ink);text-decoration:none;border-inline-start:2px solid transparent}
+.api-side a:hover{background:var(--api-bg2)}
+.api-side a.on{color:#6D4AFF;background:#EEEAFE;border-inline-start-color:#6D4AFF;font-weight:600}
+.api-crumb{font-size:13.5px;color:var(--api-mute);margin-bottom:10px}
+.api-main h1{font-size:44px;line-height:1.15;margin:0 0 14px;letter-spacing:-.01em}
+.api-main h2{font-size:24px;margin:52px 0 14px;padding-top:26px;border-top:1px solid var(--api-line);scroll-margin-top:100px}
+.api-main h3{font-size:18px;margin:30px 0 8px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;scroll-margin-top:100px}
+.api-main p,.api-main li{line-height:1.85;color:#3d3b36;font-size:15.5px}
+.api-main ul{padding-inline-start:22px}
+.api-main code{background:var(--api-bg2);padding:2px 7px;border-radius:6px;font-size:13.5px;direction:ltr;unicode-bidi:isolate}
+.codebox{margin:14px 0 18px;border-radius:14px;overflow:hidden;background:#1F1E1D;direction:ltr;text-align:left}
+.cb-bar{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;background:#2b2a27;color:#a9a59b;font-size:12px;font-family:ui-monospace,Consolas,monospace}
+.cb-copy{background:transparent;border:1px solid #4a4843;color:#e8e5dc;border-radius:7px;padding:3px 10px;font:inherit;font-size:12px;cursor:pointer}
+.cb-copy:hover{background:#3a3935}
+.codebox pre{margin:0;background:transparent;color:#F5F3EE;padding:16px 18px;overflow:auto;font-size:13.5px;line-height:1.65}
+.codebox pre code{background:none;padding:0;color:inherit;font-size:inherit}
+.m{display:inline-block;font-size:11.5px;font-weight:700;padding:3px 8px;border-radius:6px;letter-spacing:.03em;font-family:ui-monospace,Consolas,monospace;direction:ltr}
+.m.get{background:#E4F3EA;color:#1C7A45}
+.m.post{background:#E6EEFF;color:#2550C2}
+.api-table-wrap{overflow-x:auto;border:1px solid var(--api-line);border-radius:12px;margin:14px 0}
+.api-table{width:100%;border-collapse:collapse;font-size:14.5px;min-width:480px}
+.api-table th,.api-table td{padding:11px 14px;text-align:start;vertical-align:top;border-bottom:1px solid var(--api-line)}
+.api-table th{background:var(--api-bg2);font-weight:700;font-size:13px;color:var(--api-mute)}
+.api-table tr:last-child td{border-bottom:0}
+.api-note{background:#FFF7E6;border:1px solid #F1DDB0;border-radius:12px;padding:14px 18px 14px 46px;margin:20px 0;position:relative;line-height:1.75;font-size:15px}
+.api-note::before{content:"i";position:absolute;inset-inline-start:15px;top:15px;width:20px;height:20px;border-radius:50%;background:#C98A00;color:#fff;font-size:13px;font-weight:700;display:grid;place-items:center}
+html[lang="en"] .api-note{padding:14px 46px 14px 18px}
+html[lang="en"] .api-note::before{inset-inline-start:auto;inset-inline-end:15px}
+@media (max-width:860px){.api-wrap{grid-template-columns:1fr;gap:18px}.api-side{position:static;display:flex;flex-wrap:wrap;gap:4px}.api-side h4{width:100%}.api-main h1{font-size:32px}}
+</style>
+</head>
+<body class="pc">
+
+<header class="pc-hdr"><div class="wrap">
+  <a class="pc-logo" href="product.html"><svg viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="11" fill="#0F1117"/><g transform="translate(4.8 4.8) scale(0.8)"><ellipse cx="24" cy="25" rx="21" ry="8.5" transform="rotate(-28 24 25)" stroke="#7C5CFF" stroke-width="2.6" fill="none"/><path fill="#F2F4F8" fill-rule="evenodd" d="M14 10h10a14 14 0 0 1 0 28H14a2 2 0 0 1-2-2V12a2 2 0 0 1 2-2Zm4.5 6v16H24a8 8 0 0 0 0-16Z"/><circle cx="41" cy="14" r="3.2" fill="#C9BCFF"/></g></svg><span dir="ltr">Dubai <b>Fans</b> AI</span></a>
+  <nav class="pc-nav" id="nav" aria-label="القائمة الرئيسية">
+    <a href="product.html" data-en="Product">المنتج</a>
+    <a href="#integrations" data-en="Integrations">التكاملات</a>
+    <a href="pricing.html" data-en="Pricing">الأسعار</a>
+    <a href="help.html" data-en="Help center">مركز المساعدة</a>
+    <a href="company.html" data-en="Company">الشركة</a>
+    <a href="enterprise.html" data-en="Enterprise">المؤسسات</a>
+    <a href="news.html" data-en="News">الأخبار</a>
+  </nav>
+  <div class="pc-actions">
+    <button class="pc-lang" id="langBtn" type="button" aria-label="Switch language">English</button>
+    <a class="pc-btn sm" href="/" data-en="Start free">ابدأ مجاناً</a>
+    <button class="pc-menu" type="button" aria-label="القائمة" aria-controls="nav" onclick="document.getElementById('nav').classList.toggle('open')">☰</button>
+  </div>
+</div></header>
+
+
+
+<main class="api-wrap">
+<aside class="api-side" aria-label="Docs">
+  <a href="api.html" class="on"><b data-en="Overview">نظرة عامة</b></a>
+  <h4 data-en="Getting started">البدء</h4>
+  <a href="#auth" data-en="Authentication">المصادقة</a>
+  <a href="#requests" data-en="Making requests">إرسال الطلبات</a>
+  <a href="#jobs" data-en="Jobs">المهام</a>
+  <h4 data-en="Endpoints">نقاط النهاية</h4>
+  <a href="#endpoints" data-en="Endpoints">الجدول الكامل</a>
+  <a href="#designs">Designs</a>
+  <a href="#videos">Videos</a>
+  <a href="#landing">Landing pages</a>
+  <a href="#websites">Websites</a>
+  <a href="#text">Text</a>
+  <h4 data-en="Reference">المرجع</h4>
+  <a href="#webhooks" data-en="Webhooks">Webhooks</a>
+  <a href="#limits" data-en="Limits and usage">الحدود والاستخدام</a>
+  <a href="#errors" data-en="Errors">الأخطاء</a>
+</aside>
+
+<article class="api-main">
+  <div class="api-crumb"><span data-en="API reference">مرجع الواجهة</span> › <span data-en="Overview">نظرة عامة</span></div>
+  <h1 data-en="API overview">نظرة عامة على الواجهة</h1>
+  <p data-en="The Dubai Fans AI Partner API lets your own server ask Dubai Fans AI for ad designs, videos, landing pages, websites and Arabic text, and receive the finished result. Every request becomes a job that runs in the background.">واجهة شركاء Dubai Fans AI تتيح لسيرفرك طلب تصاميم إعلانية وفيديوهات وصفحات هبوط ومواقع ونصوص عربية، واستلام النتيجة الجاهزة. كل طلب يصبح "مهمة" تعمل في الخلفية.</p>
+
+  <div class="api-note"><span data-en="The API is for partners. To get a key, contact us on WhatsApp or at info@mtuaefans.com. Keep your key secret and never put it in a browser or mobile app.">الواجهة للشركاء فقط. للحصول على مفتاح تواصل معنا عبر واتساب أو على info@mtuaefans.com. احفظ مفتاحك في سيرفرك فقط، ولا تضعه في المتصفح أو تطبيق الجوال.</span></div>
+
+  <h2 id="base" data-en="Base URL">عنوان الأساس</h2>
+  <p data-en="All endpoints are relative to this base URL. All requests and responses use JSON over HTTPS.">كل نقاط النهاية تُكتب بعد هذا العنوان. الطلبات والردود بصيغة JSON عبر HTTPS.</p>
+  <div class="codebox"><div class="cb-bar"><span>url</span><button class="cb-copy" type="button">نسخ | Copy</button></div><pre><code>https://ai.mtuaefans.com/api/partner/v1</code></pre></div>
+
+  <h2 id="auth" data-en="Authentication">المصادقة</h2>
+  <p data-en="Send your API key in the Authorization header as a Bearer token:">أرسل مفتاحك في ترويسة Authorization بصيغة Bearer:</p>
+  <div class="codebox"><div class="cb-bar"><span>http</span><button class="cb-copy" type="button">نسخ | Copy</button></div><pre><code>Authorization: Bearer YOUR_API_KEY</code></pre></div>
+  <p data-en="A missing or wrong key returns 401 auth.">إذا كان المفتاح ناقصاً أو خاطئاً يعود الرد 401 auth.</p>
+
+  <h2 id="requests" data-en="Making requests">إرسال الطلبات</h2>
+  <p data-en="Example: create an ad design. The response is 202 with a job id you can poll or receive by webhook.">مثال: طلب تصميم إعلاني. يعود الرد 202 مع معرّف مهمة يمكنك استعلامه أو استلامه عبر webhook.</p>
+  <div class="codebox"><div class="cb-bar"><span>bash</span><button class="cb-copy" type="button">نسخ | Copy</button></div><pre><code>curl -X POST https://ai.mtuaefans.com/api/partner/v1/designs \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"prompt":"Summer sale, 30% off all abayas","size":"story","brand":{"name":"Example Shop","primary":"#6D4AFF"},"callback_url":"https://example.com/webhooks/dfai"}'</code></pre></div>
+  <div class="codebox"><div class="cb-bar"><span>json</span><button class="cb-copy" type="button">نسخ | Copy</button></div><pre><code>{ "id": "job_…", "status": "queued", "status_url": "https://ai.mtuaefans.com/api/partner/v1/jobs/job_…" }</code></pre></div>
+
+  <h2 id="jobs" data-en="Jobs">المهام</h2>
+  <p data-en="Each job has one of these statuses: queued, running, done or failed. Read a job with GET /jobs/{id}. When the status is done, result holds the output; when it is failed, error explains why.">لكل مهمة حالة من: queued أو running أو done أو failed. اقرأ المهمة عبر GET /jobs/{id}. عند done يحتوي result على الناتج، وعند failed يشرح error السبب.</p>
+  <div class="codebox"><div class="cb-bar"><span>bash</span><button class="cb-copy" type="button">نسخ | Copy</button></div><pre><code>curl https://ai.mtuaefans.com/api/partner/v1/jobs/JOB_ID \
+  -H "Authorization: Bearer YOUR_API_KEY"</code></pre></div>
+
+  <h2 id="endpoints" data-en="Endpoints">نقاط النهاية</h2>
+  <div class="api-table-wrap"><table class="api-table">
+    <tr><th data-en="Method and path">الطريقة والمسار</th><th data-en="Purpose">الغرض</th></tr>
+    <tr><td><span class="m get">GET</span> <code>/usage</code></td><td data-en="Today's usage and your daily limit">استهلاك اليوم والحد اليومي</td></tr>
+    <tr><td><span class="m get">GET</span> <code>/jobs/{id}</code></td><td data-en="Status and result of a job">حالة مهمة ونتيجتها</td></tr>
+    <tr><td><span class="m post">POST</span> <code>/designs</code></td><td data-en="Image ad designs in several layouts">تصاميم إعلانية بصورة في عدة تخطيطات</td></tr>
+    <tr><td><span class="m post">POST</span> <code>/videos</code></td><td data-en="A vertical video ad, 6 to 15 seconds">فيديو إعلاني عمودي من 6 إلى 15 ثانية</td></tr>
+    <tr><td><span class="m post">POST</span> <code>/landing-pages</code></td><td data-en="One published landing page">صفحة هبوط منشورة واحدة</td></tr>
+    <tr><td><span class="m post">POST</span> <code>/websites</code></td><td data-en="A published multi-page website">موقع منشور من عدة صفحات</td></tr>
+    <tr><td><span class="m post">POST</span> <code>/text</code></td><td data-en="Arabic text: a post, an ad or a WhatsApp message">نص عربي: منشور أو إعلان أو رسالة واتساب</td></tr>
+  </table></div>
+
+  <h3 id="designs"><span class="m post">POST</span><code>/designs</code></h3>
+  <p data-en="Fields: prompt or product_image (required, one of them), size (portrait, square, story or wide), layouts (an array, or recommended), brand, copy, callback_url and customer_id (optional). The result lists designs with a URL for each layout.">الحقول: prompt أو product_image (واحد منهما على الأقل)، وsize (portrait أو square أو story أو wide)، وlayouts (مصفوفة أو recommended)، وbrand وcopy وcallback_url وcustomer_id اختيارية. النتيجة تسرد التصاميم مع رابط لكل تخطيط.</p>
+
+  <h3 id="videos"><span class="m post">POST</span><code>/videos</code></h3>
+  <p data-en="Fields: prompt, product_image or design_job_id, and duration (6 to 15 seconds). Output is 1080 × 1920 with no audio. If you pass only a prompt or a product image, a design is created first.">الحقول: prompt أو product_image أو design_job_id، وduration (من 6 إلى 15 ثانية). الناتج 1080 × 1920 بدون صوت. إذا أرسلت prompt أو صورة منتج فقط، يُنشأ تصميم أولاً.</p>
+
+  <h3 id="landing"><span class="m post">POST</span><code>/landing-pages</code></h3>
+  <p data-en="Field: prompt (required), plus optional brand. The result contains a published URL and the page HTML.">الحقل: prompt مطلوب، ويمكن إضافة brand. النتيجة تحتوي رابطاً منشوراً ومحتوى HTML للصفحة.</p>
+
+  <h3 id="websites"><span class="m post">POST</span><code>/websites</code></h3>
+  <p data-en="Field: prompt (required), plus optional brand. The result contains a published URL and a list of pages, each with its own URL.">الحقل: prompt مطلوب، ويمكن إضافة brand. النتيجة تحتوي رابطاً منشوراً وقائمة بالصفحات، ولكل صفحة رابطها.</p>
+
+  <h3 id="text"><span class="m post">POST</span><code>/text</code></h3>
+  <p data-en="Fields: prompt (required) and purpose: post (default), ad or whatsapp. The result contains the Arabic text.">الحقول: prompt مطلوب، وpurpose: post (الافتراضي) أو ad أو whatsapp. النتيجة تحتوي النص العربي.</p>
+
+  <h3 data-en="Images and brand">الصور والعلامة التجارية</h3>
+  <ul>
+    <li data-en="product_image accepts an https image URL or a base64 data URL (PNG, JPEG, WebP or GIF). The maximum size is 8 MB.">product_image يقبل رابط صورة https أو data URL بصيغة base64 (PNG أو JPEG أو WebP أو GIF). الحد الأقصى 8 ميجابايت.</li>
+    <li data-en="brand accepts name, category, description, audience, whatsapp, website, instagram, primary and accent (hex colours such as #6D4AFF), and an optional logo.">brand يقبل name وcategory وdescription وaudience وwhatsapp وwebsite وinstagram وprimary وaccent (ألوان hex مثل #6D4AFF)، وشعار اختياري.</li>
+  </ul>
+
+  <h2 id="webhooks" data-en="Webhooks">Webhooks</h2>
+  <p data-en="If you send callback_url (https only), we POST the job to it when its status changes. Each request has two headers: X-DFAI-Event (for example job.done) and X-DFAI-Signature, which is sha256= followed by the HMAC-SHA256 of the raw body, keyed with your API key. Verify the signature before you trust the payload. We retry up to four times.">إذا أرسلت callback_url (يجب أن يكون https)، نرسل المهمة إليه عند تغيّر حالتها. كل طلب فيه ترويستان: X-DFAI-Event (مثل job.done) وX-DFAI-Signature وهي sha256= متبوعة بقيمة HMAC-SHA256 للنص الخام باستخدام مفتاحك. تحقق من التوقيع قبل الوثوق بالمحتوى. نعيد المحاولة حتى أربع مرات.</p>
+  <div class="codebox"><div class="cb-bar"><span>javascript</span><button class="cb-copy" type="button">نسخ | Copy</button></div><pre><code>const expected = 'sha256=' + crypto.createHmac('sha256', API_KEY).update(rawBody).digest('hex');
+if (req.headers['x-dfai-signature'] !== expected) return res.status(401).end();</code></pre></div>
+
+  <h2 id="limits" data-en="Limits and usage">الحدود والاستخدام</h2>
+  <p data-en="Each partner has a daily limit on the number of jobs. Check today's usage with GET /usage. When the limit is reached, new requests return 429 quota. Jobs are processed a few at a time, and the queue holds up to 50 waiting jobs; beyond that you receive 503 busy, so retry shortly.">لكل شريك حد يومي لعدد المهام. تحقق من الاستهلاك عبر GET /usage. عند الوصول إلى الحد تعود الطلبات الجديدة 429 quota. تُعالَج المهام عدة مرات في نفس الوقت، وتتسع قائمة الانتظار لـ 50 مهمة؛ وبعدها يعود الرد 503 busy، فأعد المحاولة بعد قليل.</p>
+
+  <h2 id="errors" data-en="Errors">الأخطاء</h2>
+  <div class="api-table-wrap"><table class="api-table">
+    <tr><th data-en="HTTP status">رمز HTTP</th><th data-en="Code">الرمز</th><th data-en="Meaning">المعنى</th></tr>
+    <tr><td>400</td><td>bad_request</td><td data-en="A required field is missing or invalid">حقل مطلوب ناقص أو غير صالح</td></tr>
+    <tr><td>401</td><td>auth</td><td data-en="Missing or wrong API key">مفتاح ناقص أو خاطئ</td></tr>
+    <tr><td>404</td><td>not_found</td><td data-en="Unknown endpoint or job">نقطة نهاية أو مهمة غير موجودة</td></tr>
+    <tr><td>429</td><td>quota</td><td data-en="Daily limit reached">تم بلوغ الحد اليومي</td></tr>
+    <tr><td>503</td><td>busy / unavailable</td><td data-en="Queue is full, or the service is temporarily unavailable">قائمة الانتظار ممتلئة، أو الخدمة غير متاحة مؤقتاً</td></tr>
+  </table></div>
+
+  <div class="api-note"><span data-en="Questions or a new key? Email info@mtuaefans.com or message us on WhatsApp.">أسئلة أو تحتاج مفتاحاً؟ راسلنا على info@mtuaefans.com أو عبر واتساب.</span></div>
+</article>
+</main>
+
+<footer class="pc-ftr"><div class="wrap">
+  <div class="cols">
+    <div class="about">
+      <a class="pc-logo" href="product.html"><svg viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="11" fill="#0F1117"/><g transform="translate(4.8 4.8) scale(0.8)"><ellipse cx="24" cy="25" rx="21" ry="8.5" transform="rotate(-28 24 25)" stroke="#7C5CFF" stroke-width="2.6" fill="none"/><path fill="#F2F4F8" fill-rule="evenodd" d="M14 10h10a14 14 0 0 1 0 28H14a2 2 0 0 1-2-2V12a2 2 0 0 1 2-2Zm4.5 6v16H24a8 8 0 0 0 0-16Z"/><circle cx="41" cy="14" r="3.2" fill="#C9BCFF"/></g></svg><span dir="ltr">Dubai <b>Fans</b> AI</span></a>
+      <p data-en="An AI marketing assistant in Arabic, built for businesses and shops in the UAE and the Gulf.">مساعد ذكي للتسويق الرقمي باللغة العربية، مصمم للشركات والمتاجر في الإمارات والخليج.</p>
+    </div>
+    <div><h4 data-en="Product">المنتج</h4><ul>
+      <li><a href="product.html" data-en="Product">المنتج</a></li>
+      <li><a href="enterprise.html" data-en="Enterprise">المؤسسات</a></li>
+      <li><a href="capabilities.html" data-en="Capabilities">القدرات</a></li>
+      <li><a href="pricing.html" data-en="Pricing">الأسعار</a></li>
+      <li><a href="help-mobile.html" data-en="Mobile app">تطبيق الجوال</a></li>
+      <li><a href="news.html" data-en="News &amp; updates">الأخبار والتحديثات</a></li>
+      <li><a href="/" data-en="Open the assistant">افتح المساعد</a></li></ul></div>
+    <div><h4 data-en="Solutions">حلول</h4><ul>
+      <li><a href="ai-marketing-uae.html" data-en="AI for marketing">الذكاء الاصطناعي للتسويق</a></li>
+      <li><a href="arabic-content-writer.html" data-en="Arabic content writing">كتابة محتوى عربي</a></li>
+      <li><a href="ai-ad-design.html" data-en="AI ad design">تصميم إعلانات بالذكاء الاصطناعي</a></li>
+      <li><a href="seo-website-analysis.html" data-en="SEO analysis for sites &amp; stores">تحليل SEO للمواقع والمتاجر</a></li></ul></div>
+    <div><h4 data-en="Company">الشركة</h4><ul>
+      <li><a href="company.html" data-en="About us">من نحن</a></li>
+      <li><a href="https://mtuaefans.com/projects" data-en="Our projects">مشاريعنا</a></li>
+      <li><a href="careers.html" data-en="Careers">الوظائف</a></li>
+      <li><a href="company.html#contact" data-en="Contact us">تواصل معنا</a></li></ul></div>
+    <div><h4 data-en="Help">المساعدة</h4><ul>
+      <li><a href="help.html" data-en="Help center">مركز المساعدة</a></li>
+      <li><a href="help-start.html" data-en="Getting started">البدء مع Dubai Fans AI</a></li>
+      <li><a href="help-billing.html" data-en="Pro plan &amp; billing">خطة Pro والدفع</a></li>
+      <li><a href="help-mobile.html" data-en="Mobile app">تطبيق الجوال</a></li>
+      <li><a href="help-tools.html" data-en="Tools">الأدوات</a></li>
+      <li><a href="help-business.html" data-en="My business &amp; connections">نشاطي التجاري والربط</a></li></ul></div>
+    <div><h4 data-en="Legal">قانوني</h4><ul>
+      <li><a href="terms.html" data-en="Terms of service">شروط الخدمة</a></li>
+      <li><a href="privacy.html" data-en="Privacy policy">سياسة الخصوصية</a></li>
+      <li><a href="aup.html" data-en="Acceptable use policy">سياسة الاستخدام المقبول</a></li>
+      <li><a href="responsible-disclosure.html" data-en="Vulnerability disclosure">الإبلاغ عن الثغرات الأمنية</a></li>
+      <li><a href="trust.html" data-en="Trust &amp; security">الأمان والثقة</a></li></ul></div>
+  </div>
+  <div class="ftr-social">
+    <div class="ftr-soc-links">
+      <a href="https://www.instagram.com/app.dubaifans/" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/></svg></a>
+      <a href="https://youtube.com/@mtuaefans" target="_blank" rel="noopener" aria-label="YouTube"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
+      <a href="https://www.linkedin.com/in/mahmoud-terak-a501b222a" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M0 1.146C0 .513.526 0 1.177 0h21.646C23.474 0 24 .513 24 1.146v21.708c0 .633-.526 1.146-1.177 1.146H1.177C.526 24 0 23.487 0 22.854V1.146zM7.27 20.1V9.02H3.6V20.1h3.67zM5.435 7.56c1.283 0 2.08-.85 2.08-1.9-.024-1.08-.797-1.9-2.056-1.9-1.26 0-2.08.82-2.08 1.9 0 1.05.797 1.9 2.03 1.9h.026zM9.3 20.1h3.67v-6.19c0-.33.024-.66.122-.9.267-.66.875-1.35 1.9-1.35 1.34 0 1.87 1.02 1.87 2.52v5.92h3.67v-6.35c0-3.4-1.81-4.98-4.23-4.98-1.98 0-2.87 1.09-3.36 1.86v.03h-.024l.024-.03V9.02H9.3c.05 1.02 0 11.08 0 11.08z"/></svg></a>
+    </div>
+    <a class="ftr-google" href="https://www.google.com/preferences/source?q=mtuaefans.com" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"/></svg><span data-en="Add as a preferred source on Google">أضف إلى المصادر المفضلة في Google</span></a>
+  </div>
+  <div class="bottom">
+    <span data-en="© 2026 Dubai Fans AI · United Arab Emirates">© 2026 Dubai Fans AI · الإمارات العربية المتحدة</span>
+    <span><a href="mailto:info@mtuaefans.com">info@mtuaefans.com</a></span>
+  </div>
+</div></footer>
+<script>
+(function () {
+  var KEY = 'dfai_lang';
+  var root = document.documentElement;
+  var META = {
+    ar: { title: 'Dubai Fans AI للفرق والمؤسسات | مساعد التسويق للفرق والمؤسسات', desc: 'Dubai Fans AI للفرق والمؤسسات: محتوى عربي، وتصميم إعلانات، وتحليل المتجر والموقع، ووكلاء متخصصون، مع ربط للقراءة فقط. تواصل معنا لتجهيز فريقك.' },
+    en: { title: 'Dubai Fans AI for Teams | Marketing assistant for organisations', desc: 'Dubai Fans AI for teams and organisations: Arabic content, ad design, store and website analysis, and specialist agents, with read-only store connections. Contact us to set up your team.' }
+  };
+  var descEl = document.querySelector('meta[name="description"]');
+  var ogTitle = document.querySelector('meta[property="og:title"]');
+  var ogDesc = document.querySelector('meta[property="og:description"]');
+  function getLang() { try { return localStorage.getItem(KEY) === 'en' ? 'en' : 'ar'; } catch (e) { return 'ar'; } }
+  function setLang(l) { try { localStorage.setItem(KEY, l); } catch (e) {} }
+  document.querySelectorAll('[data-en]').forEach(function (el) { el.dataset.ar = el.innerHTML; });
+  function apply(l) {
+    var en = l === 'en';
+    root.lang = en ? 'en' : 'ar';
+    root.dir = en ? 'ltr' : 'rtl';
+    document.title = META[l].title;
+    if (descEl) descEl.setAttribute('content', META[l].desc);
+    if (ogTitle) ogTitle.setAttribute('content', META[l].title);
+    if (ogDesc) ogDesc.setAttribute('content', META[l].desc);
+    document.querySelectorAll('[data-en]').forEach(function (el) { el.innerHTML = en ? el.getAttribute('data-en') : el.dataset.ar; });
+    var btn = document.getElementById('langBtn');
+    if (btn) { btn.textContent = en ? 'العربية' : 'English'; btn.setAttribute('aria-label', en ? 'Switch to Arabic' : 'Switch to English'); }
+  }
+  apply(getLang());
+  document.getElementById('langBtn').addEventListener('click', function () {
+    var next = getLang() === 'en' ? 'ar' : 'en';
+    setLang(next); apply(next);
+  });
+})();
+</script>
+<script>
+(function () {
+  document.querySelectorAll('.cb-copy').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var text = btn.closest('.codebox').querySelector('code').innerText;
+      var done = function () { btn.textContent = 'تم | Copied'; setTimeout(function () { btn.textContent = 'نسخ | Copy'; }, 1500); };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, function () {});
+    });
+  });
+  var links = [].slice.call(document.querySelectorAll('.api-side a'));
+  var secs = links.map(function (a) { var id = a.getAttribute('href') || ''; return id.charAt(0) === '#' ? document.getElementById(id.slice(1)) : null; });
+  function onScroll() {
+    var y = window.scrollY + 140, cur = null;
+    secs.forEach(function (s) { if (s && s.offsetTop <= y) cur = s.id; });
+    links.forEach(function (a) {
+      var href = a.getAttribute('href') || '';
+      var on = cur ? href === '#' + cur : href === 'api.html';
+      a.classList.toggle('on', on);
+    });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+</script>
+</body>
+</html>

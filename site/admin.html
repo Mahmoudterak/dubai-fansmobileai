@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>إدارة Dubai Fans AI</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Readex+Pro:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css">
+<style>
+  body { overflow-y: auto; }
+  .adm { max-width: 1200px; margin: 0 auto; padding: 24px 20px 60px; display: flex; flex-direction: column; gap: 22px; }
+  .adm-top { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .adm-top h1 { margin: 0; font-family: var(--display); font-size: 24px; font-weight: 600; flex: 1; }
+  .adm-top a { text-decoration: none; font-size: 14px; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+  .stat { padding: 16px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); }
+  .stat b { display: block; font-family: var(--display); font-size: 30px; font-variant-numeric: tabular-nums; }
+  .stat span { color: var(--muted); font-size: 13px; }
+  .panel { border-radius: 18px; background: var(--surface); border: 1px solid var(--line); padding: 18px; }
+  .panel h2 { margin: 0 0 14px; font-family: var(--display); font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+  .count { font-size: 12px; padding: 2px 8px; border-radius: 999px; background: var(--accent-soft); color: var(--lav-2); }
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { text-align: start; color: var(--muted); font-weight: 500; font-size: 12px; padding: 8px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  td { padding: 10px; border-bottom: 1px solid #161925; vertical-align: middle; }
+  tr:last-child td { border-bottom: 0; }
+  .muted { color: var(--muted); font-size: 12px; }
+  td.ok { color: #4ADE80; font-weight: 600; }
+  td.bad { color: #F87171; font-weight: 600; }
+  .tag { display: inline-block; font-size: 12px; padding: 2px 8px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--line-2); white-space: nowrap; }
+  .tag.paid { background: #241A0D; border-color: #6B4E1F; color: #F5B76B; }
+  .tag.off { background: #2A1416; border-color: #5B2328; color: var(--danger); }
+  .row-actions { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+  select, .days { min-height: 36px; border-radius: 8px; background: var(--surface-2); border: 1px solid var(--line-2); color: var(--text); padding: 0 8px; }
+  .days { width: 70px; }
+  .sm { min-height: 36px; padding: 0 12px; font-size: 13px; border-radius: 8px; box-shadow: none; }
+  .ghost { background: transparent; border: 1px solid var(--line-2); color: var(--text-2); }
+  .search { min-height: 42px; width: 100%; max-width: 360px; border-radius: 10px; background: var(--surface-2); border: 1px solid var(--line-2); padding: 0 12px; margin-bottom: 12px; }
+  .empty { color: var(--faint); padding: 8px 2px; }
+  .deny { max-width: 420px; margin: 120px auto; text-align: center; color: var(--muted); }
+</style>
+</head>
+<body>
+<div id="deny" class="deny" hidden>
+  <p>الصفحة دي للمسؤول بس. <a href="./">ارجع للمساعد</a></p>
+</div>
+<main id="adm" class="adm" hidden>
+  <div class="adm-top">
+    <h1>لوحة إدارة Dubai Fans AI</h1>
+    <a href="./">← الرجوع للمساعد</a>
+  </div>
+
+  <section class="stats" aria-label="إحصائيات">
+    <div class="stat"><b id="sUsers">—</b><span>إجمالي المستخدمين</span></div>
+    <div class="stat"><b id="sPaid">—</b><span>اشتراكات مدفوعة نشطة</span></div>
+    <div class="stat"><b id="sMsgs">—</b><span>رسائل النهارده</span></div>
+    <div class="stat"><b id="sReq">—</b><span>طلبات اشتراك مستنية</span></div>
+  </section>
+
+  <section class="panel">
+    <h2>المدفوعات (زينة) <span id="payMonth" class="count">0 درهم هذا الشهر</span> <span id="payMode" class="muted" style="font-size:13px;font-weight:400"></span></h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th>العميل</th><th>الباقة</th><th>المبلغ</th><th>الحالة</th><th>التاريخ</th></tr></thead>
+      <tbody id="payBody"></tbody>
+    </table></div>
+  </section>
+
+  <section class="panel">
+    <h2>طلبات الاشتراك <span id="reqCount" class="count">0</span></h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th>العميل</th><th>الباقة المطلوبة</th><th>التاريخ</th><th>إجراء</th></tr></thead>
+      <tbody id="reqBody"></tbody>
+    </table></div>
+  </section>
+
+  <section class="panel">
+    <h2>Langfuse <span id="lfCount" class="count">0</span>
+      <select id="lfHours" aria-label="المدة" style="margin-inline-start:auto">
+        <option value="24" selected>آخر 24 ساعة</option>
+        <option value="168">آخر 7 أيام</option>
+      </select>
+    </h2>
+    <p id="lfNote" class="muted" hidden></p>
+    <div class="stats" style="margin-bottom:14px">
+      <div class="stat"><b id="lfTotal">—</b><span>traces</span></div>
+      <div class="stat"><b id="lfErr">—</b><span>أخطاء</span></div>
+      <div class="stat"><b id="lfAvg">—</b><span>متوسط الزمن (ms)</span></div>
+    </div>
+    <h3 class="muted" style="margin:0 0 6px;font-weight:500">حسب المسار</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>المسار</th><th>عدد</th></tr></thead>
+      <tbody id="lfRoute"></tbody>
+    </table></div>
+    <h3 class="muted" style="margin:14px 0 6px;font-weight:500">آخر الـ traces</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>الوقت</th><th>الاسم</th><th>الوسوم</th><th>ms</th></tr></thead>
+      <tbody id="lfRecent"></tbody>
+    </table></div>
+    <p class="muted" style="margin-top:10px"><a id="lfOpen" href="#" target="_blank" rel="noopener">فتح لوحة Langfuse ↗</a></p>
+  </section>
+
+  <section class="panel">
+    <h2>التتبع <span id="trCount" class="count">0</span>
+      <select id="trHours" aria-label="المدة" style="margin-inline-start:auto">
+        <option value="1">آخر ساعة</option>
+        <option value="24" selected>آخر 24 ساعة</option>
+        <option value="168">آخر 7 أيام</option>
+      </select>
+    </h2>
+    <div class="stats" style="margin-bottom:14px">
+      <div class="stat"><b id="trTotal">—</b><span>إجمالي الطلبات</span></div>
+      <div class="stat"><b id="trErr">—</b><span>أخطاء / فشل</span></div>
+      <div class="stat"><b id="trAvg">—</b><span>متوسط الزمن (ms)</span></div>
+    </div>
+    <h3 class="muted" style="margin:0 0 6px;font-weight:500">حسب المسار والحالة</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>المسار</th><th>الحالة</th><th>عدد</th><th>متوسط ms</th><th>أقصى ms</th><th>مرات بالمعرفة (RAG)</th></tr></thead>
+      <tbody id="trRoute"></tbody>
+    </table></div>
+    <h3 class="muted" style="margin:14px 0 6px;font-weight:500">المحركات</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>المحرك</th><th>عدد</th><th>متوسط ms</th></tr></thead>
+      <tbody id="trEngine"></tbody>
+    </table></div>
+    <h3 class="muted" style="margin:14px 0 6px;font-weight:500">آخر الطلبات</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>الوقت</th><th>المسار</th><th>الحالة</th><th>المحرك</th><th>ms</th><th>ملاحظة</th></tr></thead>
+      <tbody id="trRecent"></tbody>
+    </table></div>
+    <p class="muted" style="margin:10px 0 0">التتبع ما يسجّل نص الرسائل ولا الردود، وبيتمسح بعد 14 يوم.</p>
+  </section>
+
+  <section class="panel">
+    <h2>المساعد <span id="asDay" class="count">—</span></h2>
+    <p id="asNote" class="muted" hidden></p>
+    <div class="stats" style="margin-bottom:14px">
+      <div class="stat"><b id="asChats">—</b><span>محادثات نشطة النهارده</span></div>
+      <div class="stat"><b id="asUsers">—</b><span>مستخدمين نشطين النهارده</span></div>
+      <div class="stat"><b id="asMsgs">—</b><span>رسائل (مستخدم / مساعد)</span></div>
+      <div class="stat"><b id="asTotal">—</b><span>إجمالي المحادثات</span></div>
+    </div>
+    <h3 class="muted" style="margin:0 0 6px;font-weight:500">حسب الأداة (النهارده)</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>الأداة</th><th>محادثات</th></tr></thead>
+      <tbody id="asTool"></tbody>
+    </table></div>
+    <h3 class="muted" style="margin:14px 0 6px;font-weight:500">التخزين</h3>
+    <p id="asStore" class="muted" style="margin:0"></p>
+    <h3 class="muted" style="margin:14px 0 6px;font-weight:500">مهام الخلفية</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>الحالة</th><th>عدد</th></tr></thead>
+      <tbody id="asBg"></tbody>
+    </table></div>
+    <h3 class="muted" style="margin:14px 0 6px;font-weight:500">المهام الفاشلة (آخر 20)</h3>
+    <div class="table-wrap"><table>
+      <thead><tr><th>#</th><th>النوع</th><th>المحاولات</th><th>الخطأ</th><th>التاريخ</th></tr></thead>
+      <tbody id="asFailed"></tbody>
+    </table></div>
+    <p class="muted" style="margin:10px 0 0">أرقام بس، من غير نص المحادثات ولا الردود. زمن الاستجابة والأخطاء في قسم التتبع فوق.</p>
+  </section>
+
+  <section class="panel">
+    <h2>المستخدمين <span id="userCount" class="count">0</span></h2>
+    <label for="q" class="sr-only">بحث</label>
+    <input id="q" class="search" type="search" placeholder="ابحث بالاسم أو الإيميل">
+    <div class="table-wrap"><table>
+      <thead><tr><th>المستخدم</th><th>الباقة</th><th>تنتهي</th><th>رسائل اليوم</th><th>التسجيل</th><th>تفعيل باقة</th><th></th></tr></thead>
+      <tbody id="userBody"></tbody>
+    </table></div>
+  </section>
+</main>
+<div id="toast" class="toast" role="status" hidden></div>
+<script src="admin.js"></script>
+</body>
+</html>
