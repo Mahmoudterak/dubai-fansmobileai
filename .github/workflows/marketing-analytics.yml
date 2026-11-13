@@ -1,0 +1,55 @@
+# تقرير تسويقي من Google Analytics 4 عبر خادم MCP الرسمي.
+# يعمل عند الطلب فقط (من تبويب Actions ← Run workflow)، ولا يعمل تلقائياً.
+# يحتاج:
+#   - سر GA_SERVICE_ACCOUNT_JSON: مفتاح حساب الخدمة (JSON) بصلاحية Viewer على خاصية GA4
+#   - متغير GA_PROPERTY_ID: رقم خاصية GA4 (أرقام فقط)
+#   - متغير GA_PROJECT_ID: معرّف مشروع Google Cloud
+#   - سر ANTHROPIC_API_KEY وتطبيق Claude GitHub App على المستودع
+name: Marketing analytics report
+on:
+  workflow_dispatch:
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install GA4 MCP server
+        run: pip install "git+https://github.com/googleanalytics/google-analytics-mcp.git"
+      - name: Write credentials and MCP config
+        env:
+          GA_KEY: ${{ secrets.GA_SERVICE_ACCOUNT_JSON }}
+          GA_PROJECT: ${{ vars.GA_PROJECT_ID }}
+        run: |
+          printf '%s' "$GA_KEY" > "$RUNNER_TEMP/ga-sa.json"
+          cat > "$RUNNER_TEMP/mcp.json" <<JSON
+          {
+            "mcpServers": {
+              "analytics": {
+                "command": "analytics-mcp",
+                "env": {
+                  "GOOGLE_APPLICATION_CREDENTIALS": "$RUNNER_TEMP/ga-sa.json",
+                  "GOOGLE_CLOUD_PROJECT": "$GA_PROJECT"
+                }
+              }
+            }
+          }
+          JSON
+      - uses: anthropics/claude-code-action@v1
+        env:
+          GH_TOKEN: ${{ github.token }}
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            استخدم أدوات خادم analytics لجلب تقرير آخر 7 أيام لخاصية GA4 رقم ${{ vars.GA_PROPERTY_ID }}:
+            عدد الجلسات والمستخدمين، وأهم 5 صفحات، وأهم 5 مصادر زيارة، والتحويلات إن وُجدت.
+            ثم اكتب التقرير بالعربية كـissue جديد بعنوان "تقرير تسويقي أسبوعي" باستخدام:
+            gh issue create --title "تقرير تسويقي أسبوعي" --body "<التقرير>"
+            لا تعدّل أي ملف في المستودع.
+          claude_args: '--mcp-config ${{ runner.temp }}/mcp.json --allowedTools "mcp__analytics,Bash(gh issue create:*)"'
