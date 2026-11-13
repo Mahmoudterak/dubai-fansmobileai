@@ -1,0 +1,33 @@
+# الاعتماديات والبناء
+node_modules/
+dist/
+
+# الإعدادات والأسرار: لا تُرفع أبداً
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# البيانات المحلية والنسخ الاحتياطية
+data/
+backups/
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+uploads/
+
+# السجلات والملفات المؤقتة
+*.log
+*.tmp
+*.bak
+.cache/
+coverage/
+
+# نظام التشغيل والمحررات
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
