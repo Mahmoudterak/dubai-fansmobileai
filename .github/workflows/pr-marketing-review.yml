@@ -1,0 +1,40 @@
+# مراجعة تلقائية لطلبات السحب التي تغيّر صفحات الموقع:
+# 1) مراجعة النص التسويقي العربي (وضوح، أخطاء، تناقض مع الأسعار).
+# 2) التحقق من أن كل نص عربي جديد مُضاف إلى site/i18n.js.
+# لا يعدّل Claude أي ملف، ويكتب ملاحظاته تعليقاً واحداً على الـPR.
+# لا يعمل على طلبات السحب من الـforks، لأن الأسرار لا تُمرَّر إليها.
+name: PR marketing review
+on:
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - "site/**"
+jobs:
+  review:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: anthropics/claude-code-action@v1
+        env:
+          GH_TOKEN: ${{ github.token }}
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            راجع تغييرات طلب السحب رقم ${{ github.event.pull_request.number }} فقط، باستخدام:
+            git diff origin/${{ github.event.pull_request.base.ref }}...HEAD -- site/
+
+            1) النص التسويقي العربي في ملفات site/: ابحث عن أخطاء لغوية، ونص غامض، وأي تناقض مع الأسعار أو الباقات الموجودة في الصفحات الأخرى.
+            2) إذا أضيف نص عربي جديد في ملفات HTML أو JS داخل site/، تحقق أن النص موجود أيضاً في site/i18n.js ضمن نفس التعديل. اذكر النصوص الناقصة بالاسم.
+
+            لا تعدّل أي ملف. اكتب ملاحظاتك بالعربية في تعليق واحد على الطلب باستخدام الأمر:
+            gh pr comment ${{ github.event.pull_request.number }} --body "<الملاحظات>"
+            إذا لم تجد أي مشكلة، اكتب ذلك في التعليق نفسه.
+          claude_args: '--allowedTools "Bash(git diff:*),Bash(git log:*),Bash(gh pr comment:*),Read,Grep,Glob"'
