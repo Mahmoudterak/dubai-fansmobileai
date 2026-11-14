@@ -1337,6 +1337,22 @@ const ttsEnabled = () => Boolean(CFG.azureKey && CFG.azureRegion);
 const ttsUsage = new Map(); // user:day -> حروف
 const xmlEsc = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
 
+// تقييم الرد: يتحفظ في ملف JSON lines على الخادم (مش بيظهر لأي مستخدم تاني)
+const FEEDBACK_TYPES = ['خلل غير متعلق بالذكاء الاصطناعي', 'الوكيل عالق أو يكرر نفسه', 'الناتج مقطوع أو هناك ملف مفقود', 'الناتج بسيط جداً', 'الناتج غير جميل بصرياً', 'الناتج يحتوي على خطأ في الحقائق', 'لم يتم اتباع التعليمات', 'نسي أو خلط السياق', 'التكلفة مرتفعة جداً', 'الإبلاغ عن محتوى غير ملائم', 'أخرى'];
+async function handleFeedback(req, res, user) {
+  const body = await readJson(req, 16 * 1024);
+  const rating = Number(body.rating);
+  if (!Number.isInteger(rating) || rating < 1 || rating > 5) return fail(res, 400, 'bad_request', 'اختار عدد النجوم.');
+  const type = FEEDBACK_TYPES.includes(body.type) ? body.type : '';
+  const comment = String(body.comment || '').replace(/[\u0000-\u001f]/g, ' ').trim().slice(0, 1000);
+  const chat = String(body.chatId || '').replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 64);
+  const row = { t: new Date().toISOString(), user: user.id, chat, rating, type, comment, share: body.share !== false };
+  try {
+    fs.appendFileSync(process.env.FEEDBACK_FILE || '/data/feedback.jsonl', JSON.stringify(row) + '\n', 'utf8');
+  } catch (e) { console.error('feedback write failed:', e.message); return fail(res, 500, 'storage', 'ما قدرنا نحفظ الملاحظة دلوقتي.'); }
+  return send(res, 200, { ok: true });
+}
+
 async function handleTts(req, res, user) {
   if (!ttsEnabled()) return fail(res, 503, 'unavailable', 'الصوت الإماراتي مش متفعّل.');
   const body = await readJson(req);
@@ -2416,6 +2432,11 @@ async function route(req, res) {
   if (m === 'POST' && p === '/api/vision') {
     if (rateLimited('vision:' + user.id, 10, 60000)) return fail(res, 429, 'rate', 'صور كتير ورا بعض. استنى دقيقة.');
     return handleVision(req, res, user);
+  }
+
+  if (m === 'POST' && p === '/api/feedback') {
+    if (rateLimited('feedback:' + user.id, 20, 60000)) return fail(res, 429, 'rate', 'ملاحظات كتير ورا بعض.');
+    return handleFeedback(req, res, user);
   }
 
   if (m === 'POST' && p === '/api/tts') {

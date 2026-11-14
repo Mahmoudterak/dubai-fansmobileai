@@ -46,3 +46,22 @@
 
 /* عنوان قسم المهارات داخل قائمة النموذج */
 .mo-head { padding: 10px 14px 4px; font-size: 12px; color: var(--muted); }
+
+/* بطاقة تقييم الرد (مرة واحدة لكل محادثة) */
+.fb-card { margin: 14px 0 6px; padding: 14px; border-radius: 16px; border: 1px solid var(--line-2); background: var(--surface); display: grid; gap: 8px; max-width: 520px; }
+.fb-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.fb-stars { display: flex; gap: 2px; direction: ltr; }
+.fb-star { background: none; border: 0; padding: 2px; font-size: 22px; line-height: 1; color: var(--line-2); cursor: pointer; }
+.fb-star.on { color: #F5B82E; }
+.fb-lbl { font-size: 13px; color: var(--muted); }
+.fb-opt { color: var(--muted); }
+.fb-type, .fb-text { width: 100%; box-sizing: border-box; border-radius: 12px; border: 1px solid var(--line-2); background: var(--bg); color: var(--text); padding: 9px 12px; font: inherit; }
+.fb-text { resize: vertical; }
+.fb-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; font-size: 13px; color: var(--muted); }
+.fb-share { display: flex; align-items: center; gap: 6px; }
+.fb-btns { display: flex; gap: 8px; }
+.fb-btns button { border-radius: 10px; padding: 8px 14px; font: inherit; cursor: pointer; border: 1px solid var(--line-2); background: transparent; color: var(--text); }
+.fb-btns .fb-send { background: var(--text); color: var(--bg); border-color: transparent; }
+.fb-btns button:disabled { opacity: .6; cursor: default; }
+.fb-err { color: #E5484D; font-size: 13px; }
+.fb-thanks { font-size: 14px; color: var(--muted); padding: 6px 2px; }

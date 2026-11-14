@@ -1276,6 +1276,79 @@
     catch (_) { return iso; }
   }
 
+  // بطاقة تقييم الرد: تظهر مرة واحدة لكل محادثة بعد أول رد كامل
+  var FB_TYPES = [
+    ['خلل غير متعلق بالذكاء الاصطناعي', 'خلل غير متعلق بالذكاء الاصطناعي'],
+    ['الوكيل عالق أو يكرر نفسه', 'الوكيل عالق أو يكرر نفسه'],
+    ['الناتج مقطوع أو هناك ملف مفقود', 'الناتج مقطوع أو هناك ملف مفقود'],
+    ['الناتج بسيط جداً', 'الناتج بسيط جداً'],
+    ['الناتج غير جميل بصرياً', 'الناتج غير جميل بصرياً'],
+    ['الناتج يحتوي على خطأ في الحقائق', 'الناتج يحتوي على خطأ في الحقائق'],
+    ['لم يتم اتباع التعليمات', 'لم يتم اتباع التعليمات'],
+    ['نسي أو خلط السياق', 'نسي أو خلط السياق'],
+    ['التكلفة مرتفعة جداً', 'التكلفة مرتفعة جداً'],
+    ['الإبلاغ عن محتوى غير ملائم', 'الإبلاغ عن محتوى غير ملائم'],
+    ['أخرى', 'أخرى (يرجى التعليق)']
+  ];
+  function maybeFeedback(el, chat) {
+    var key = 'dfai.fb.' + chat.id;
+    try { if (localStorage.getItem(key)) return; } catch (e) { /* بدون تخزين محلي: نكمل */ }
+    if (chat._fbShown) return;
+    chat._fbShown = true;
+    var card = document.createElement('div');
+    card.className = 'fb-card';
+    var rating = 0;
+    var stars = '';
+    card.innerHTML = '<div class="fb-top"><div class="fb-stars"></div><strong>كيف كانت هذه النتيجة؟</strong></div>' +
+      '<label class="fb-lbl">نوع المشكلة <span class="fb-opt">(اختياري)</span></label>' +
+      '<select class="fb-type"><option value="">يرجى الاختيار</option></select>' +
+      '<label class="fb-lbl">تعليق <span class="fb-opt">(اختياري)</span></label>' +
+      '<textarea class="fb-text" rows="3" maxlength="1000" placeholder="ملاحظات إضافية"></textarea>' +
+      '<div class="fb-foot"><label class="fb-share"><input type="checkbox" checked> ساعد Dubai Fans AI على التحسين من خلال ملاحظاتي</label>' +
+      '<div class="fb-btns"><button type="button" class="fb-skip">تخطي التعليق</button><button type="button" class="fb-send">إرسال</button></div></div>' +
+      '<div class="fb-err" hidden></div>';
+    var starBox = card.querySelector('.fb-stars');
+    for (var i = 1; i <= 5; i++) {
+      var s = document.createElement('button');
+      s.type = 'button';
+      s.className = 'fb-star';
+      s.setAttribute('aria-label', i + ' نجوم');
+      s.textContent = '★';
+      (function (n) { s.addEventListener('click', function () { rating = n; paintStars(); }); })(i);
+      starBox.appendChild(s);
+    }
+    function paintStars() {
+      Array.prototype.forEach.call(starBox.children, function (b, idx) { b.classList.toggle('on', idx < rating); });
+    }
+    var sel = card.querySelector('.fb-type');
+    FB_TYPES.forEach(function (t) { var o = document.createElement('option'); o.value = t[0]; o.textContent = t[1]; sel.appendChild(o); });
+    function done() { try { localStorage.setItem(key, '1'); } catch (e) { /* */ } }
+    card.querySelector('.fb-skip').addEventListener('click', function () { done(); card.remove(); });
+    var err = card.querySelector('.fb-err');
+    card.querySelector('.fb-send').addEventListener('click', function () {
+      if (!rating) { err.textContent = 'اختار عدد النجوم الأول.'; err.hidden = false; return; }
+      err.hidden = true;
+      var btn = card.querySelector('.fb-send');
+      btn.disabled = true;
+      apiJson('/api/feedback', { method: 'POST', body: JSON.stringify({
+        rating: rating,
+        type: sel.value,
+        comment: card.querySelector('.fb-text').value.trim(),
+        share: card.querySelector('.fb-share input').checked,
+        chatId: chat.id
+      }) }).then(function () {
+        done();
+        card.innerHTML = '<div class="fb-thanks">شكراً، ملاحظتك وصلت ✅</div>';
+        setTimeout(function () { card.remove(); }, 2500);
+      }).catch(function (ex) {
+        btn.disabled = false;
+        err.textContent = netMessage(ex);
+        err.hidden = false;
+      });
+    });
+    el.appendChild(card);
+  }
+
   function renderSources(el, sources) {
     var box = el.querySelector('.extra');
     if (!sources || !sources.length || box.querySelector('.sources')) return;
@@ -2108,7 +2181,7 @@
         if (sp.items.length) m.suggest = sp.items;
         chat.messages.push(m);
         saveChats();
-        if (!el.querySelector('.msg-error')) { finalizeAi(el, full, m); renderSuggest(el, sp.items); }
+        if (!el.querySelector('.msg-error')) { finalizeAi(el, full, m); renderSuggest(el, sp.items); maybeFeedback(el, chat); }
         else el.querySelector('.msg-actions').hidden = false;
       }
       setStreaming(false);
