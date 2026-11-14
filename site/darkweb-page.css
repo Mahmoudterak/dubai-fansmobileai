@@ -1,0 +1,64 @@
+/* مراقبة الويب المظلم — مطابق لتصميم Claude Design (شاشة الأمان) */
+
+.dw-page { padding-top: 6px; }
+
+/* ثلاث بطاقات إحصائية */
+.dw-page .dw-stats {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+  margin: 8px 0 14px;
+}
+.dw-page .dw-stat {
+  padding: 14px 14px 12px;
+  border-radius: 16px;
+  background: #111628;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  text-align: right;
+}
+.dw-page .dw-stat b { display: block; font-size: 24px; font-weight: 700; color: #FFFFFF; line-height: 1.1; }
+.dw-page .dw-stat span { display: block; margin-top: 8px; font-size: 12px; color: #9EA5BE; }
+
+/* بطاقات الفحص */
+.dw-page .card-box {
+  padding: 18px 16px 16px;
+  margin: 0 0 14px;
+  border-radius: 20px;
+  background: #111628;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: none;
+}
+.dw-page .card-box h2 { font-size: 17px; font-weight: 700; color: #FFFFFF; margin: 0 0 8px; text-align: right; }
+.dw-page .biz-hint { font-size: 13px; line-height: 1.7; color: #8A90A8; margin: 0 0 14px; text-align: right; }
+
+.dw-page .dw-form { display: flex; flex-direction: column; gap: 12px; margin: 0; }
+.dw-page .dw-form input {
+  height: 50px; padding: 0 20px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(70, 110, 255, 0.6);
+  background: #0E1430;
+  color: #FFFFFF; font-size: 15px;
+  box-shadow: 0 0 14px rgba(62, 99, 240, 0.15);
+}
+.dw-page .dw-form input::placeholder { color: #5F6684; }
+.dw-page .dw-form input:focus { outline: none; box-shadow: 0 0 0 3px rgba(62, 99, 240, 0.3); }
+
+/* أزرار الفحص: إطار أزرق مضيء بدون تعبئة قوية */
+.dw-page .btn-primary {
+  height: 50px; border-radius: 999px;
+  background: #0E1A3A;
+  border: 1.5px solid #2F6BFF;
+  color: #FFFFFF; font-size: 15px; font-weight: 700;
+  box-shadow: 0 0 16px rgba(47, 107, 255, 0.25);
+}
+.dw-page #dwMailBtn { align-self: flex-start; min-width: 150px; height: 46px; padding: 0 22px; font-size: 14px; }
+
+.dw-page .dw-mail {
+  font-size: 15px; color: #FFFFFF;
+  text-align: right; margin: 0 0 12px;
+  direction: ltr;
+}
+
+.dw-page #dwPwRes, .dw-page #dwMailRes { margin-top: 12px; }
+.dw-page .dw-foot {
+  text-align: center; font-size: 13px; line-height: 1.8;
+  color: #8A90A8; margin: 6px 6px 0;
+}

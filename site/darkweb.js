@@ -16,18 +16,24 @@
 
   function open() {
     var panel = D.showPanel('darkweb');
-    panel.innerHTML = '<div class="pv"><div class="pv-head"><div class="pv-ico red">' + SHIELD + '</div><div><h1>مراقبة الويب المظلم</h1>' +
-      '<p>اتأكد إن كلمة مرورك أو إيميلك ما ظهرش في تسريبات معروفة. كلمة المرور ما بتتحفظش ولا بتتسجل.</p></div></div>' +
-      '<div class="card-box dw-box"><h2>كلمة المرور</h2>' +
+    var mail = ($('userRole') && $('userRole').textContent) || '';
+    panel.innerHTML = '<div class="pv dw-page">' +
+      '<div class="dw-stats">' +
+      '<div class="dw-stat"><b>1</b><span>بريد مراقَب</span></div>' +
+      '<div class="dw-stat"><b>0</b><span>رقم هاتف</span></div>' +
+      '<div class="dw-stat"><b id="dwLeaks">0</b><span>تسريبات</span></div>' +
+      '</div>' +
+      '<div class="card-box"><h2>كلمة المرور</h2>' +
       '<p class="biz-hint">اكتب كلمة المرور اللي عايز تتأكد منها. بنرسل أول 5 حروف من الهاش بس، وكلمة المرور نفسها ما بتخرج من السيرفر.</p>' +
-      '<form id="dwPwForm" class="mem-form"><input id="dwPw" type="password" autocomplete="new-password" maxlength="256" placeholder="كلمة المرور" aria-label="كلمة المرور">' +
+      '<form id="dwPwForm" class="dw-form"><input id="dwPw" type="password" autocomplete="new-password" maxlength="256" placeholder="كلمة المرور" aria-label="كلمة المرور">' +
       '<button type="submit" class="btn-primary">افحص</button></form>' +
       '<div id="dwPwRes"></div></div>' +
-      '<div class="card-box dw-box"><h2>إيميل حسابك</h2>' +
+      '<div class="card-box"><h2>إيميل حسابك</h2>' +
       '<p class="biz-hint">نفحص إيميل حسابك في التسريبات المعروفة.</p>' +
+      '<div class="dw-mail" dir="ltr">' + esc(mail) + '</div>' +
       '<button id="dwMailBtn" type="button" class="btn-primary">افحص إيميلي</button>' +
       '<div id="dwMailRes"></div></div>' +
-      '<p class="muted" style="margin-top:12px">الفحص ما بيغيّرش أي حاجة في حسابك. لو ظهرت تسريبات، غيّر كلمة المرور في الخدمات اللي ظهرت فيها.</p></div>';
+      '<p class="dw-foot">الفحص ما بيغيّرش أي حاجة في حسابك. لو ظهرت تسريبات، غيّر كلمة المرور في الخدمات اللي ظهرت فيها.</p></div>';
 
     $('dwPwForm').addEventListener('submit', function (e) {
       e.preventDefault();
@@ -52,6 +58,7 @@
       resultBox($('dwMailRes'), 'biz-loading', 'جارٍ الفحص…');
       D.apiJson('/api/darkweb/email', { method: 'POST' })
         .then(function (r) {
+          $('dwLeaks').textContent = (r.breaches || []).length;
           if (!r.breaches || !r.breaches.length) {
             resultBox($('dwMailRes'), 'msg-ok', 'إيميلك ما ظهرش في التسريبات المعروفة.');
             return;
