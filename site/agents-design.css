@@ -35,3 +35,46 @@
 :root[data-theme="dark"] #agentsModal .agent-desc {
   color: #9EA5BE;
 }
+
+/* صفحة الوكلاء كما في التصميم: خلفية بالتوهج البنفسجي، حلقة دوّارة فوق العنوان،
+   وبطاقات صف واحد (أيقونة، الاسم والوصف، سهم) */
+:root[data-theme="dark"] #agentsModal .modal-box {
+  background: radial-gradient(380px 260px at 50% -30px, rgba(90, 35, 144, 0.8), rgba(90, 35, 144, 0) 70%), #06091A;
+  border: 0;
+}
+:root[data-theme="dark"] #agentsModal #agentsTitle { text-align: center; font-size: 28px; color: #E4DBFF; margin-top: 4px; }
+:root[data-theme="dark"] #agentsModal .modal-sub { text-align: center; color: #9EA5BE; }
+#agentsModal .ag-ring { width: 46px; height: 46px; margin: 8px auto 0; }
+#agentsModal .ag-ring svg { width: 100%; height: 100%; overflow: visible; animation: ag-spin 10s linear infinite; }
+#agentsModal .ag-ring circle { fill: none; stroke: #6D4AFF; stroke-width: 7; stroke-linecap: round; stroke-dasharray: 52 11; }
+:root[data-theme="dark"] #agentsModal .ag-ring circle { stroke: #F4F4F7; }
+@keyframes ag-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { #agentsModal .ag-ring svg { animation: none; } }
+#agentsModal .agents-grid { grid-template-columns: 1fr; gap: 10px; }
+#agentsModal .agent-card {
+  display: grid;
+  grid-template-columns: 52px 1fr 14px;
+  align-items: center;
+  column-gap: 14px;
+  row-gap: 2px;
+  padding: 16px;
+  text-align: start;
+}
+#agentsModal .agent-ico {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0;
+  color: #C9B8FF;
+}
+#agentsModal .agent-ico svg { width: 22px; height: 22px; }
+#agentsModal .agent-name { font-size: 16px; font-weight: 700; }
+#agentsModal .agent-desc { font-size: 13px; color: #9EA5BE; grid-column: 2; }
+#agentsModal .agent-chev { width: 8px; height: 8px; border-left: 2px solid #9EA5BE; border-bottom: 2px solid #9EA5BE; transform: rotate(45deg); justify-self: center; }
+#agentsModal .agent-ico { grid-row: 1 / span 2; }
+#agentsModal .agent-name { grid-column: 2; grid-row: 1; }
+#agentsModal .agent-chev { grid-column: 3; grid-row: 1 / span 2; }

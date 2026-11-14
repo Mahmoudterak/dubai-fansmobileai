@@ -852,6 +852,16 @@
   }
 
   // ---------- الوكلاء ----------
+  // أيقونات الوكلاء بخط بسيط كما في التصميم (بدل الإيموجي)
+  var AGENT_SVG = {
+    strategy: '<circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/>',
+    seo: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+    ads: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
+    social: '<rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M11 18h2"/>',
+    sales: '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5h6v2"/>',
+    copy: '<path d="M4 20h4L19 9l-4-4L4 16z"/>',
+    email: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>'
+  };
   function openAgents() {
     openModal('agentsModal', 'agentsClose');
     loadConfig().then(function (cfg) {
@@ -862,8 +872,10 @@
         var b = document.createElement('button');
         b.type = 'button';
         b.className = 'agent-card' + (state.agent === a.id ? ' active' : '');
-        b.innerHTML = '<span class="agent-ico" aria-hidden="true"></span><span class="agent-name"></span><span class="agent-desc"></span>';
-        b.querySelector('.agent-ico').textContent = info.ico;
+        b.innerHTML = '<span class="agent-ico" aria-hidden="true"></span><span class="agent-name"></span><span class="agent-desc"></span><span class="agent-chev" aria-hidden="true"></span>';
+        var art = AGENT_SVG[a.id];
+        if (art) b.querySelector('.agent-ico').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' + art + '</svg>';
+        else b.querySelector('.agent-ico').textContent = info.ico;
         b.querySelector('.agent-name').textContent = a.name;
         b.querySelector('.agent-desc').textContent = info.desc;
         b.addEventListener('click', function () { setAgent(a.id, a.name); closeModal('agentsModal'); });
