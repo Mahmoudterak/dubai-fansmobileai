@@ -1559,14 +1559,15 @@
     setStreaming(true);
     apiJson('/api/campaign', { method: 'POST', body: JSON.stringify({ occasion: occ.id, offer: offer || '' }) })
       .then(function (plan) {
-        var n = Math.min(plan.posts.length, left('images'));
+        // تصميم واحد لكل طلب: الحملة تعمل أول تصميم بس، والباقي يتطلب طلب منفصل
+        var n = Math.min(1, plan.posts.length, left('images'));
         var EN_UI = window.DFAI_LANG === 'en';
         var md = '### ' + plan.title + '\n\n' + plan.intro + '\n\n' +
           plan.posts.map(function (x, i) { return (i + 1) + '. **' + x.role + '**' + (x.when ? ' — ' + x.when : '') + (x.size === 'story' ? (EN_UI ? ' (Story)' : ' (ستوري)') : ''); }).join('\n') +
           (plan.occasion.approx ? (EN_UI ? '\n\n_The occasion date is approximate and will be confirmed by the moon sighting._' : '\n\n_تاريخ المناسبة تقريبي ويتحدد رسمياً برؤية الهلال._') : '') +
-          (n < plan.posts.length
-            ? (EN_UI ? '\n\n**Your plan today includes only ' + n + ' images, so I will prepare the first ' + n + ' designs.**' : '\n\n**باقتك النهارده فيها ' + n + ' صور بس، فهنجهّز أول ' + n + ' تصاميم.**')
-            : (EN_UI ? '\n\nI will prepare the ' + n + ' designs now, one after another, each with its caption.' : '\n\nهجهّز لك التصاميم الـ' + n + ' دلوقتي واحد ورا التاني، ومع كل تصميم الكابشن بتاعه.'));
+          (n === 0
+            ? (EN_UI ? '\n\n**No image credits left today.**' : '\n\n**خلص رصيد الصور النهارده.**')
+            : (EN_UI ? '\n\nI will prepare **one design** now with its caption. For the next ones, send a separate request for each design.' : '\n\nهجهّز **تصميماً واحداً** دلوقتي ومعه الكابشن. لباقي التصاميم، ابعت طلب منفصل لكل تصميم.'));
         var m = { role: 'assistant', content: md };
         chat.messages.push(m);
         saveChats();
@@ -1580,9 +1581,7 @@
             return sendImage(chat, x.brief, [], { size: x.size, occasionColors: plan.occasion.colors, label: 'تصميم ' + (i + 1) + ' من ' + n + ' · ' + x.role + (x.when ? ' (' + x.when + ')' : '') });
           });
         });
-        return chain.then(function () {
-          if (n < plan.posts.length && state.currentId === chat.id) addQuotaAlert('باقي ' + (plan.posts.length - n) + ' تصاميم من الحملة. اشترك في Pro عشان تكمّل الحملة كاملة.');
-        });
+        return chain;
       })
       .catch(function (ex) {
         setStreaming(false);
