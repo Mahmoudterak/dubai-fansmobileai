@@ -78,3 +78,17 @@
 #agentsModal .agent-ico { grid-row: 1 / span 2; }
 #agentsModal .agent-name { grid-column: 2; grid-row: 1; }
 #agentsModal .agent-chev { grid-column: 3; grid-row: 1 / span 2; }
+
+/* ضغط صفحة الوكلاء لتظهر كلها بدون تمرير، وإخفاء شريط التمرير */
+#agentsModal .modal-box { padding: 12px 16px 16px; scrollbar-width: none; }
+#agentsModal .modal-box::-webkit-scrollbar { display: none; }
+#agentsModal #agentsTitle { font-size: 24px; margin-top: 0; }
+#agentsModal .modal-sub { margin: 2px 0 10px; font-size: 13px; }
+#agentsModal .ag-ring { width: 38px; height: 38px; margin-top: 4px; }
+#agentsModal .agents-grid { gap: 8px; }
+#agentsModal .agent-card { grid-template-columns: 40px 1fr 12px; column-gap: 12px; padding: 10px 12px; border-radius: 16px; }
+#agentsModal .agent-ico { width: 40px; height: 40px; border-radius: 13px; }
+#agentsModal .agent-ico svg { width: 18px; height: 18px; }
+#agentsModal .agent-name { font-size: 15px; }
+#agentsModal .agent-desc { font-size: 12px; line-height: 1.45; }
+#agentsModal .agent-chev { width: 7px; height: 7px; }
