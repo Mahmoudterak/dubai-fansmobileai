@@ -1955,6 +1955,17 @@ async function route(req, res) {
   const m = req.method;
   const ip = clientIp(req);
 
+  // صفحات الهبوط المنشورة: nginx يمرّر /lp/ للـ API، والصفحة تُقرأ من مجلد landing داخل volume البيانات
+  const lp = p.match(/^\/lp\/([a-z0-9-]{3,80})$/);
+  if (m === 'GET' && lp) {
+    const file = path.join(process.env.LANDING_DIR || '/data/landing', lp[1], 'index.html');
+    let html = null;
+    try { html = fs.readFileSync(file, 'utf8'); } catch { /* غير موجودة */ }
+    if (html === null) { res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' }); return res.end('Not found'); }
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'X-Robots-Tag': 'noindex, nofollow, noarchive', 'Cache-Control': 'no-cache' });
+    return res.end(html);
+  }
+
   if (m === 'GET' && p === '/api/health') return send(res, 200, { ok: true, cloud: cfEnabled(), search: Boolean(CFG.searxUrl) });
 
   const img = p.match(/^\/api\/images\/([^/]+)$/);
