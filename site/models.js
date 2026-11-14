@@ -14,7 +14,7 @@
     auto: { sub: 'يختار الأنسب لكل سؤال', icon: 'M12 3l2 7 7 2-7 2-2 7-2-7-7-2 7-2z', bg: 'linear-gradient(135deg,#2E7BE6,#173A86)' },
     cloud: { sub: 'تفكير أعمق للخطط والتحليل', icon: 'M12 4l10 5-10 5L2 9zM6 11v5c3 2 9 2 12 0v-5', bg: 'linear-gradient(135deg,#173A86,#5A2B9B)' },
     small: { sub: 'ردود أسرع للأسئلة البسيطة', icon: 'M13 2L4 14h7l-1 8 9-12h-7z', bg: 'linear-gradient(135deg,#2E7BE6,#2A8F7A)' },
-    external: { sub: 'نموذج خارجي حسب إعداداتك', icon: 'M14 3h7v7M10 14L21 3M19 13v7H4V5h7', bg: 'linear-gradient(135deg,#5A2B9B,#7A1824)' },
+    external: { sub: 'يمكنه المساعدة في التطوير الرقمي لعملك', icon: 'M14 3h7v7M10 14L21 3M19 13v7H4V5h7', bg: 'linear-gradient(135deg,#5A2B9B,#7A1824)' },
     local: { sub: 'على جهازك · خصوصية كاملة', icon: 'M7 7h10v10H7zM9 3v4M15 3v4M9 17v4M15 17v4M3 9h4M3 15h4M17 9h4M17 15h4', bg: 'rgba(255,255,255,.1)' }
   };
   var DEFAULT_META = { sub: '', icon: 'M12 3v18M3 12h18', bg: 'rgba(255,255,255,.1)' };

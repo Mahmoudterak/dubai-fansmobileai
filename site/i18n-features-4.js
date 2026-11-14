@@ -23,6 +23,8 @@
     'الخبير': 'Expert',
     'سريع': 'Fast',
     'النموذج الخارجي': 'External model',
+    'الذكاء المخصص': 'Custom AI',
+    'يمكنه المساعدة في التطوير الرقمي لعملك': 'Can help with digital growth for your business',
     /* ---- نظرة عامة في نشاطي التجاري ---- */
     'نظرة عامة': 'Overview',
     'جاهزية نشاطك': 'Your readiness',
