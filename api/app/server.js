@@ -725,11 +725,11 @@ async function openOllamaStream(messages, maxTokens, signal, model = CFG.localMo
 // يفتح بث من Cloudflare، ولو فشل يرجع للنموذج المحلي
 // النماذج المتاحة فعلاً حسب الإعدادات: الاختيار بيقتصر عليها بس
 function availableModels() {
-  const list = [{ id: 'auto', name: 'تلقائي' }];
-  if (cfEnabled()) list.push({ id: 'cloud', name: 'الخبير' });
+  const list = [{ id: 'auto', name: 'Fans AI' }];
+  if (cfEnabled()) list.push({ id: 'cloud', name: 'Dubai Fans AI' });
   if (cfEnabled() && CFG.cfSmallModel) list.push({ id: 'small', name: 'سريع' });
-  if (extEnabled()) list.push({ id: 'external', name: 'الذكاء المخصص (OpenAI)' });
-  list.push({ id: 'local', name: 'النموذج المحلي' });
+  if (extEnabled()) list.push({ id: 'external', name: 'Fans AI SEO' });
+  list.push({ id: 'local', name: 'Fans AI MT' });
   return list;
 }
 
