@@ -1262,6 +1262,19 @@ textarea.st-input { min-height: 110px; resize: vertical; }
 /* مركز الأدوات الذكية: نفس هوية نشاطي التجاري */
 .ait-panel .ait-body { display: grid; gap: 12px; padding: 14px 0 28px; max-width: 720px; }
 .ait-close { margin-inline-start: auto; }
+.ait-hub { display: grid; gap: 14px; max-width: 720px; padding: 14px 0 28px; }
+.ait-credit { border-radius: 16px; padding: 16px; color: #fff; background: linear-gradient(120deg, #4FB8EE 0%, #6D7CF5 40%, #A97CF6 72%, #E08AEE 100%); display: grid; gap: 4px; }
+.ait-credit-num { font-size: 28px; font-weight: 700; }
+.ait-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.ait-stat { border: 1px solid var(--border, #e5e5e5); border-radius: 12px; padding: 10px; display: grid; gap: 2px; }
+.ait-stat-label { font-size: 12px; color: var(--muted, #6b6b7b); }
+.ait-stat b { font-size: 18px; }
+.ait-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.ait-tool { display: grid; gap: 6px; text-align: start; padding: 14px; border: 1px solid var(--border, #e5e5e5); border-radius: 14px; background: transparent; color: inherit; font: inherit; cursor: pointer; }
+.ait-tool svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.ait-tool small { color: var(--muted, #6b6b7b); }
+.ait-back { justify-self: start; margin: 8px 0 0; }
+@media (max-width: 520px) { .ait-grid, .ait-stats { grid-template-columns: 1fr; } }
 .biz-rec { display: grid; gap: 8px; padding: 16px; }
 .biz-rec-meta { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 13px; }
 .biz-rec-title { font-size: 16px; line-height: 1.45; }

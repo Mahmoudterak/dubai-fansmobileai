@@ -67,11 +67,77 @@
       tabs.appendChild(b);
     });
 
-    p.appendChild(head);
-    p.appendChild(tabs);
-    p.appendChild(body);
+    // الرجوع للوحة الرئيسية (الكروت) من أي أداة
+    var back = el('button', 'btn-ghost sm ait-back', 'رجوع');
+    back.type = 'button';
+    back.addEventListener('click', showHub);
+
+    function openTool(id) {
+      p.innerHTML = '';
+      p.appendChild(head);
+      p.appendChild(back);
+      p.appendChild(tabs);
+      p.appendChild(body);
+      show(id);
+    }
+
+    function showHub() {
+      p.innerHTML = '';
+      p.appendChild(head);
+      p.appendChild(buildHub(openTool));
+    }
+
     p.classList.add('ait-panel');
-    show('voice');
+    showHub();
+  }
+
+  // اللوحة الرئيسية: رصيد النقاط، ثلاث بطاقات أرقام، وست أدوات
+  var HUB_TOOLS = [
+    { id: 'voice', label: 'صوت العلامة', sub: 'خلي كل نص يطلع بأسلوب علامتك', ico: 'M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3zM5 11a7 7 0 0 0 14 0M12 18v3' },
+    { id: 'personas', label: 'تقييم الجمهور', sub: 'اعرض إعلانك على ثلاث شخصيات افتراضية', ico: 'M16 11a4 4 0 1 0-8 0M4 21a8 8 0 0 1 16 0' },
+    { id: 'shot', label: 'من صورة لكود', sub: 'حوّل لقطة شاشة لصفحة HTML قابلة للتعديل', ico: 'M4 5h16v14H4zM4 15l5-5 4 4 3-3 4 4' },
+    { id: 'leads', label: 'باحث العملاء', sub: 'ابحث عن عملاء محتملين لنشاطك', ico: 'M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM20 20l-4-4' },
+    { id: 'advisor', label: 'المستشار', sub: 'اسأل عن قرار تجاري واخذ رأي واضح', ico: 'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z' },
+    { id: 'bench', label: 'قارن بالمنافس', sub: 'قارن موقعك أو عرضك بمنافس', ico: 'M4 19V9M10 19V5M16 19v-7M22 19H2' }
+  ];
+
+  function buildHub(openTool) {
+    var me = D.state && D.state.me;
+    var cr = me && me.credits;
+    var wrap = el('div', 'ait-hub');
+
+    var credit = el('div', 'ait-credit');
+    credit.appendChild(el('strong', '', 'رصيد النقاط الشهري'));
+    var left = cr ? (cr.limit === -1 ? 'غير محدود' : String(cr.left)) : '—';
+    credit.appendChild(el('div', 'ait-credit-num', left));
+    wrap.appendChild(credit);
+
+    var stats = el('div', 'ait-stats');
+    var tiles = [
+      ['الرصيد المتبقي', left],
+      ['حد الباقة', cr ? (cr.limit === -1 ? 'غير محدود' : String(cr.limit)) : '—'],
+      ['الأدوات المتاحة', String(HUB_TOOLS.length)]
+    ];
+    tiles.forEach(function (t) {
+      var s = el('div', 'ait-stat');
+      s.appendChild(el('span', 'ait-stat-label', t[0]));
+      s.appendChild(el('b', '', t[1]));
+      stats.appendChild(s);
+    });
+    wrap.appendChild(stats);
+
+    var grid = el('div', 'ait-grid');
+    HUB_TOOLS.forEach(function (t) {
+      var b = el('button', 'ait-tool');
+      b.type = 'button';
+      b.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + t.ico + '"/></svg>';
+      b.appendChild(el('strong', '', t.label));
+      b.appendChild(el('small', '', t.sub));
+      b.addEventListener('click', function () { openTool(t.id); });
+      grid.appendChild(b);
+    });
+    wrap.appendChild(grid);
+    return wrap;
   }
 
   // ---------- 1) صوت العلامة ----------
