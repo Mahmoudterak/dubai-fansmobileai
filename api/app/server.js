@@ -728,7 +728,7 @@ function availableModels() {
   const list = [{ id: 'auto', name: 'تلقائي' }];
   if (cfEnabled()) list.push({ id: 'cloud', name: 'الخبير' });
   if (cfEnabled() && CFG.cfSmallModel) list.push({ id: 'small', name: 'سريع' });
-  if (extEnabled()) list.push({ id: 'external', name: 'الذكاء المخصص' });
+  if (extEnabled()) list.push({ id: 'external', name: 'الذكاء المخصص (OpenAI)' });
   list.push({ id: 'local', name: 'النموذج المحلي' });
   return list;
 }
