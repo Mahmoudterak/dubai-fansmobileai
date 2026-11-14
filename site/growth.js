@@ -478,6 +478,8 @@
   function openMonitors(prefill) {
     var panel = D.showPanel('monitors');
     panel.innerHTML = '<div class="pv mon-page">' +
+      '<div class="pv-head"><div class="pv-ico mon-ico">' + ICON.pulse + '</div><div><h1>المتابعة التلقائية</h1>' +
+      '<p>فوّض Dubai Fans AI يتابع علامتك ومنافسينك لوحده، ويطلعلك تقرير يومي أو أسبوعي بتغيّر الظهور.</p></div></div>' +
       '<div id="monBody"><div class="card-box"><div class="progress-steps"><div class="pstep on"><span class="dot"></span>جارٍ التحميل…</div></div></div></div></div>';
     D.apiJson('/api/monitors').then(function (d) { renderMonitors(d, prefill); D.refreshMe(); })
       .catch(function (ex) { $('monBody').innerHTML = '<div class="card-box empty-box"></div>'; $('monBody').firstChild.textContent = D.netMessage(ex); });
