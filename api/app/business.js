@@ -300,6 +300,49 @@ async function siteAudit(user, url, profile) {
   return { title: 'تحليل موقع ' + new URL(homeRes.url).host, score, facts, report };
 }
 
+// ---------------- حسابات السوشيال بالروابط العامة (بدون ربط) ----------------
+// نقرأ بيانات الصفحة العامة اللي تظهر للكل (العنوان والوصف ومعلومات og)، من غير تسجيل دخول ومن غير مفاتيح.
+// ما نقراش المنشورات الخاصة ولا الرسائل ولا الإعلانات.
+const SOCIAL_HOSTS = [['instagram.com', 'إنستغرام'], ['tiktok.com', 'تيك توك'], ['facebook.com', 'فيسبوك'], ['fb.com', 'فيسبوك']];
+function socialTarget(raw) {
+  let u;
+  try { u = new URL(String(raw || '').trim()); } catch { throw userErr('اكتب رابط الحساب الكامل، يبدأ بـ https://'); }
+  if (u.protocol !== 'https:') throw userErr('الرابط لازم يبدأ بـ https://');
+  const h = u.hostname.toLowerCase().replace(/^(www|m)\./, '');
+  const hit = SOCIAL_HOSTS.find(([d]) => h === d || h.endsWith('.' + d));
+  if (!hit) throw userErr('الرابط لازم يكون من إنستغرام أو تيك توك أو فيسبوك.');
+  return { platform: hit[1], url: u.href };
+}
+function metaContent(html, name) {
+  const re = new RegExp(`<meta[^>]+(?:property|name)=["']${name}["'][^>]*content=["']([^"']*)["']`, 'i');
+  const re2 = new RegExp(`<meta[^>]+content=["']([^"']*)["'][^>]*(?:property|name)=["']${name}["']`, 'i');
+  const m = html.match(re) || html.match(re2);
+  return m ? m[1].replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/\s+/g, ' ').trim().slice(0, 500) : '';
+}
+async function socialAudit(user, rawUrl, profile) {
+  const t = socialTarget(rawUrl);
+  const res = await safeFetch(t.url, { timeout: 12000 }, 1024 * 1024);
+  if (res.status >= 400) throw userErr(`الصفحة رجّعت خطأ (${res.status}). تأكد إن الحساب عام.`);
+  const html = res.body || '';
+  const ogTitle = metaContent(html, 'og:title');
+  const ogDesc = metaContent(html, 'og:description') || metaContent(html, 'description');
+  const titleTag = (html.match(/<title[^>]*>([\s\S]*?)<\/title>/i) || [])[1];
+  const title = ogTitle || (titleTag ? titleTag.replace(/\s+/g, ' ').trim().slice(0, 200) : '');
+  if (!ogTitle && !ogDesc) {
+    throw userErr(`${t.platform} ما سمحت بقراءة معلومات الصفحة العامة دي. جرّب تكتب وصف الحساب يدوياً في بيانات النشاط.`);
+  }
+  const facts = { platform: t.platform, url: t.url, title, description: ogDesc };
+  const prompt = [
+    { role: 'system', content: 'أنت خبير تسويق على السوشيال ميديا. اكتب تقرير بالعربية الواضحة، عملي ومباشر، بتنسيق Markdown. البيانات من الصفحة العامة فقط. لا تخترع متابعين أو أرقام تفاعل غير الموجودة في البيانات.' },
+    { role: 'user', content:
+      (profile ? 'عن النشاط:\n' + profileText(profile) + '\n\n' : '') +
+      'بيانات الحساب العامة (JSON):\n' + JSON.stringify(facts).slice(0, 3000) +
+      '\n\nاكتب التقرير بالأقسام دي:\n## الخلاصة\n(3 جمل: الحساب بيقدم إيه، وتقييمه، وأهم فرصة)\n## ملاحظات على البروفايل\n(الاسم، الوصف، الرابط، الصورة لو ظاهرة في البيانات)\n## أفكار منشورات (5)\n(كل فكرة بسطر واحد وفكرتها)\n## أهم 3 خطوات الأسبوع الجاي\n(مرقّمة)' },
+  ];
+  const report = await D.complete(prompt, 1800, 150000);
+  return { title: 'تحليل حساب ' + t.platform + (title ? ': ' + title.slice(0, 80) : ''), score: null, facts, report };
+}
+
 // ---------------- المتاجر ----------------
 function normShop(s) {
   let h = String(s || '').trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '');
@@ -650,7 +693,7 @@ async function routes(req, res, user, p, m) {
   let mm = p.match(/^\/api\/business\/connect\/(shopify|woo)$/);
   if (m === 'DELETE' && mm) { q.delConn.run(user.id, mm[1]); return D.send(res, 200, { ok: true, connections: q.conns.all(user.id) }); }
 
-  const kinds = { '/api/business/site-audit': 'site', '/api/business/store-analysis': 'store', '/api/business/store-url': 'store', '/api/business/full-analysis': 'full' };
+  const kinds = { '/api/business/site-audit': 'site', '/api/business/store-analysis': 'store', '/api/business/store-url': 'store', '/api/business/full-analysis': 'full', '/api/business/social-audit': 'social' };
   if (m === 'POST' && kinds[p]) {
     if (D.rateLimited('bizrun:' + user.id, 4, 300000)) return D.fail(res, 429, 'rate', 'استنى شوية قبل تحليل جديد.');
     if (inflight >= 3) return D.fail(res, 503, 'busy', 'في تحليلات كتير شغّالة دلوقتي. جرّب بعد دقيقة.');
@@ -666,7 +709,8 @@ async function routes(req, res, user, p, m) {
         const url = String(b.url || (profile && profile.website) || '').trim();
         if (!url) throw userErr('اكتب رابط موقعك.');
         out = await siteAudit(user, url, profile);
-      } else if (p === '/api/business/store-url') out = await storeUrlAnalysis(user, profile, b.url);
+      } else if (p === '/api/business/social-audit') out = await socialAudit(user, b.url, profile);
+      else if (p === '/api/business/store-url') out = await storeUrlAnalysis(user, profile, b.url);
       else if (kinds[p] === 'store') out = await storeAnalysis(user, profile);
       else out = await fullAnalysis(user, profile);
       const info = q.addReport.run(user.id, kinds[p], out.title.slice(0, 160), out.score, JSON.stringify(out.facts || {}), out.report, D.now());

@@ -776,8 +776,13 @@
     html += '<section class="card-box biz-card"><div class="biz-card-head"><span class="biz-ico">' + ICONS.web + '</span><div><h2>الموقع الإلكتروني</h2>' +
       '<p>بنقرا صفحات موقعك ونطلّعلك تقرير SEO وتجربة مستخدم ومحتوى، وأهم 10 تحسينات.</p></div></div>' +
       '<div class="biz-row"><input id="bzUrl" type="text" dir="ltr" placeholder="example.com" value="' + esc(p.website || '') + '">' + runBtn('site', 'حلّل موقعي') + '</div>' + left() + '</section>';
+    // حسابات السوشيال بالروابط العامة (من غير ربط)
+    var socialPre = /^https?:\/\//.test(p.instagram || '') ? p.instagram : '';
+    html += '<section class="card-box biz-card"><div class="biz-card-head"><span class="biz-ico">' + ICONS.web + '</span><div><h2>حساب السوشيال (رابط عام)</h2>' +
+      '<p>الصق رابط حسابك العام في إنستغرام أو تيك توك أو فيسبوك، ونحلله من الصفحة العامة بدون ربط ولا كلمة مرور.</p></div></div>' +
+      '<div class="biz-row"><input id="bzSocial" type="text" dir="ltr" placeholder="https://instagram.com/yourpage" value="' + esc(socialPre) + '">' + runBtn('social', 'حلّل الحساب') + '</div>' + left() + '</section>';
     // المتجر
-    html += '<section class="card-box biz-card"><div class="biz-card-head"><span class="biz-ico">' + ICONS.cart + '</span><div><h2>المتجر الإلكتروني</h2>' +
+    html +='<section class="card-box biz-card"><div class="biz-card-head"><span class="biz-ico">' + ICONS.cart + '</span><div><h2>المتجر الإلكتروني</h2>' +
       '<p>بنقرا منتجاتك وطلباتك (قراءة بس، مش بنعدّل حاجة)، ونحللك المبيعات والأكثر مبيعاً والمنتجات الراكدة، ونقترح عروض ومحتوى.</p></div></div>';
     // تحليل من رابط المتجر فقط (بدون مفاتيح)، جنب الربط بالمفاتيح
     html += '<div class="biz-url"><p class="biz-hint">ماعندكش مفاتيح ربط؟ اكتب رابط متجرك وبنقرا صفحات المنتجات العامة. بيشتغل مع أي منصة، بس من غير بيانات الطلبات والمبيعات.</p>' +
@@ -863,7 +868,11 @@
       body.url = ($('bzStoreUrl') && $('bzStoreUrl').value.trim()) || '';
       if (!body.url) return D.toast('اكتب رابط متجرك.');
     }
-    var endpoint = { site: 'site-audit', store: 'store-analysis', storeurl: 'store-url', full: 'full-analysis' }[kind];
+    if (kind === 'social') {
+      body.url = ($('bzSocial') && $('bzSocial').value.trim()) || '';
+      if (!body.url) return D.toast('الصق رابط الحساب العام.');
+    }
+    var endpoint = { site: 'site-audit', store: 'store-analysis', storeurl: 'store-url', full: 'full-analysis', social: 'social-audit' }[kind];
     running = kind;
     render();
     D.apiJson('/api/business/' + endpoint, { method: 'POST', body: JSON.stringify(body) })
