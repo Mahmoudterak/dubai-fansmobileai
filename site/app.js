@@ -340,7 +340,7 @@
     $('userName').textContent = name;
     $('userAvatar').textContent = name.trim().charAt(0) || 'م';
     $('userRole').textContent = me.user.role === 'admin' ? 'مسؤول النظام' : me.user.email;
-    $('greeting').textContent = 'بماذا نبدأ اليوم يا ' + name.split(' ')[0] + '؟';
+    $('greeting').textContent = 'ماذا تريد أن تنجز اليوم؟';
     $('adminLink').hidden = me.user.role !== 'admin';
     renderQuota();
     renderTools();
@@ -381,6 +381,7 @@
     newChat();
     loadConfig().catch(function () {});
     setTimeout(function () { if (window.DFAI.adStudio && window.DFAI.adStudio.syncLogo) window.DFAI.adStudio.syncLogo(); }, 600);
+    playSplash();
   }
 
   $('loginForm').addEventListener('submit', function (e) {
@@ -954,19 +955,49 @@
   }
   $('toolChip').addEventListener('click', function () { state.agent = null; setTool(null); });
 
+  // بطاقات الرئيسية الأربع كما في تصميم Dubai Fans AI
+  var HOME_CARDS = [
+    { label: 'إنشاء محتوى تسويقي', icon: 'M7 3h7l5 5v13H7zM14 3v5h5M10 13h6M10 17h6', tool: 'write', content: 'أنشئ لي محتوى تسويقي لنشاطي' },
+    { label: 'تصميم صور إعلانية', icon: 'M4 5h16v14H4zM4 16l5-5 4 4 3-3 4 4', tool: 'image', content: 'صمّم لي صور إعلانية لنشاطي' },
+    { label: 'تحليل المنافسين', icon: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10z', tool: 'search', content: 'حلّل المنافسين لنشاطي وقارن ظهورهم بظهوري' },
+    { label: 'تحليل متجري أو الموقع', icon: 'M4 9l1.5-5h13L20 9M4 9h16v11H4zM9 20v-6h6v6', tool: 'site', content: 'حلّل متجري أو موقعي وقدّم ملاحظات للتحسين' }
+  ];
+
   function renderCards() {
     var wrap = $('cards');
     wrap.innerHTML = '';
-    SUGGESTIONS.forEach(function (s) {
+    HOME_CARDS.forEach(function (c) {
       var b = document.createElement('button');
       b.type = 'button';
-      b.className = 'card';
-      b.innerHTML = '<span class="card-title"></span><span class="card-sub"></span>';
-      b.querySelector('.card-title').textContent = s.title;
-      b.querySelector('.card-sub').textContent = s.sub;
-      b.addEventListener('click', function () { setTool(s.tool, true); send(window.DFAI_I18N ? window.DFAI_I18N.tr(s.content) : s.content); });
+      b.className = 'card card-home';
+      b.innerHTML = '<span class="card-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d=""></path></svg></span><span class="card-title"></span>';
+      b.querySelector('path').setAttribute('d', c.icon);
+      b.querySelector('.card-title').textContent = c.label;
+      b.addEventListener('click', function () { setTool(c.tool, true); send(window.DFAI_I18N ? window.DFAI_I18N.tr(c.content) : c.content); });
       wrap.appendChild(b);
     });
+  }
+
+  // شاشة الترحيب بعد تسجيل الدخول: تظهر ~6 ثوانٍ أو حتى يضغط "تخطي"
+  var splashTimers = [];
+  function hideSplash() {
+    splashTimers.forEach(clearTimeout);
+    splashTimers = [];
+    var el = $('splash');
+    if (!el) return;
+    el.classList.remove('show', 'lit');
+    el.hidden = true;
+  }
+  function playSplash() {
+    var el = $('splash');
+    if (!el) return;
+    hideSplash();
+    el.hidden = false;
+    void el.offsetWidth;
+    el.classList.add('show');
+    $('splashSkip').onclick = hideSplash;
+    splashTimers.push(setTimeout(function () { el.classList.add('lit'); }, 2000));
+    splashTimers.push(setTimeout(hideSplash, 5800));
   }
 
   // ---------- المحادثات ----------

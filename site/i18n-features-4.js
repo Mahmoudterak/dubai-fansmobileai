@@ -3,6 +3,18 @@
   'use strict';
   if (!window.DFAI_I18N || !window.DFAI_I18N.add) return;
   window.DFAI_I18N.add({
+    /* ---- شاشة الترحيب بعد الدخول، والرئيسية ---- */
+    'تخطي': 'Skip',
+    'مرحباً بك في Dubai Fans AI': 'Welcome to Dubai Fans AI',
+    'مساعدك الذكي لنمو أعمالك': 'Your AI assistant for growing your business',
+    'من الفكرة إلى التنفيذ…': 'From idea to execution…',
+    'اجعل الذكاء الاصطناعي شريكك في التسويق والنمو.': 'Let AI be your partner in marketing and growth.',
+    'ماذا تريد أن تنجز اليوم؟': 'What do you want to get done today?',
+    'إنشاء محتوى تسويقي': 'Create marketing content',
+    'تصميم صور إعلانية': 'Design ad images',
+    'تحليل المنافسين': 'Analyze competitors',
+    'تحليل متجري أو الموقع': 'Analyze my store or website',
+
     /* ---- نافذة عرض التطبيق والموقع ---- */
     'الشكل ده بيعرض 3 شاشات. لو رفعت أقل، هنكرر الأولى. الصورة رقم 1 بتبقى في النص.': 'This layout shows 3 screens. If you upload fewer, we will repeat the first one. Image 1 goes in the centre.',
 

@@ -35,6 +35,7 @@
 <link rel="stylesheet" href="monitor-design.css?v=__V__">
 <link rel="stylesheet" href="menu-design.css?v=__V__">
 <link rel="stylesheet" href="home-design.css?v=__V__">
+<link rel="stylesheet" href="post-login-design.css?v=__V__">
 <link rel="stylesheet" href="ai-tools-design.css?v=__V__">
 <script src="i18n.js?v=__V__"></script>
 <script src="i18n-features-1.js?v=__V__"></script>
@@ -144,6 +145,30 @@
 </div>
 
 <!-- ============ التطبيق ============ -->
+<div id="splash" class="df-splash" hidden aria-hidden="true">
+  <button id="splashSkip" type="button" class="df-splash-skip">تخطي</button>
+  <div class="df-splash-brand"><span class="logo-slot"></span><span>DUBAI FANS AI</span></div>
+  <div class="df-splash-stage">
+    <div class="df-splash-sphere"></div>
+    <span class="df-splash-dot" style="--x:-150px;--y:-40px;--s:8px"></span>
+    <span class="df-splash-dot" style="--x:-120px;--y:-120px;--s:10px"></span>
+    <span class="df-splash-dot" style="--x:-40px;--y:-160px;--s:6px"></span>
+    <span class="df-splash-dot" style="--x:60px;--y:-150px;--s:12px"></span>
+    <span class="df-splash-dot" style="--x:130px;--y:-90px;--s:7px"></span>
+    <span class="df-splash-dot" style="--x:165px;--y:10px;--s:9px"></span>
+    <span class="df-splash-dot" style="--x:140px;--y:110px;--s:6px"></span>
+    <span class="df-splash-dot" style="--x:40px;--y:160px;--s:11px"></span>
+    <span class="df-splash-dot" style="--x:-60px;--y:150px;--s:7px"></span>
+    <span class="df-splash-dot" style="--x:-150px;--y:90px;--s:9px"></span>
+    <svg class="df-splash-ring" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="40" transform="rotate(-70 50 50)"></circle></svg>
+  </div>
+  <div class="df-splash-text">
+    <div class="df-p1"><h2>مرحباً بك في Dubai Fans AI</h2><p>مساعدك الذكي لنمو أعمالك</p></div>
+    <div class="df-p2"><h2>من الفكرة إلى التنفيذ…</h2><p>اجعل الذكاء الاصطناعي شريكك في التسويق والنمو.</p></div>
+  </div>
+  <div class="df-splash-bar"><span></span></div>
+</div>
+
 <div id="app" class="app" hidden>
   <aside id="sidebar" class="sidebar" aria-label="القائمة الجانبية">
     <div class="brand">
@@ -234,8 +259,7 @@
 
     <section id="home" class="home">
       <div class="orb" role="img" aria-label="المساعد جاهز"></div>
-      <h1 id="greeting">بماذا نبدأ اليوم؟</h1>
-      <p>اختر اقتراحاً أو اكتب طلبك مباشرة، والمساعد يتكفّل بالباقي.</p>
+      <h1 id="greeting">ماذا تريد أن تنجز اليوم؟</h1>
     </section>
 
     <section id="thread" class="thread" aria-live="polite"></section>
