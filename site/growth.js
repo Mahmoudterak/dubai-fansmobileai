@@ -95,6 +95,17 @@
       } }
   ];
 
+  // أيقونات القوالب بخط بسيط كما في التصميم (بدل الإيموجي)
+  var TPL_SVG = {
+    blog: '<path d="M7 3h7l5 5v13H7zM14 3v5h5M10 13h6M10 17h6"/>',
+    email: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
+    social: '<rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M11 18h2"/>',
+    product: '<path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="7.5" r="1.5"/>',
+    ad: '<path d="M4 10v4h3l7 4V6L7 10z"/><path d="M18 9a4 4 0 0 1 0 6"/>',
+    whatsapp: '<path d="M4 5h16v11H9l-5 4z"/>',
+    reel: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3z"/>'
+  };
+
   function openContent() {
     renderTemplates();
     D.openModal('contentModal', 'contentClose');
@@ -109,7 +120,9 @@
     var grid = h('<div class="tpl-grid"></div>');
     TEMPLATES.forEach(function (t) {
       var b = h('<button type="button" class="tpl"><span class="tpl-ico" aria-hidden="true"></span><b></b><span></span></button>');
-      b.querySelector('.tpl-ico').textContent = t.ico;
+      var tIco = TPL_SVG[t.id];
+      if (tIco) b.querySelector('.tpl-ico').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' + tIco + '</svg>';
+      else b.querySelector('.tpl-ico').textContent = t.ico;
       b.querySelector('b').textContent = t.name;
       b.querySelector('span:last-child').textContent = t.desc;
       b.addEventListener('click', function () { renderForm(t); });
