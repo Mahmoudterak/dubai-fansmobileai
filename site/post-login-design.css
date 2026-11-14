@@ -1,0 +1,500 @@
+/* شاشة ما بعد تسجيل الدخول (من فيديو Dubai Fans AI): شاشة الترحيب بالحلقة الدوّارة،
+   ثم الرئيسية ببطاقات الاقتراحات الأربع. الألوان ثابتة لأن الشاشة داكنة دائماً. */
+
+.df-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  overflow: hidden;
+  direction: ltr;
+  background: #050817;
+  opacity: 0;
+  transition: opacity 400ms ease;
+}
+.df-splash.show { opacity: 1; }
+.df-splash[hidden] { display: none; }
+.df-splash::before {
+  content: "";
+  position: absolute;
+  top: -80px;
+  left: 50%;
+  width: 460px;
+  height: 400px;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse at 50% 20%, rgba(90, 43, 155, 0.8), transparent 65%);
+  opacity: 0.35;
+  transition: opacity 1400ms ease;
+}
+.df-splash.lit::before { opacity: 1; }
+
+.df-splash-skip {
+  position: absolute;
+  top: 24px;
+  left: 20px;
+  z-index: 2;
+  height: 32px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.05);
+  color: #F4F4F7;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.df-splash-brand {
+  position: absolute;
+  top: 24px;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 12px;
+  letter-spacing: 0.28em;
+  color: #9EA5BE;
+}
+.df-splash-brand .logo-slot { width: 30px; height: 30px; display: inline-flex; }
+.df-splash-brand svg { width: 30px; height: 30px; border-radius: 9px; box-shadow: 0 0 14px rgba(90, 43, 155, 0.5); }
+
+.df-splash-stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(-50px);
+}
+.df-splash-sphere {
+  position: absolute;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 64%, #04060F 55%, #0A1228 76%, #1B2D52 92%, #3A5A8C 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 0 70px rgba(46, 123, 230, 0.28);
+  opacity: 0;
+  transform: scale(0.82);
+  transition: opacity 1100ms ease, transform 1400ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.df-splash.lit .df-splash-sphere { opacity: 1; transform: scale(1); }
+
+.df-splash-dot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--s);
+  height: var(--s);
+  margin: calc(var(--s) / -2);
+  border-radius: 50%;
+  background: rgba(46, 92, 180, 0.4);
+  transform: translate(var(--x), var(--y));
+  opacity: 0;
+  transition: opacity 900ms ease;
+  animation: df-splash-float 4s ease-in-out infinite;
+}
+.df-splash.lit .df-splash-dot { opacity: 1; }
+
+.df-splash-ring {
+  position: relative;
+  width: 230px;
+  height: 230px;
+  overflow: visible;
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.85)) drop-shadow(0 0 16px rgba(46, 123, 230, 0.75));
+  animation: df-splash-spin 12s linear infinite;
+}
+.df-splash-ring circle {
+  fill: none;
+  stroke: #F4F4F7;
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-dasharray: 52 11;
+}
+
+.df-splash-text {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 84px;
+  text-align: center;
+  direction: rtl;
+}
+.df-splash-text h2 {
+  margin: 0;
+  font-size: 25px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: #F4F4F7;
+}
+.df-splash-text p {
+  margin: 8px 0 0;
+  font-size: 16px;
+  line-height: 1.7;
+  color: #9EA5BE;
+}
+.df-splash-text .df-p2 { display: none; }
+.df-splash.lit .df-splash-text .df-p1 { display: none; }
+.df-splash.lit .df-splash-text .df-p2 { display: block; }
+
+.df-splash-bar {
+  position: absolute;
+  left: 50%;
+  bottom: 52px;
+  width: 120px;
+  height: 3px;
+  margin-left: -60px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+.df-splash-bar span {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #2E7BE6, #5A2B9B);
+  animation: df-splash-bar 5800ms linear both;
+}
+
+@keyframes df-splash-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes df-splash-float { 0%, 100% { transform: translate(var(--x), var(--y)); } 50% { transform: translate(var(--x), calc(var(--y) - 8px)); } }
+@keyframes df-splash-bar { from { width: 0; } to { width: 100%; } }
+@media (prefers-reduced-motion: reduce) {
+  .df-splash-ring, .df-splash-dot, .df-splash-bar span { animation: none; }
+}
+
+/* الرئيسية: بطاقات الاقتراحات الأربع بشبكة 2×2 كما في التصميم */
+#cards.cards {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.card.card-home {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 18px;
+}
+.card.card-home .card-title {
+  font-size: 14px;
+  font-weight: 600;
+}
+.card-ico {
+  width: 34px;
+  height: 34px;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(46, 123, 230, 0.16);
+  border: 1px solid rgba(46, 123, 230, 0.35);
+  color: inherit;
+}
+.card-ico svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* الكرة الرئيسية في الهوم: نفس تصميم Dubai Fans AI، والحلقة البيضاء تدور حول الكرة */
+.home-orb {
+  position: relative;
+  width: 104px;
+  height: 104px;
+  margin: 0 auto 8px;
+  flex: none;
+}
+.ho-glow {
+  position: absolute;
+  inset: -36px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(46, 123, 230, 0.32) 0%, transparent 65%);
+  animation: ho-breath 1.6s ease-in-out infinite;
+}
+.ho-sphere {
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 64%, #04060F 55%, #0A1228 76%, #1B2D52 92%, #3A5A8C 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+.ho-ring {
+  position: absolute;
+  inset: 0;
+  animation: df-splash-spin 10s linear infinite;
+}
+.ho-ring svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.85)) drop-shadow(0 0 16px rgba(46, 123, 230, 0.75));
+}
+.ho-ring circle {
+  fill: none;
+  stroke: #F4F4F7;
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-dasharray: 52 11;
+}
+:root:not([data-theme="dark"]) .ho-ring circle { stroke: #6D4AFF; }
+:root:not([data-theme="dark"]) .ho-ring { filter: none; }
+@keyframes ho-breath { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.06); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .ho-glow, .ho-ring { animation: none; }
+}
+
+/* الدائرة أعلى الرئيسية (تدور)، تظهر فقط في شاشة الهوم */
+.top-ring { display: none; }
+.main.is-home .topbar { position: relative; }
+.main.is-home .top-ring {
+  display: inline-flex;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 34px;
+  height: 34px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.main.is-home .model-pill { visibility: hidden; }
+.top-ring svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  animation: df-splash-spin 10s linear infinite;
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.6)) drop-shadow(0 0 10px rgba(46, 123, 230, 0.6));
+}
+.top-ring circle { fill: none; stroke: #F4F4F7; stroke-width: 7; stroke-linecap: round; stroke-dasharray: 52 11; }
+:root:not([data-theme="dark"]) .top-ring circle { stroke: #6D4AFF; }
+:root:not([data-theme="dark"]) .top-ring svg { filter: none; }
+@media (prefers-reduced-motion: reduce) { .top-ring svg { animation: none; } }
+
+/* زر اختيار النموذج وقائمته (تصميم Dubai Fans AI) */
+.composer-tool { position: relative; }
+.model-trig {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  padding: 0 12px 0 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(155, 124, 246, 0.35);
+  background: rgba(255, 255, 255, 0.04);
+  color: inherit;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.mt-ico {
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #2E7BE6, #173A86);
+  box-shadow: 0 0 12px rgba(46, 123, 230, 0.5);
+}
+.mt-ico svg { width: 13px; height: 13px; fill: none; stroke: #FFFFFF; stroke-width: 2; stroke-linejoin: round; }
+.mt-chev { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; opacity: 0.7; }
+.model-menu {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 0;
+  z-index: 50;
+  width: 300px;
+  padding: 8px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(20, 24, 56, 0.97), rgba(9, 14, 36, 0.98));
+  border: 1px solid rgba(155, 124, 246, 0.3);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(18px);
+}
+.model-menu[hidden] { display: none; }
+.model-opt {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border: 0;
+  border-radius: 16px;
+  background: transparent;
+  color: #F4F4F7;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+.model-opt:hover { background: rgba(255, 255, 255, 0.05); }
+.model-opt.active { background: rgba(46, 123, 230, 0.14); }
+.mo-ico {
+  width: 40px;
+  height: 40px;
+  flex: none;
+  border-radius: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.mo-ico svg { width: 20px; height: 20px; fill: none; stroke: #FFFFFF; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.mo-txt { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.mo-name { font-size: 15px; font-weight: 700; }
+.mo-sub { font-size: 12px; color: #9EA5BE; }
+.mo-check { width: 18px; height: 18px; flex: none; opacity: 0; }
+.mo-check svg { width: 18px; height: 18px; fill: none; stroke: #5BA8FF; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.model-opt.active .mo-check { opacity: 1; }
+
+/* القائمة الجانبية: ألوان أدوات موحدة باللون الأزرق كما في التصميم */
+.sidebar .btn-primary {
+  height: 50px;
+  border-radius: 16px;
+  border: 1px solid #2E7BE6;
+  background: rgba(46, 123, 230, 0.14);
+  color: #F4F4F7;
+  box-shadow: 0 0 24px rgba(46, 123, 230, 0.3);
+}
+:root[data-theme="dark"] .sidebar #toolList svg { stroke: #2E7BE6; }
+
+
+/* الرئيسية كما في التصميم: بدون زر + وبدون الباقة من الأعلى، وأيقونات دائرية تحت مربع الكتابة،
+   والبطاقات الأربع ظاهرة في الشبكة 2×2 */
+.cmp-plus { display: none !important; }
+.main.is-home .plan-pill { display: none; }
+#cards.cards { display: grid !important; grid-template-columns: 1fr 1fr; gap: 10px; overflow: visible; padding: 0; order: 0; }
+.main.is-home #cards.cards { display: grid !important; flex-wrap: initial; justify-content: initial; }
+#cards .card.card-home { width: 100%; max-width: none; min-width: 0; flex: none; }
+
+.cmp-icons {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 6px 2px;
+}
+.cmp-ico {
+  width: 40px;
+  height: 40px;
+  flex: none;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: #F4F4F7;
+  cursor: pointer;
+}
+.cmp-ico svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.cmp-ico:hover { border-color: #2E7BE6; background: rgba(46, 123, 230, 0.16); }
+
+/* خلفية الرئيسية الداكنة بالتوهج الأحمر من التصميم */
+:root[data-theme="dark"] .main.is-home {
+  background: radial-gradient(440px 340px at 50% -40px, rgba(122, 24, 36, 0.85), rgba(122, 24, 36, 0) 70%), #06091A;
+}
+
+/* الكرة الدوّارة في نظرة عامة (نشاطي التجاري) */
+.ov-hero { display: flex; flex-direction: column; align-items: center; gap: 10px; margin: 8px 0 18px; text-align: center; }
+.ov-ring { position: relative; width: 260px; height: 260px; flex: none; }
+.ov-glow { position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle, rgba(46,123,230,.32) 0%, transparent 65%); }
+.ov-sphere { position: absolute; inset: 22px; border-radius: 50%; background: radial-gradient(circle at 50% 64%, #04060F 55%, #0A1228 76%, #1B2D52 92%, #3A5A8C 100%); box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 0 70px rgba(46,123,230,.28); }
+.ov-spin { position: absolute; inset: 0; animation: ov-rotate 10s linear infinite; }
+.ov-spin svg { width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 0 5px rgba(255,255,255,.85)) drop-shadow(0 0 16px rgba(46,123,230,.75)); }
+.ov-spin circle { fill: none; stroke: #F4F4F7; stroke-width: 5; stroke-linecap: round; stroke-dasharray: 52 11; }
+.ov-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; }
+.ov-center b { font-size: 44px; font-weight: 800; color: #F4F4F7; }
+.ov-center span { font-size: 14px; color: #9EA5BE; }
+.ov-note { margin: 0; font-size: 14px; color: #B4BAD0; max-width: 340px; line-height: 1.6; }
+.ov-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.ov-stat, .ov-card { background: rgba(255,255,255,.045); border: 1px solid rgba(255,255,255,.09); border-radius: 18px; padding: 14px; color: #F4F4F7; }
+.ov-stat span { display: block; font-size: 13px; color: #9EA5BE; }
+.ov-stat b { display: block; margin-top: 8px; font-size: 26px; font-weight: 700; }
+.ov-card { display: flex; flex-direction: column; gap: 10px; }
+.ov-card-head { display: flex; justify-content: space-between; align-items: center; font-size: 15px; }
+.ov-card-head span { font-size: 13px; color: #9EA5BE; }
+.ov-bar { height: 6px; border-radius: 999px; background: rgba(255,255,255,.08); overflow: hidden; }
+.ov-bar i { display: block; height: 100%; background: linear-gradient(90deg, #2E7BE6, #5A2B9B); border-radius: 999px; }
+.ov-step { display: flex; align-items: center; gap: 10px; font-size: 14px; padding: 8px 0; border-top: 1px solid rgba(255,255,255,.06); }
+.ov-step em { margin-inline-start: auto; font-style: normal; font-size: 12px; color: #2E7BE6; }
+.ov-step.done em { color: #3DDC97; }
+.ov-dot { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid #9EA5BE; flex: none; }
+.ov-step.done .ov-dot { background: #3DDC97; border-color: #3DDC97; }
+@keyframes ov-rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .ov-spin { animation: none; } }
+
+/* نظرة عامة: عنوان الصفحة تحت الحلقة، وبطاقات الحالة الأربع كما في التصميم */
+.ov-title { margin: 14px 0 0; font-size: 24px; font-weight: 700; color: #F4F4F7; }
+.ov-grid { grid-template-columns: 1fr 1fr; }
+.ov-stat { display: flex; flex-direction: column; gap: 6px; }
+.ov-stat-top { display: flex; align-items: center; justify-content: space-between; }
+.ov-stat-top i { width: 8px; height: 8px; border-radius: 50%; background: #9EA5BE; display: inline-block; }
+.ov-stat-top i.off { background: #5C6480; }
+.ov-stat.alert .ov-stat-top i { background: #FF4D5E; box-shadow: 0 0 8px #FF4D5E; }
+.ov-stat small { font-size: 12px; color: #9EA5BE; }
+.ov-stat b { font-size: 16px; font-weight: 700; margin-top: 0; }
+.ov-stat.alert b { color: #FFFFFF; }
+
+/* أشرطة التمرير رفيعة وداكنة (بدل الشريط الأبيض العريض على اليسار) */
+* { scrollbar-width: thin; scrollbar-color: rgba(155, 124, 246, 0.35) transparent; }
+*::-webkit-scrollbar { width: 4px; height: 4px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb { background: rgba(155, 124, 246, 0.35); border-radius: 4px; }
+*::-webkit-scrollbar-corner { background: transparent; }
+
+/* شريط التنقل السفلي (الجوال فقط) */
+.bottom-nav { display: none; }
+@media (max-width: 860px) {
+  .bottom-nav {
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    bottom: calc(10px + env(safe-area-inset-bottom));
+    z-index: 40;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 4px;
+    padding: 6px;
+    border-radius: 999px;
+    background: rgba(12, 16, 40, 0.92);
+    border: 1px solid rgba(155, 124, 246, 0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(18px);
+  }
+  .bottom-nav button {
+    flex: 0 0 auto;
+    height: 44px;
+    min-width: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 0 12px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: #9EA5BE;
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .bottom-nav button svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+  .bottom-nav button span { display: none; }
+  .bottom-nav button.on { background: linear-gradient(120deg, rgba(94, 200, 242, 0.25), rgba(155, 124, 246, 0.35)); color: #FFFFFF; border: 1px solid rgba(155, 124, 246, 0.5); }
+  .bottom-nav button.on span { display: inline; }
+}
+/* يظهر فقط داخل صفحة نشاطي التجاري */
+@media (max-width: 860px) {
+  body:not(.biz-open) .bottom-nav { display: none; }
+  body.biz-open .main { padding-bottom: 92px; }
+}
+
+/* حلقة دوّارة بدل أيقونة Dubai Fans Radar */
+.pv-ico.ring-ico { background: transparent; border: 0; }
+.pv-ico.ring-ico svg { width: 46px; height: 46px; overflow: visible; animation: ag-spin 10s linear infinite; }
+.pv-ico.ring-ico circle { fill: none; stroke: #F4F4F7; stroke-width: 7; stroke-linecap: round; stroke-dasharray: 52 11; }
+:root:not([data-theme="dark"]) .pv-ico.ring-ico circle { stroke: #6D4AFF; }

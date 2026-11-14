@@ -1,0 +1,62 @@
+/* تصميم الإعدادات الجديد (من ملف Dubai Fans AI v3، شاشة Settings).
+   طبقة تعديل فوق app.css تخص لوحة الإعدادات (st-*) في الوضع الداكن فقط. */
+
+:root[data-theme="dark"] .st-profile {
+  gap: 8px;
+  padding: 8px 0;
+}
+:root[data-theme="dark"] .st-avatar {
+  width: 84px;
+  height: 84px;
+  font-size: 28px;
+  font-weight: 700;
+  background: radial-gradient(circle at 40% 35%, #2E7BE6, #173A86);
+  border: 1px solid #2E7BE6;
+  box-shadow: 0 0 36px rgba(46, 123, 230, 0.45);
+}
+:root[data-theme="dark"] .st-profile strong {
+  color: #F4F4F7;
+  font-size: 18px;
+}
+
+:root[data-theme="dark"] .st-plan {
+  border: 1px solid #1E2A55;
+  background: rgba(255, 255, 255, 0.045);
+  border-radius: 20px;
+  backdrop-filter: blur(18px);
+}
+:root[data-theme="dark"] .st-plan button,
+:root[data-theme="dark"] .st-plan .btn-primary {
+  border: 1px solid #2E7BE6;
+  background: rgba(46, 123, 230, 0.14);
+  color: #F4F4F7;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+:root[data-theme="dark"] .st-group {
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 20px;
+  backdrop-filter: blur(18px);
+}
+:root[data-theme="dark"] .st-row {
+  border-bottom-color: rgba(255, 255, 255, 0.07);
+}
+:root[data-theme="dark"] .st-row.link:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+:root[data-theme="dark"] .st-label {
+  color: #F4F4F7;
+}
+:root[data-theme="dark"] .st-val,
+:root[data-theme="dark"] .st-sub,
+:root[data-theme="dark"] .st-chev,
+:root[data-theme="dark"] .st-h,
+:root[data-theme="dark"] .st-hint {
+  color: #9EA5BE;
+}
+:root[data-theme="dark"] .st-h {
+  font-size: 13px;
+  padding: 0 6px;
+}

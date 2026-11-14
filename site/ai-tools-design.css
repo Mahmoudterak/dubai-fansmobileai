@@ -1,0 +1,33 @@
+/* تنسيق مركز الأدوات الذكية في الوضع الداكن (لوحة الأدوات، والتبويبات، ومربعات النص).
+   طبقة تعديل فوق app.css تعمل في الوضع الداكن فقط. */
+
+:root[data-theme="dark"] .ait-stat,
+:root[data-theme="dark"] .ait-tool {
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  backdrop-filter: blur(18px);
+  color: #F4F4F7;
+}
+:root[data-theme="dark"] .ait-tool:hover {
+  border-color: #6D4AFF;
+  box-shadow: 0 0 18px rgba(109, 74, 255, 0.35);
+}
+:root[data-theme="dark"] .ait-stat-label,
+:root[data-theme="dark"] .ait-tool small {
+  color: #9EA5BE;
+}
+:root[data-theme="dark"] .ait-tool svg {
+  color: #B4BAD0;
+}
+
+/* مربعات النص داخل مركز الأدوات كانت بيضاء في الوضع الداكن */
+:root[data-theme="dark"] .ait-panel textarea,
+:root[data-theme="dark"] .ait-panel input[type="text"] {
+  background: rgba(18, 16, 48, 0.9);
+  color: #F4F4F7;
+  border: 1px solid rgba(155, 124, 246, 0.45);
+  border-radius: 16px;
+}
+:root[data-theme="dark"] .ait-panel textarea::placeholder {
+  color: #7E86A6;
+}

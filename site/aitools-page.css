@@ -1,0 +1,93 @@
+/* مركز الأدوات الذكية — مطابق لتصميم Claude Design (شاشة الأدوات) */
+
+.ait-panel .aih-top {
+  display: flex; align-items: baseline; justify-content: space-between;
+  padding: 16px 4px 14px;
+}
+.ait-panel .aih-top h1 { font-size: 22px; font-weight: 800; color: #FFFFFF; margin: 0; }
+.ait-panel .aih-count { font-size: 13px; color: #9EA5BE; }
+.ait-panel .aih-count b { color: #FFFFFF; font-weight: 700; }
+
+.ait-panel .aih-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+}
+.ait-panel .aih-card {
+  display: flex; flex-direction: column; align-items: stretch; gap: 6px;
+  padding: 14px 14px 12px;
+  border-radius: 18px;
+  background: #111628;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: none;
+  text-align: right; color: #FFFFFF; cursor: pointer;
+  font: inherit;
+}
+.ait-panel .aih-card:hover { border-color: rgba(47, 107, 255, 0.6); }
+.ait-panel .aih-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+
+.ait-panel .aih-ico {
+  width: 38px; height: 38px; border-radius: 12px;
+  display: grid; place-items: center;
+  background: #14204A; border: 1px solid #2F6BFF;
+}
+.ait-panel .aih-ico svg {
+  width: 20px; height: 20px; fill: none; stroke: #FFFFFF;
+  stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+}
+
+.ait-panel .aih-status { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: #9EA5BE; }
+.ait-panel .aih-status i { width: 7px; height: 7px; border-radius: 50%; background: #3B82F6; display: inline-block; }
+
+.ait-panel .aih-card strong { font-size: 15px; font-weight: 700; color: #FFFFFF; }
+.ait-panel .aih-card small { font-size: 12.5px; line-height: 1.6; color: #8A90A8; }
+
+/* رأس الصفحة: أيقونة، عنوان ووصف، زر إغلاق */
+.ait-panel .aih-hero { display: flex; align-items: center; gap: 12px; padding: 14px 4px 18px; }
+.ait-panel .aih-hero-txt { flex: 1; min-width: 0; text-align: right; }
+.ait-panel .aih-hero-txt h1 { font-size: 20px; font-weight: 800; color: #FFFFFF; margin: 0 0 4px; }
+.ait-panel .aih-hero-txt p { font-size: 12.5px; line-height: 1.7; color: #9EA5BE; margin: 0; }
+.ait-panel .aih-hero-ico {
+  width: 48px; height: 48px; flex: none; border-radius: 14px;
+  display: grid; place-items: center;
+  background: rgba(20, 28, 62, 0.85); border: 1px solid rgba(90, 120, 220, 0.35);
+}
+.ait-panel .aih-hero-ico svg {
+  width: 22px; height: 22px; fill: none; stroke: #5B8CFF;
+  stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+}
+.ait-panel .aih-close {
+  width: 36px; height: 36px; flex: none; padding: 0; border-radius: 50%;
+  display: grid; place-items: center; cursor: pointer;
+  background: #0E1430; border: 1px solid rgba(255, 255, 255, 0.12);
+}
+.ait-panel .aih-close svg {
+  width: 16px; height: 16px; fill: none; stroke: #FFFFFF;
+  stroke-width: 2; stroke-linecap: round;
+}
+
+/* بطاقة استهلاك الرصيد */
+.ait-panel .aih-credit {
+  padding: 16px 16px 14px; margin-bottom: 18px;
+  border-radius: 20px;
+  background: linear-gradient(180deg, #111830, #0C1228);
+  border: 1px solid rgba(70, 110, 255, 0.3);
+}
+.ait-panel .aih-cr-head { display: flex; justify-content: space-between; align-items: center; }
+.ait-panel .aih-cr-head strong { font-size: 15px; font-weight: 800; color: #FFFFFF; }
+.ait-panel .aih-cr-head span { font-size: 14px; font-weight: 700; color: #FFFFFF; }
+.ait-panel .aih-cr-bar { height: 6px; margin: 12px 0 8px; border-radius: 999px; background: rgba(255, 255, 255, 0.07); overflow: hidden; }
+.ait-panel .aih-cr-bar span { display: block; height: 100%; border-radius: 999px; background: #2F6BFF; }
+.ait-panel .aih-cr-txt { font-size: 12.5px; color: #9EA5BE; }
+.ait-panel .aih-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; }
+.ait-panel .aih-stat {
+  padding: 10px 10px 9px; border-radius: 14px;
+  background: #111628; border: 1px solid rgba(255, 255, 255, 0.07);
+  text-align: right;
+}
+.ait-panel .aih-stat span { display: block; font-size: 11.5px; color: #9EA5BE; margin-bottom: 6px; }
+.ait-panel .aih-stat b { font-size: 20px; font-weight: 800; color: #FFFFFF; }
+
+/* شريط التقدّم وعداد التشغيل أسفل كل بطاقة (كما في التصميم) */
+.ait-panel .aih-bar { height: 4px; border-radius: 4px; background: rgba(255, 255, 255, 0.07); margin: 12px 0 10px; }
+.ait-panel .aih-foot { display: flex; gap: 4px; font-size: 12px; color: #8A90A8; }
+.ait-panel .aih-foot b { color: #FFFFFF; font-weight: 700; }
+.ait-panel .aih-count b { font-weight: 700; }

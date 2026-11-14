@@ -1,0 +1,111 @@
+/* مراقبة الويب المظلم — مطابق لتصميم Claude Design (شاشة الأمان) */
+
+.dw-page { padding-top: 6px; }
+
+/* ثلاث بطاقات إحصائية */
+.dw-page .dw-stats {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+  margin: 8px 0 14px;
+}
+.dw-page .dw-stat {
+  padding: 14px 14px 12px;
+  border-radius: 16px;
+  background: #111628;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  text-align: right;
+}
+.dw-page .dw-stat b { display: block; font-size: 24px; font-weight: 700; color: #FFFFFF; line-height: 1.1; }
+.dw-page .dw-stat span { display: block; margin-top: 8px; font-size: 12px; color: #9EA5BE; }
+
+/* بطاقات الفحص */
+.dw-page .card-box {
+  padding: 18px 16px 16px;
+  margin: 0 0 14px;
+  border-radius: 20px;
+  background: #111628;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: none;
+}
+.dw-page .card-box h2 { font-size: 17px; font-weight: 700; color: #FFFFFF; margin: 0 0 8px; text-align: right; }
+.dw-page .biz-hint { font-size: 13px; line-height: 1.7; color: #8A90A8; margin: 0 0 14px; text-align: right; }
+
+.dw-page .dw-form { display: flex; flex-direction: column; gap: 12px; margin: 0; }
+.dw-page .dw-form input {
+  height: 50px; padding: 0 20px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(70, 110, 255, 0.6);
+  background: #0E1430;
+  color: #FFFFFF; font-size: 15px;
+  box-shadow: 0 0 14px rgba(62, 99, 240, 0.15);
+}
+.dw-page .dw-form input::placeholder { color: #5F6684; }
+.dw-page .dw-form input:focus { outline: none; box-shadow: 0 0 0 3px rgba(62, 99, 240, 0.3); }
+
+/* أزرار الفحص: إطار أزرق مضيء بدون تعبئة قوية */
+.dw-page .btn-primary {
+  height: 50px; border-radius: 999px;
+  background: #0E1A3A;
+  border: 1.5px solid #2F6BFF;
+  color: #FFFFFF; font-size: 15px; font-weight: 700;
+  box-shadow: 0 0 16px rgba(47, 107, 255, 0.25);
+}
+.dw-page #dwMailBtn { align-self: flex-start; min-width: 150px; height: 46px; padding: 0 22px; font-size: 14px; }
+
+.dw-page .dw-mail {
+  font-size: 15px; color: #FFFFFF;
+  text-align: right; margin: 0 0 12px;
+  direction: ltr;
+}
+
+.dw-page #dwPwRes, .dw-page #dwMailRes { margin-top: 12px; }
+.dw-page .dw-foot {
+  text-align: center; font-size: 13px; line-height: 1.8;
+  color: #8A90A8; margin: 6px 6px 0;
+}
+
+/* أيقونة الدرع في الرأس */
+.dw-page .pv-ico.dw-shield {
+  width: 56px; height: 56px; flex: none; border-radius: 16px;
+  background: rgba(20, 28, 62, 0.85); border: 1px solid rgba(90, 120, 220, 0.35);
+  display: flex; align-items: center; justify-content: center;
+}
+.dw-page .pv-ico.dw-shield svg { width: 24px; height: 24px; fill: none; stroke: #5B8CFF; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+/* بطاقة الحالة */
+.dw-page .dw-status {
+  position: relative; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  margin: 14px 0 18px; padding: 18px 18px 18px 14px;
+  border-radius: 22px;
+  background: linear-gradient(120deg, rgba(109, 74, 255, 0.28), rgba(20, 28, 62, 0.9) 60%);
+  border: 1px solid rgba(120, 110, 255, 0.4);
+  box-shadow: 0 0 26px rgba(109, 74, 255, 0.18);
+}
+.dw-page .dw-status.danger { border-color: rgba(229, 72, 77, 0.55); background: linear-gradient(120deg, rgba(229, 72, 77, 0.28), rgba(20, 28, 62, 0.9) 60%); }
+.dw-page .dw-status-txt { display: flex; flex-direction: column; gap: 6px; text-align: right; }
+.dw-page .dw-status-k { font-size: 11px; letter-spacing: 2px; color: #9EA5BE; }
+.dw-page .dw-status-txt strong { font-size: 22px; font-weight: 800; color: #FFFFFF; }
+.dw-page .dw-status-s { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: #C9CEE0; }
+.dw-page .dw-status-s i { width: 8px; height: 8px; border-radius: 50%; background: #8A90A8; display: inline-block; }
+.dw-page .dw-status.danger .dw-status-s i { background: #E5484D; }
+.dw-page .dw-ring { width: 84px; height: 84px; flex: none; }
+.dw-page .dw-ring svg { width: 100%; height: 100%; overflow: visible; animation: dw-spin 10s linear infinite; }
+.dw-page .dw-ring circle { fill: none; stroke: #F4F4F7; stroke-width: 6; stroke-linecap: round; stroke-dasharray: 52 11; }
+@keyframes dw-spin { to { transform: rotate(360deg); } }
+
+.dw-page .dw-label { font-size: 13px; color: #8A90A8; text-align: right; margin: 4px 4px 10px; }
+
+/* إجراءات سريعة */
+.dw-page .dw-quick { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
+.dw-page .dw-qcard {
+  display: flex; flex-direction: column; align-items: stretch; gap: 4px;
+  padding: 16px 14px; border-radius: 18px; cursor: pointer;
+  background: #111628; border: 1px solid rgba(255, 255, 255, 0.07);
+  color: #FFFFFF; font: inherit; text-align: right;
+}
+.dw-page .dw-qcard.on { border-color: #2F6BFF; box-shadow: 0 0 18px rgba(47, 107, 255, 0.3); }
+.dw-page .dw-qico { margin-bottom: 14px; }
+.dw-page .dw-qico svg { width: 22px; height: 22px; fill: none; stroke: #C9CEE0; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.dw-page .dw-qcard.on .dw-qico svg { stroke: #5B8CFF; }
+.dw-page .dw-qcard strong { font-size: 15px; font-weight: 700; }
+.dw-page .dw-qcard small { font-size: 12px; color: #8A90A8; }
+.dw-page .dw-stats { margin-top: 0; }

@@ -78,6 +78,8 @@ const CFG = {
   renderUrl: env('RENDER_URL', 'http://dfai_render:3300'),
   renderToken: env('RENDER_TOKEN'),
   cfImageFallback: env('CF_IMAGE_FALLBACK', '@cf/black-forest-labs/flux-1-schnell'),
+  // DeepAI: احتياطي للصور بعد Cloudflare. لو المفتاح فاضي ما يتستخدمش
+  deepaiKey: env('DEEPAI_API_KEY'),
   cfSttModel: env('CF_STT_MODEL', '@cf/openai/whisper-large-v3-turbo'),
   cfVisionModel: env('CF_VISION_MODEL', '@cf/meta/llama-4-scout-17b-16e-instruct'),
   azureKey: env('AZURE_SPEECH_KEY').replace(/[^\x21-\x7e]/g, ''),
@@ -137,6 +139,7 @@ const BASE_SYSTEM = [
   '- إذا نقصتك معلومة جوهرية فاسأل سؤالاً أو سؤالين قصيرين فقط، لكن قدّم في نفس الرد نسخة مفيدة مبدئية بدل أن تكتفي بالسؤال.',
   '- طول الرد على قدر السؤال: سؤال بسيط = جواب قصير. الطلبات الكبيرة = عناوين ### ونقاط وجداول مرتبة، والأرقام المهمة بخط عريض.',
   '- عند كتابة محتوى للنشر قدّم بديلين أو ثلاثة عند الفائدة، واقترح هاشتاجات ووقت نشر مناسب.',
+  '- إذا طلب المستخدم تحليل متجره أو موقعه أو نشاطه، ولم يرسل رابطاً أو بيانات عنه (المنتجات، الأسعار، الجمهور، الأهداف)، فلا تقدّم تحليلاً ولا جدولاً عاماً ولا ملاحظات عامة. اطلب منه الرابط أو البيانات المطلوبة في قائمة قصيرة لا تتجاوز 3 نقاط، وأخبره أن التحليل سيكون دقيقاً بعد وصولها. إذا كانت معلومات النشاط أو ملخص آخر تحليل للمتجر موجودة في السياق، فاستخدمها ولا تسأل من جديد.',
   '- إذا طلب المستخدم صورة أو تصميماً، فأخبره أن يختار أداة "توليد الصور" وسيتم التنفيذ هناك.',
   '- إذا طلب المستخدم مخرجاً جاهزاً (نص، منشور، جدول، خطة)، فقدّمه مباشرة في الرد، ولا تشرح طريقة تنفيذه ولا تصف خطوات يمكنك تنفيذها بنفسك. اجعل الرد قصيراً ومركّزاً ولا تكرر السؤال.',
   '',
@@ -196,6 +199,7 @@ const AGENTS = {
   social: { name: 'مدير السوشيال ميديا', prompt: 'تصرّف كمدير سوشيال ميديا محترف. قدّم أفكار محتوى وتقويم نشر، صيغ مناسبة لكل منصة (ريلز، ستوري، كاروسيل، تيك توك)، تعليقات وكابشن جاهزة، هاشتاجات، وأفكار لزيادة التفاعل والمتابعين بطرق أصيلة.' },
   sales: { name: 'خبير المبيعات', prompt: 'تصرّف كخبير مبيعات وتحويل. ساعد في: قمع المبيعات، عروض لا تُقاوم، سكربتات واتساب ومكالمات، الرد على اعتراضات العملاء، رسائل المتابعة، وتحسين معدل التحويل في صفحات البيع والمتاجر.' },
   copy: { name: 'كاتب إعلاني', prompt: 'تصرّف ككاتب إعلاني (Copywriter) محترف. استخدم أطر مثل AIDA وPAS، واكتب عناوين قوية ونصوصاً مقنعة بنبرة تناسب العلامة. قدّم عدة بدائل عند الطلب.' },
+  creators: { name: 'ربط التطبيقات', prompt: 'تصرّف كمستشار تسويق عبر صنّاع المحتوى (Influencer Marketing) للعلامات التجارية في الإمارات. اعتمد على بيانات النشاط المحفوظة (المجال، المدينة، الجمهور، الميزانية، الهدف). لا تدّعِ أنك تصل لحسابات أو قاعدة بيانات صنّاع المحتوى ولا تخترع أسماء حسابات. ساعد في: نوع صانع المحتوى المناسب (ميكرو أو ميدل أو ماكرو) وعدد المتابعين المناسب، والمنصات الأنسب (إنستغرام، تيك توك، يوتيوب)، وكلمات بحث لإيجاد صنّاع المحتوى في برامج مثل Instagram Creator Marketplace، ونوع التعاون (هدايا، منشورات مدفوعة، فيديوهات قصيرة، تقييم)، ورسالة تواصل قصيرة جاهزة للإرسال. إذا نقصت بيانات مهمة، اسأل عنها في 3 نقاط كحد أقصى.' },
   email: { name: 'خبير التسويق بالبريد', prompt: 'تصرّف كخبير تسويق عبر البريد الإلكتروني. اكتب سطور عنوان جذابة، رسائل ترحيب، سلاسل رعاية، عروض، ورسائل استرجاع السلة، مع نصائح للتقسيم والتوقيت وتحسين معدل الفتح.' },
 };
 
@@ -722,11 +726,11 @@ async function openOllamaStream(messages, maxTokens, signal, model = CFG.localMo
 // يفتح بث من Cloudflare، ولو فشل يرجع للنموذج المحلي
 // النماذج المتاحة فعلاً حسب الإعدادات: الاختيار بيقتصر عليها بس
 function availableModels() {
-  const list = [{ id: 'auto', name: 'تلقائي' }];
-  if (cfEnabled()) list.push({ id: 'cloud', name: 'الخبير' });
+  const list = [{ id: 'auto', name: 'Fans AI' }];
+  if (cfEnabled()) list.push({ id: 'cloud', name: 'Dubai Fans AI' });
   if (cfEnabled() && CFG.cfSmallModel) list.push({ id: 'small', name: 'سريع' });
-  if (extEnabled()) list.push({ id: 'external', name: 'النموذج الخارجي' });
-  list.push({ id: 'local', name: 'النموذج المحلي' });
+  if (extEnabled()) list.push({ id: 'external', name: 'Fans AI SEO' });
+  list.push({ id: 'local', name: 'Fans AI MT' });
   return list;
 }
 
@@ -772,9 +776,16 @@ async function webSearch(query) {
     for (const r of j.results || []) {
       if (!r.url || !/^https?:\/\//.test(r.url) || seen.has(r.url)) continue;
       seen.add(r.url);
+      let domain = '';
+      try { domain = new URL(r.url).hostname.replace(/^www\./, ''); } catch (_) { continue; }
+      // تاريخ النشر بصيغة YYYY-MM-DD لو SearXNG رجّعه (مش كل الصفحات بتوفره)
+      let date = '';
+      if (r.publishedDate) { const d = new Date(r.publishedDate); if (!isNaN(d)) date = d.toISOString().slice(0, 10); }
       out.push({
         title: String(r.title || r.url).slice(0, 160),
         url: String(r.url).slice(0, 500),
+        domain: domain.slice(0, 120),
+        date,
         snippet: String(r.content || '').replace(/\s+/g, ' ').slice(0, 400),
       });
       if (out.length >= 6) break;
@@ -1187,12 +1198,37 @@ async function generateAd(opts) {
     catch (e) { console.error('image model failed:', e.message); }
     finally { t.done(); }
   }
+  if (!buf && CFG.deepaiKey) {
+    const t = withTimeout(90000);
+    try { buf = await deepaiImage(english + NO_TEXT, t.signal); }
+    catch (e) { console.error('deepai image failed:', e.message); }
+    finally { t.done(); }
+  }
   if (!buf) throw new Error('all image models failed');
   buf = await compressImage(buf);
   const isPng = buf[0] === 0x89 && buf[1] === 0x50;
   const id = crypto.randomBytes(16).toString('hex') + (isPng ? '.png' : '.jpg');
   saveUserImage(opts.userId, id, buf);
   return { id, buf, url: `/api/images/${id}`, prompt: english, overlay, post, product: useProduct };
+}
+// DeepAI text2img: الطلب بالـ api-key، والرد فيه output_url. نقبل الرابط بس لو على نطاق DeepAI (حماية من أي رابط غريب)
+async function deepaiImage(prompt, signal) {
+  const form = new FormData();
+  form.append('text', prompt.slice(0, 1000));
+  const r = await fetch('https://api.deepai.org/api/text2img', {
+    method: 'POST', signal, redirect: 'error', headers: { 'api-key': CFG.deepaiKey }, body: form,
+  });
+  if (!r.ok) throw new Error(`deepai ${r.status}`);
+  const j = await r.json().catch(() => ({}));
+  const out = String(j.output_url || '');
+  let u;
+  try { u = new URL(out); } catch { throw new Error('deepai: no output_url'); }
+  if (u.protocol !== 'https:' || !/(^|\.)deepai\.org$/.test(u.hostname)) throw new Error('deepai: unexpected output host');
+  const img = await fetch(u.href, { signal, redirect: 'error' });
+  if (!img.ok) throw new Error(`deepai file ${img.status}`);
+  const buf = Buffer.from(await img.arrayBuffer());
+  if (buf.length < 1000 || buf.length > 15 * 1024 * 1024) throw new Error('deepai: bad image size');
+  return buf;
 }
 function productFromDataUrl(s) {
   const pm = /^data:image\/(?:jpeg|png|webp);base64,([A-Za-z0-9+/=]+)$/.exec(String(s || ''));
@@ -1300,6 +1336,22 @@ const TTS_VOICES = {
 const ttsEnabled = () => Boolean(CFG.azureKey && CFG.azureRegion);
 const ttsUsage = new Map(); // user:day -> حروف
 const xmlEsc = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+
+// تقييم الرد: يتحفظ في ملف JSON lines على الخادم (مش بيظهر لأي مستخدم تاني)
+const FEEDBACK_TYPES = ['خلل غير متعلق بالذكاء الاصطناعي', 'الوكيل عالق أو يكرر نفسه', 'الناتج مقطوع أو هناك ملف مفقود', 'الناتج بسيط جداً', 'الناتج غير جميل بصرياً', 'الناتج يحتوي على خطأ في الحقائق', 'لم يتم اتباع التعليمات', 'نسي أو خلط السياق', 'التكلفة مرتفعة جداً', 'الإبلاغ عن محتوى غير ملائم', 'أخرى'];
+async function handleFeedback(req, res, user) {
+  const body = await readJson(req, 16 * 1024);
+  const rating = Number(body.rating);
+  if (!Number.isInteger(rating) || rating < 1 || rating > 5) return fail(res, 400, 'bad_request', 'اختار عدد النجوم.');
+  const type = FEEDBACK_TYPES.includes(body.type) ? body.type : '';
+  const comment = String(body.comment || '').replace(/[\u0000-\u001f]/g, ' ').trim().slice(0, 1000);
+  const chat = String(body.chatId || '').replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 64);
+  const row = { t: new Date().toISOString(), user: user.id, chat, rating, type, comment, share: body.share !== false };
+  try {
+    fs.appendFileSync(process.env.FEEDBACK_FILE || '/data/feedback.jsonl', JSON.stringify(row) + '\n', 'utf8');
+  } catch (e) { console.error('feedback write failed:', e.message); return fail(res, 500, 'storage', 'ما قدرنا نحفظ الملاحظة دلوقتي.'); }
+  return send(res, 200, { ok: true });
+}
 
 async function handleTts(req, res, user) {
   if (!ttsEnabled()) return fail(res, 503, 'unavailable', 'الصوت الإماراتي مش متفعّل.');
@@ -1954,6 +2006,17 @@ async function route(req, res) {
   const m = req.method;
   const ip = clientIp(req);
 
+  // صفحات الهبوط المنشورة: nginx يمرّر /lp/ للـ API، والصفحة تُقرأ من مجلد landing داخل volume البيانات
+  const lp = p.match(/^\/lp\/([a-z0-9-]{3,80})$/);
+  if (m === 'GET' && lp) {
+    const file = path.join(process.env.LANDING_DIR || '/data/landing', lp[1], 'index.html');
+    let html = null;
+    try { html = fs.readFileSync(file, 'utf8'); } catch { /* غير موجودة */ }
+    if (html === null) { res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' }); return res.end('Not found'); }
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'X-Robots-Tag': 'noindex, nofollow, noarchive', 'Cache-Control': 'no-cache' });
+    return res.end(html);
+  }
+
   if (m === 'GET' && p === '/api/health') return send(res, 200, { ok: true, cloud: cfEnabled(), search: Boolean(CFG.searxUrl) });
 
   const img = p.match(/^\/api\/images\/([^/]+)$/);
@@ -2331,12 +2394,12 @@ async function route(req, res) {
     }
     if (m === 'POST') {
       if (rateLimited('landing:' + user.id, 3, 60000)) return fail(res, 429, 'rate', 'طلبات كتير ورا بعض. استنى دقيقة.');
-      const body = await readJson(req, 16 * 1024);
+      const body = await readJson(req, 400 * 1024);
       const paid = effectivePlan(user).id !== 'free';
       const credits = creditsFor(user);
       if (credits.limit !== -1 && credits.left < LANDING_CREDIT_COST) return fail(res, 429, 'credits', `رصيدك لا يكفي لصفحة الهبوط (${LANDING_CREDIT_COST} نقطة).`);
       const r = await landing.createLandingPage(db, {
-        userId: user.id, paid, brief: body.brief, slug: body.slug, day: dayKey(),
+        userId: user.id, paid, brief: body.brief, slug: body.slug, html: body.html, day: dayKey(),
         charge: (uid) => { q.creditAdd.run(uid, monthKey(), LANDING_CREDIT_COST); },
       });
       if (!r.ok) return fail(res, 400, 'landing', r.error);
@@ -2369,6 +2432,11 @@ async function route(req, res) {
   if (m === 'POST' && p === '/api/vision') {
     if (rateLimited('vision:' + user.id, 10, 60000)) return fail(res, 429, 'rate', 'صور كتير ورا بعض. استنى دقيقة.');
     return handleVision(req, res, user);
+  }
+
+  if (m === 'POST' && p === '/api/feedback') {
+    if (rateLimited('feedback:' + user.id, 20, 60000)) return fail(res, 429, 'rate', 'ملاحظات كتير ورا بعض.');
+    return handleFeedback(req, res, user);
   }
 
   if (m === 'POST' && p === '/api/tts') {
@@ -2537,6 +2605,20 @@ async function route(req, res) {
     if (m === 'POST' && p === '/api/admin/affiliate/paid') {
       const ab = await readJson(req);
       return send(res, 200, { paid: affiliate.markPaid(Array.isArray(ab.ids) ? ab.ids.slice(0, 500) : []) });
+    }
+
+    if (m === 'GET' && p === '/api/admin/feedback') {
+      // تقييمات الردود: أحدث واحد فوق. الملف JSON lines، كل سطر تقييم واحد
+      const limit = Math.min(Math.max(Number(url.searchParams.get('limit')) || 200, 1), 1000);
+      let lines = [];
+      try { lines = fs.readFileSync(process.env.FEEDBACK_FILE || '/data/feedback.jsonl', 'utf8').split('\n'); }
+      catch (e) { if (e.code !== 'ENOENT') console.error('feedback read failed:', e.message); }
+      const rows = [];
+      for (let i = lines.length - 1; i >= 0; i--) {
+        if (!lines[i].trim()) continue;
+        try { rows.push(JSON.parse(lines[i])); } catch (_) { /* سطر تالف: نتجاهله */ }
+      }
+      return send(res, 200, { feedback: rows.slice(0, limit), total: rows.length });
     }
 
     if (m === 'GET' && p === '/api/admin/kb') return send(res, 200, { docs: kb.listDocs() });

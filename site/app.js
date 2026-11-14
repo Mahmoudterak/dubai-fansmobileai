@@ -33,8 +33,6 @@
     { id: 'site', label: 'موقع إلكتروني', color: '#67E8F9',
       icon: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M7 6.5h.01M10 6.5h.01"/>',
       placeholder: 'اوصف الموقع: مثال: صفحة هبوط لصالون تجميل في دبي مع حجز عبر واتساب…' },
-    { id: 'agent', label: 'وكلاء متخصصين', color: '#FCD34D', picker: true,
-      icon: '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>' },
     { id: 'content', label: 'مولد المحتوى', color: '#C4B5FD', action: 'openContent',
       icon: '<path d="M4 4h16v16H4z"/><path d="M8 8h8M8 12h8M8 16h5"/>' },
     { id: 'radar', label: 'Dubai Fans Radar', color: '#22D3EE', action: 'openRadar',
@@ -340,7 +338,7 @@
     $('userName').textContent = name;
     $('userAvatar').textContent = name.trim().charAt(0) || 'م';
     $('userRole').textContent = me.user.role === 'admin' ? 'مسؤول النظام' : me.user.email;
-    $('greeting').textContent = 'بماذا نبدأ اليوم يا ' + name.split(' ')[0] + '؟';
+    $('greeting').textContent = 'ماذا تريد أن تنجز اليوم؟';
     $('adminLink').hidden = me.user.role !== 'admin';
     renderQuota();
     renderTools();
@@ -381,6 +379,7 @@
     newChat();
     loadConfig().catch(function () {});
     setTimeout(function () { if (window.DFAI.adStudio && window.DFAI.adStudio.syncLogo) window.DFAI.adStudio.syncLogo(); }, 600);
+    playSplash();
   }
 
   $('loginForm').addEventListener('submit', function (e) {
@@ -465,7 +464,8 @@
 
   // ---------- حسابي والمدفوعات والاستخدام والتصميم ----------
   var PREFS_KEY = 'dfai.prefs';
-  var PREFS_DEFAULT = { theme: 'light', font: 'default', respFont: 'match', txSize: 'm', txWidth: 'narrow' };
+  // الوضع الداكن هو الأساسي. الترحيل مرة واحدة: المستخدم اللي كان محفوظ عنده "فاتح" بيتحوّل للداكن، وبعدها يقدر يختار أي وضع.
+  var PREFS_DEFAULT = { theme: 'dark', font: 'default', respFont: 'match', txSize: 'm', txWidth: 'narrow' };
   var BOX = 'border:1px solid var(--line-2);border-radius:14px;padding:14px;background:var(--surface);display:grid;gap:10px';
   var USAGE_ROWS = [['messages', 'الرسائل'], ['images', 'الصور والإعلانات'], ['search', 'بحث الويب'], ['slides', 'العروض التقديمية'], ['radar', 'Radar'], ['monitors', 'المتابعة التلقائية']];
   var DESIGN_GROUPS = [
@@ -479,6 +479,10 @@
   function readPrefs() {
     var p = {};
     try { p = JSON.parse(localStorage.getItem(PREFS_KEY) || '{}') || {}; } catch (e) { p = {}; }
+    if (!p.darkMigrated) { // ترحيل مرة واحدة: الوضع الداكن أساسي
+      p.theme = 'dark'; p.darkMigrated = true;
+      savePrefs(p);
+    }
     return Object.assign({}, PREFS_DEFAULT, p);
   }
   function savePrefs(p) { try { localStorage.setItem(PREFS_KEY, JSON.stringify(p)); } catch (e) { /* تجاهل */ } }
@@ -851,6 +855,16 @@
   }
 
   // ---------- الوكلاء ----------
+  // أيقونات الوكلاء بخط بسيط كما في التصميم (بدل الإيموجي)
+  var AGENT_SVG = {
+    strategy: '<circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/>',
+    seo: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+    ads: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
+    social: '<rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M11 18h2"/>',
+    sales: '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5h6v2"/>',
+    copy: '<path d="M4 20h4L19 9l-4-4L4 16z"/>',
+    email: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>'
+  };
   function openAgents() {
     openModal('agentsModal', 'agentsClose');
     loadConfig().then(function (cfg) {
@@ -861,8 +875,10 @@
         var b = document.createElement('button');
         b.type = 'button';
         b.className = 'agent-card' + (state.agent === a.id ? ' active' : '');
-        b.innerHTML = '<span class="agent-ico" aria-hidden="true"></span><span class="agent-name"></span><span class="agent-desc"></span>';
-        b.querySelector('.agent-ico').textContent = info.ico;
+        b.innerHTML = '<span class="agent-ico" aria-hidden="true"></span><span class="agent-name"></span><span class="agent-desc"></span><span class="agent-chev" aria-hidden="true"></span>';
+        var art = AGENT_SVG[a.id];
+        if (art) b.querySelector('.agent-ico').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' + art + '</svg>';
+        else b.querySelector('.agent-ico').textContent = info.ico;
         b.querySelector('.agent-name').textContent = a.name;
         b.querySelector('.agent-desc').textContent = info.desc;
         b.addEventListener('click', function () { setAgent(a.id, a.name); closeModal('agentsModal'); });
@@ -942,6 +958,11 @@
     if (!noFocus) $('prompt').focus();
   }
 
+  // تعرض قائمة النماذج (منها المهارات) الوكلاء وتفتح الوكيل المختار
+  window.DFAI = window.DFAI || {};
+  window.DFAI.pickAgent = function (id, name) { setAgent(id, name); };
+  window.DFAI.agentList = function () { return loadConfig().then(function (c) { return c.agents || []; }); };
+
   function updateChip(name) {
     var chip = $('toolChip');
     var t = TOOLS.find(function (x) { return x.id === state.tool; });
@@ -954,19 +975,49 @@
   }
   $('toolChip').addEventListener('click', function () { state.agent = null; setTool(null); });
 
+  // بطاقات الرئيسية الأربع كما في تصميم Dubai Fans AI
+  var HOME_CARDS = [
+    { label: 'إنشاء محتوى تسويقي', icon: 'M7 3h7l5 5v13H7zM14 3v5h5M10 13h6M10 17h6', tool: 'write', content: 'أنشئ لي محتوى تسويقي لنشاطي' },
+    { label: 'تصميم صور إعلانية', icon: 'M4 5h16v14H4zM4 16l5-5 4 4 3-3 4 4', tool: 'image', content: 'صمّم لي صور إعلانية لنشاطي' },
+    { label: 'تحليل المنافسين', icon: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10z', tool: 'search', content: 'حلّل المنافسين لنشاطي وقارن ظهورهم بظهوري' },
+    { label: 'تحليل متجري أو الموقع', icon: 'M4 9l1.5-5h13L20 9M4 9h16v11H4zM9 20v-6h6v6', tool: 'site', content: 'حلّل متجري أو موقعي وقدّم ملاحظات للتحسين' }
+  ];
+
   function renderCards() {
     var wrap = $('cards');
     wrap.innerHTML = '';
-    SUGGESTIONS.forEach(function (s) {
+    HOME_CARDS.forEach(function (c) {
       var b = document.createElement('button');
       b.type = 'button';
-      b.className = 'card';
-      b.innerHTML = '<span class="card-title"></span><span class="card-sub"></span>';
-      b.querySelector('.card-title').textContent = s.title;
-      b.querySelector('.card-sub').textContent = s.sub;
-      b.addEventListener('click', function () { setTool(s.tool, true); send(window.DFAI_I18N ? window.DFAI_I18N.tr(s.content) : s.content); });
+      b.className = 'card card-home';
+      b.innerHTML = '<span class="card-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d=""></path></svg></span><span class="card-title"></span>';
+      b.querySelector('path').setAttribute('d', c.icon);
+      b.querySelector('.card-title').textContent = c.label;
+      b.addEventListener('click', function () { setTool(c.tool, true); send(window.DFAI_I18N ? window.DFAI_I18N.tr(c.content) : c.content); });
       wrap.appendChild(b);
     });
+  }
+
+  // شاشة الترحيب بعد تسجيل الدخول: تظهر ~6 ثوانٍ أو حتى يضغط "تخطي"
+  var splashTimers = [];
+  function hideSplash() {
+    splashTimers.forEach(clearTimeout);
+    splashTimers = [];
+    var el = $('splash');
+    if (!el) return;
+    el.classList.remove('show', 'lit');
+    el.hidden = true;
+  }
+  function playSplash() {
+    var el = $('splash');
+    if (!el) return;
+    hideSplash();
+    el.hidden = false;
+    void el.offsetWidth;
+    el.classList.add('show');
+    $('splashSkip').onclick = hideSplash;
+    splashTimers.push(setTimeout(function () { el.classList.add('lit'); }, 2000));
+    splashTimers.push(setTimeout(hideSplash, 5800));
   }
 
   // ---------- المحادثات ----------
@@ -1214,23 +1265,174 @@
     el.querySelector('.ai-name').appendChild(tag);
   }
 
+  // تاريخ النشر بالعربي (لو موجود فقط)
+  function formatSourceDate(iso) {
+    if (!iso) return '';
+    var d = new Date(iso);
+    if (isNaN(d)) return '';
+    try { return new Intl.DateTimeFormat('ar', { year: 'numeric', month: 'long', day: 'numeric' }).format(d); }
+    catch (_) { return iso; }
+  }
+
+  // بطاقة تقييم الرد: تظهر مرة واحدة لكل محادثة بعد أول رد كامل
+  var FB_TYPES = [
+    ['خلل غير متعلق بالذكاء الاصطناعي', 'خلل غير متعلق بالذكاء الاصطناعي'],
+    ['الوكيل عالق أو يكرر نفسه', 'الوكيل عالق أو يكرر نفسه'],
+    ['الناتج مقطوع أو هناك ملف مفقود', 'الناتج مقطوع أو هناك ملف مفقود'],
+    ['الناتج بسيط جداً', 'الناتج بسيط جداً'],
+    ['الناتج غير جميل بصرياً', 'الناتج غير جميل بصرياً'],
+    ['الناتج يحتوي على خطأ في الحقائق', 'الناتج يحتوي على خطأ في الحقائق'],
+    ['لم يتم اتباع التعليمات', 'لم يتم اتباع التعليمات'],
+    ['نسي أو خلط السياق', 'نسي أو خلط السياق'],
+    ['التكلفة مرتفعة جداً', 'التكلفة مرتفعة جداً'],
+    ['الإبلاغ عن محتوى غير ملائم', 'الإبلاغ عن محتوى غير ملائم'],
+    ['أخرى', 'أخرى (يرجى التعليق)']
+  ];
+  function maybeFeedback(el, chat) {
+    var key = 'dfai.fb.' + chat.id;
+    try { if (localStorage.getItem(key)) return; } catch (e) { /* بدون تخزين محلي: نكمل */ }
+    if (chat._fbShown) return;
+    chat._fbShown = true;
+    var card = document.createElement('div');
+    card.className = 'fb-card';
+    var rating = 0;
+    var stars = '';
+    card.innerHTML = '<div class="fb-top"><div class="fb-stars"></div><strong>كيف كانت هذه النتيجة؟</strong></div>' +
+      '<label class="fb-lbl">نوع المشكلة <span class="fb-opt">(اختياري)</span></label>' +
+      '<select class="fb-type"><option value="">يرجى الاختيار</option></select>' +
+      '<label class="fb-lbl">تعليق <span class="fb-opt">(اختياري)</span></label>' +
+      '<textarea class="fb-text" rows="3" maxlength="1000" placeholder="ملاحظات إضافية"></textarea>' +
+      '<div class="fb-foot"><label class="fb-share"><input type="checkbox" checked> ساعد Dubai Fans AI على التحسين من خلال ملاحظاتي</label>' +
+      '<div class="fb-btns"><button type="button" class="fb-skip">تخطي التعليق</button><button type="button" class="fb-send">إرسال</button></div></div>' +
+      '<div class="fb-err" hidden></div>';
+    var starBox = card.querySelector('.fb-stars');
+    for (var i = 1; i <= 5; i++) {
+      var s = document.createElement('button');
+      s.type = 'button';
+      s.className = 'fb-star';
+      s.setAttribute('aria-label', i + ' نجوم');
+      s.textContent = '★';
+      (function (n) { s.addEventListener('click', function () { rating = n; paintStars(); }); })(i);
+      starBox.appendChild(s);
+    }
+    function paintStars() {
+      Array.prototype.forEach.call(starBox.children, function (b, idx) { b.classList.toggle('on', idx < rating); });
+    }
+    var sel = card.querySelector('.fb-type');
+    FB_TYPES.forEach(function (t) { var o = document.createElement('option'); o.value = t[0]; o.textContent = t[1]; sel.appendChild(o); });
+    function done() { try { localStorage.setItem(key, '1'); } catch (e) { /* */ } }
+    card.querySelector('.fb-skip').addEventListener('click', function () { done(); card.remove(); });
+    var err = card.querySelector('.fb-err');
+    card.querySelector('.fb-send').addEventListener('click', function () {
+      if (!rating) { err.textContent = 'اختار عدد النجوم الأول.'; err.hidden = false; return; }
+      err.hidden = true;
+      var btn = card.querySelector('.fb-send');
+      btn.disabled = true;
+      apiJson('/api/feedback', { method: 'POST', body: JSON.stringify({
+        rating: rating,
+        type: sel.value,
+        comment: card.querySelector('.fb-text').value.trim(),
+        share: card.querySelector('.fb-share input').checked,
+        chatId: chat.id
+      }) }).then(function () {
+        done();
+        card.innerHTML = '<div class="fb-thanks">شكراً، ملاحظتك وصلت ✅</div>';
+        setTimeout(function () { card.remove(); }, 2500);
+      }).catch(function (ex) {
+        btn.disabled = false;
+        err.textContent = netMessage(ex);
+        err.hidden = false;
+      });
+    });
+    el.appendChild(card);
+  }
+
   function renderSources(el, sources) {
     var box = el.querySelector('.extra');
     if (!sources || !sources.length || box.querySelector('.sources')) return;
     var wrap = document.createElement('div');
     wrap.className = 'sources';
-    wrap.innerHTML = '<div class="sources-title">المصادر</div><ol></ol>';
+    wrap.innerHTML = '<div class="sources-title">المصادر</div><ol class="src-list"></ol>';
     var ol = wrap.querySelector('ol');
     sources.forEach(function (s) {
       var li = document.createElement('li');
+      li.className = 'src-row';
+      // أيقونة الموقع: خدمة Google S2 المجانية، ولو فشلت تظهر دائرة فيها أول حرف من اسم الموقع
+      var domain = s.domain || '';
+      var ico = document.createElement('span');
+      ico.className = 'src-ico';
+      var letter = (domain || s.title || '?').trim().charAt(0).toUpperCase();
+      if (domain) {
+        var img = document.createElement('img');
+        img.alt = '';
+        img.loading = 'lazy';
+        img.referrerPolicy = 'no-referrer';
+        img.src = 'https://www.google.com/s2/favicons?sz=64&domain=' + encodeURIComponent(domain);
+        img.onerror = function () { ico.textContent = letter; ico.classList.add('src-ico-fallback'); img.remove(); };
+        ico.appendChild(img);
+      } else {
+        ico.textContent = letter;
+        ico.classList.add('src-ico-fallback');
+      }
+      var body = document.createElement('div');
+      body.className = 'src-body';
       var a = document.createElement('a');
       a.href = /^https?:\/\//.test(s.url) ? s.url : '#';
       a.target = '_blank'; a.rel = 'noopener nofollow';
       a.textContent = s.title || s.url;
-      li.appendChild(a);
+      body.appendChild(a);
+      var meta = document.createElement('div');
+      meta.className = 'src-meta';
+      meta.textContent = domain;
+      var dateTxt = formatSourceDate(s.date);
+      if (dateTxt) meta.textContent += (domain ? ' · ' : '') + dateTxt;
+      if (meta.textContent) body.appendChild(meta);
+      li.appendChild(ico);
+      li.appendChild(body);
       ol.appendChild(li);
     });
     box.appendChild(wrap);
+  }
+
+  // يعرض رابط الصفحة المنشورة داخل الرد، مع زر نسخ
+  function showPublishedLink(host, url) {
+    var old = host.querySelector('.pub-link');
+    if (old) old.remove();
+    var box = document.createElement('div');
+    box.className = 'pub-link';
+    box.style.cssText = 'width:100%;display:grid;gap:8px;margin-top:10px;padding:12px;border-radius:14px;border:1px solid var(--line-2);background:var(--surface)';
+    var a = document.createElement('a');
+    a.href = url;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.textContent = url;
+    a.style.cssText = 'direction:ltr;text-align:left;word-break:break-all;color:var(--accent);font-size:14px';
+    var copy = document.createElement('button');
+    copy.type = 'button';
+    copy.className = 'result-btn';
+    copy.textContent = 'نسخ الرابط';
+    copy.addEventListener('click', function () {
+      if (navigator.clipboard) navigator.clipboard.writeText(url).then(function () { toast('تم النسخ'); }, function () { toast('تعذّر النسخ.'); });
+    });
+    box.appendChild(a);
+    box.appendChild(copy);
+    host.appendChild(box);
+  }
+
+  // ينشر صفحة الهبوط اللي ولّدها المساعد على رابط عام (من غير توليد جديد)
+  function publishSite(m, btn) {
+    var html = extractHtml(m.content) || '';
+    if (!html) { toast('ما فيش صفحة تتنشر.'); return; }
+    if (btn) btn.disabled = true;
+    var slug = 'lp-' + Date.now().toString(36);
+    var brief = 'صفحة هبوط منشورة من المساعد: ' + (m.title || 'بدون عنوان');
+    apiJson('/api/landing', { method: 'POST', body: JSON.stringify({ brief: brief, slug: slug, html: html }) })
+      .then(function (d) {
+        toast('تم النشر');
+        if (d && d.url && btn && btn.parentNode) showPublishedLink(btn.parentNode, d.url);
+      })
+      .catch(function (ex) { toast(ex.message || 'تعذّر النشر.'); })
+      .then(function () { if (btn) btn.disabled = false; });
   }
 
   function actionButton(html, label, onClick) {
@@ -1294,6 +1496,7 @@
         if (window.DFAI && window.DFAI.openEditor) window.DFAI.openEditor(m, el);
       }));
       actions.appendChild(actionButton(ICON_EYE, 'معاينة الموقع', function () { openSite(extractHtml(m.content) || html, m.title); }));
+      actions.appendChild(actionButton('<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>', 'نشر الصفحة', function () { publishSite(m, this); }));
       actions.appendChild(actionButton(ICON_DL, 'تحميل HTML', function () {
         downloadBlob(new Blob([extractHtml(m.content) || html], { type: 'text/html;charset=utf-8' }), safeName(m.title) + '.html');
       }));
@@ -1333,6 +1536,8 @@
     document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch (e) {} ta.remove();
   }
 
+  var SHOW_LAYOUT_STRIP = false;
+
   function renderImageMsg(el, m) {
     var md = el.querySelector('.md');
     md.innerHTML = '';
@@ -1350,7 +1555,8 @@
       ad.compose(m.image, m.design).then(function (cv) { img.src = cv.toDataURL('image/jpeg', 0.92); })
         .catch(function () { /* تفضل الصورة الأصلية ظاهرة */ });
     }
-    if (ad && ad.isPro && ad.isPro(m.design)) {
+    // طلب توليد = تصميم واحد. شريط البدائل (تخطيطات تانية لنفس الصورة) مقفول، ويتفعّل لو المستخدم طلب أكثر من تصميم
+    if (SHOW_LAYOUT_STRIP && ad && ad.isPro && ad.isPro(m.design)) {
       var strip = document.createElement('div');
       strip.className = 'layout-strip';
       var lab = document.createElement('div');
@@ -1469,14 +1675,15 @@
     setStreaming(true);
     apiJson('/api/campaign', { method: 'POST', body: JSON.stringify({ occasion: occ.id, offer: offer || '' }) })
       .then(function (plan) {
-        var n = Math.min(plan.posts.length, left('images'));
+        // تصميم واحد لكل طلب: الحملة تعمل أول تصميم بس، والباقي يتطلب طلب منفصل
+        var n = Math.min(1, plan.posts.length, left('images'));
         var EN_UI = window.DFAI_LANG === 'en';
         var md = '### ' + plan.title + '\n\n' + plan.intro + '\n\n' +
           plan.posts.map(function (x, i) { return (i + 1) + '. **' + x.role + '**' + (x.when ? ' — ' + x.when : '') + (x.size === 'story' ? (EN_UI ? ' (Story)' : ' (ستوري)') : ''); }).join('\n') +
           (plan.occasion.approx ? (EN_UI ? '\n\n_The occasion date is approximate and will be confirmed by the moon sighting._' : '\n\n_تاريخ المناسبة تقريبي ويتحدد رسمياً برؤية الهلال._') : '') +
-          (n < plan.posts.length
-            ? (EN_UI ? '\n\n**Your plan today includes only ' + n + ' images, so I will prepare the first ' + n + ' designs.**' : '\n\n**باقتك النهارده فيها ' + n + ' صور بس، فهنجهّز أول ' + n + ' تصاميم.**')
-            : (EN_UI ? '\n\nI will prepare the ' + n + ' designs now, one after another, each with its caption.' : '\n\nهجهّز لك التصاميم الـ' + n + ' دلوقتي واحد ورا التاني، ومع كل تصميم الكابشن بتاعه.'));
+          (n === 0
+            ? (EN_UI ? '\n\n**No image credits left today.**' : '\n\n**خلص رصيد الصور النهارده.**')
+            : (EN_UI ? '\n\nI will prepare **one design** now with its caption. For the next ones, send a separate request for each design.' : '\n\nهجهّز **تصميماً واحداً** دلوقتي ومعه الكابشن. لباقي التصاميم، ابعت طلب منفصل لكل تصميم.'));
         var m = { role: 'assistant', content: md };
         chat.messages.push(m);
         saveChats();
@@ -1490,9 +1697,7 @@
             return sendImage(chat, x.brief, [], { size: x.size, occasionColors: plan.occasion.colors, label: 'تصميم ' + (i + 1) + ' من ' + n + ' · ' + x.role + (x.when ? ' (' + x.when + ')' : '') });
           });
         });
-        return chain.then(function () {
-          if (n < plan.posts.length && state.currentId === chat.id) addQuotaAlert('باقي ' + (plan.posts.length - n) + ' تصاميم من الحملة. اشترك في Pro عشان تكمّل الحملة كاملة.');
-        });
+        return chain;
       })
       .catch(function (ex) {
         setStreaming(false);
@@ -1974,7 +2179,7 @@
         if (sp.items.length) m.suggest = sp.items;
         chat.messages.push(m);
         saveChats();
-        if (!el.querySelector('.msg-error')) { finalizeAi(el, full, m); renderSuggest(el, sp.items); }
+        if (!el.querySelector('.msg-error')) { finalizeAi(el, full, m); renderSuggest(el, sp.items); maybeFeedback(el, chat); }
         else el.querySelector('.msg-actions').hidden = false;
       }
       setStreaming(false);

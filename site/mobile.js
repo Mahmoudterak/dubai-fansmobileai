@@ -63,6 +63,14 @@
     setTimeout(function () { sheet.hidden = true; }, 180);
   }
   if ($('plusBtn')) $('plusBtn').addEventListener('click', openSheet);
+  // أيقونات الإرفاق الدائرية تحت مربع الكتابة (بدل زر +)
+  Array.prototype.forEach.call(document.querySelectorAll('.cmp-ico'), function (b) {
+    b.addEventListener('click', function () {
+      var k = b.getAttribute('data-k');
+      if (k === 'mic') { var m = $('micBtn'); if (m) m.click(); return; }
+      if (D.attach) D.attach.pick(k);
+    });
+  });
 
   // ---------- 2) بحث في المحادثات ----------
   var search = $('chatSearch');
@@ -212,4 +220,53 @@
     if (Math.abs(dy) > Math.abs(dx) * 0.6) return; // مش سحب أفقي واضح
     if ((f === 'left' && dx > 70) || (f === 'right' && dx < -70)) closeTop();
   }, { passive: true });
+})();
+
+// ---------- شريط التنقل السفلي ----------
+(function () {
+  var D = window.DFAI;
+  if (!D) return;
+  var nav = document.getElementById('bottomNav');
+  if (!nav) return;
+  function setOn(key) {
+    Array.prototype.forEach.call(nav.querySelectorAll('button'), function (b) {
+      b.classList.toggle('on', b.getAttribute('data-bn') === key);
+    });
+  }
+  nav.addEventListener('click', function (e) {
+    var b = e.target.closest('button');
+    if (!b) return;
+    var k = b.getAttribute('data-bn');
+    setOn(k);
+    if (k === 'home') { if (D.hidePanel) D.hidePanel(); if (D.newChat) D.newChat(); }
+    else if (k === 'business') { if (D.openBusiness) D.openBusiness(); }
+    else if (k === 'tools') { if (D.openAiTools) D.openAiTools(); }
+    else if (k === 'darkweb') { if (D.openDarkweb) D.openDarkweb(); }
+  });
+  setOn('business');
+})();
+
+// يظهر شريط التنقل السفلي فقط في: نشاطي التجاري، الأدوات الذكية، مراقبة الويب المظلم (بدون :has لدعم المتصفحات القديمة)
+(function () {
+  var panel = document.getElementById('panel');
+  if (!panel) return;
+  var KEYS = { business: 1, tools: 1, darkweb: 1 };
+  function setNavOn(key) {
+    var nav = document.getElementById('bottomNav');
+    if (!nav) return;
+    Array.prototype.forEach.call(nav.querySelectorAll('button'), function (b) {
+      b.classList.toggle('on', b.getAttribute('data-bn') === key);
+    });
+  }
+  function sync() {
+    var key = null;
+    if (panel.hidden) key = null; // الصفحة مقفولة (الدردشة ظاهرة): الشريط يختفي
+    else if (document.getElementById('bizHead')) key = 'business';
+    else if (panel.classList.contains('ait-panel')) key = 'tools';
+    else if (panel.querySelector('.dw-page')) key = 'darkweb';
+    document.body.classList.toggle('biz-open', !!(key && KEYS[key]));
+    if (key) setNavOn(key);
+  }
+  new MutationObserver(sync).observe(panel, { childList: true, subtree: true });
+  sync();
 })();
