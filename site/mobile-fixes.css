@@ -23,3 +23,18 @@
 
 * { scrollbar-width: none !important; }
 *::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; }
+
+/* مسافات موحدة لكل الشاشات الجانبية (نشاطي، الأدوات، الويب المظلم، المراقبة):
+   نفس الهامش الأعلى، ونفس المسافة بين الأقسام، ونفس الحواف الجانبية */
+.pv, .ait-hub, .dw-page, .mon-page {
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-top: 12px;
+  box-sizing: border-box;
+}
+.pv, .ait-hub { gap: 16px; }
+.dw-page .dw-quick, .dw-page .dw-status, .mon-page .mn-form { margin-bottom: 16px; }
+.pv-head { margin-bottom: 4px; }
