@@ -2607,6 +2607,20 @@ async function route(req, res) {
       return send(res, 200, { paid: affiliate.markPaid(Array.isArray(ab.ids) ? ab.ids.slice(0, 500) : []) });
     }
 
+    if (m === 'GET' && p === '/api/admin/feedback') {
+      // تقييمات الردود: أحدث واحد فوق. الملف JSON lines، كل سطر تقييم واحد
+      const limit = Math.min(Math.max(Number(url.searchParams.get('limit')) || 200, 1), 1000);
+      let lines = [];
+      try { lines = fs.readFileSync(process.env.FEEDBACK_FILE || '/data/feedback.jsonl', 'utf8').split('\n'); }
+      catch (e) { if (e.code !== 'ENOENT') console.error('feedback read failed:', e.message); }
+      const rows = [];
+      for (let i = lines.length - 1; i >= 0; i--) {
+        if (!lines[i].trim()) continue;
+        try { rows.push(JSON.parse(lines[i])); } catch (_) { /* سطر تالف: نتجاهله */ }
+      }
+      return send(res, 200, { feedback: rows.slice(0, limit), total: rows.length });
+    }
+
     if (m === 'GET' && p === '/api/admin/kb') return send(res, 200, { docs: kb.listDocs() });
 
     if (m === 'POST' && p === '/api/admin/kb') {

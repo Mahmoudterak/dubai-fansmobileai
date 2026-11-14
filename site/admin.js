@@ -299,7 +299,29 @@
     return loadAssistant().catch(function (e) { var n = $('asNote'); n.textContent = 'تعذّر تحميل مؤشرات المساعد: ' + e.message; n.hidden = false; });
   }
 
-  function loadAll() { return Promise.all([loadStats(), loadPayments(), loadRequests(), loadTraces(), loadUsers(), loadLangfuseSafe(), loadAssistantSafe()]); }
+  function loadFeedback() {
+    return api('/api/admin/feedback?limit=200').then(function (d) {
+      var body = $('fbBody'); body.innerHTML = '';
+      $('fbCount').textContent = d.total || 0;
+      if (!d.feedback.length) { emptyRow(body, 7, 'لسه مفيش تقييمات'); return; }
+      d.feedback.forEach(function (r) {
+        var tr = document.createElement('tr');
+        cellText(tr, fmtTime(Date.parse(r.t)), 'muted');
+        cellText(tr, r.user, 'muted');
+        cellText(tr, r.chat || '—', 'muted');
+        cellText(tr, '★'.repeat(r.rating || 0) + '☆'.repeat(Math.max(0, 5 - (r.rating || 0))));
+        cellText(tr, r.type || '—');
+        cellText(tr, r.comment || '—', r.comment ? '' : 'muted');
+        cellText(tr, r.share ? 'نعم' : 'لا', r.share ? 'ok' : 'muted');
+        body.appendChild(tr);
+      });
+    });
+  }
+  function loadFeedbackSafe() {
+    return loadFeedback().catch(function (e) { toast('تعذّر تحميل التقييمات: ' + e.message); });
+  }
+
+  function loadAll() { return Promise.all([loadStats(), loadPayments(), loadRequests(), loadFeedbackSafe(), loadTraces(), loadUsers(), loadLangfuseSafe(), loadAssistantSafe()]); }
 
   $('trHours').addEventListener('change', function () { loadTraces().catch(function (e) { toast(e.message); }); });
   $('lfHours').addEventListener('change', function () { loadLangfuseSafe(); });
@@ -309,5 +331,5 @@
 
   if (!token) { $('deny').hidden = false; return; }
   loadAll().then(function () { $('adm').hidden = false; }).catch(function () { $('deny').hidden = false; });
-  setInterval(function () { if (!document.hidden) loadStats().then(loadPayments).then(loadRequests).then(loadTraces).then(loadLangfuseSafe).then(loadAssistantSafe).catch(function () {}); }, 60000);
+  setInterval(function () { if (!document.hidden) loadStats().then(loadPayments).then(loadRequests).then(loadFeedbackSafe).then(loadTraces).then(loadLangfuseSafe).then(loadAssistantSafe).catch(function () {}); }, 60000);
 })();
