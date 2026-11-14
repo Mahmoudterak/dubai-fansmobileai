@@ -14,6 +14,15 @@
     'تصميم صور إعلانية': 'Design ad images',
     'تحليل المنافسين': 'Analyze competitors',
     'تحليل متجري أو الموقع': 'Analyze my store or website',
+    /* ---- اختيار النموذج ---- */
+    'يختار الأنسب لكل سؤال': 'Picks the best fit for each question',
+    'تفكير أعمق للخطط والتحليل': 'Deeper thinking for plans and analysis',
+    'ردود أسرع للأسئلة البسيطة': 'Faster replies for simple questions',
+    'نموذج خارجي حسب إعداداتك': 'External model based on your settings',
+    'على جهازك · خصوصية كاملة': 'On your device · full privacy',
+    'الخبير': 'Expert',
+    'سريع': 'Fast',
+    'النموذج الخارجي': 'External model',
 
     /* ---- نافذة عرض التطبيق والموقع ---- */
     'الشكل ده بيعرض 3 شاشات. لو رفعت أقل، هنكرر الأولى. الصورة رقم 1 بتبقى في النص.': 'This layout shows 3 screens. If you upload fewer, we will repeat the first one. Image 1 goes in the centre.',
