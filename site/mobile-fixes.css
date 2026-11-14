@@ -46,7 +46,8 @@
 
 /* عنوان قسم المهارات داخل قائمة النموذج */
 .mo-head { display: flex; align-items: center; justify-content: space-between; width: 100%; box-sizing: border-box; padding: 10px 14px 6px; font: inherit; font-size: 12px; color: var(--muted); background: none; border: 0; cursor: pointer; text-align: start; }
-.mo-head-chev { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform .2s; }
+.mo-skills { max-height: 38vh; overflow-y: auto; overscroll-behavior: contain; }
+.mo-head-chev {width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform .2s; }
 .mo-head-chev.open { transform: rotate(180deg); }
 
 /* بطاقة تقييم الرد (مرة واحدة لكل محادثة) */

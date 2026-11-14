@@ -66,6 +66,10 @@
       head.addEventListener('click', function (e) { e.stopPropagation(); skillsOpen = !skillsOpen; render(); });
       menu.appendChild(head);
       if (!skillsOpen) return;
+      // قائمة المهارات في صندوق بارتفاع محدود، يتسحب جواه بدل ما القائمة كلها تطول
+      var box = document.createElement('div');
+      box.className = 'mo-skills';
+      menu.appendChild(box);
       agentsCache.forEach(function (a) {
         var it = document.createElement('button');
         it.type = 'button';
@@ -78,7 +82,7 @@
           if (D.pickAgent) D.pickAgent(a.id, a.name);
           closeMenu();
         });
-        menu.appendChild(it);
+        box.appendChild(it);
       });
     }
   }
