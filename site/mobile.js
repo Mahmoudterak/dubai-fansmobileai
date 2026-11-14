@@ -245,3 +245,12 @@
   });
   setOn('business');
 })();
+
+// يظهر شريط التنقل السفلي فقط عندما تكون صفحة نشاطي التجاري مفتوحة (بدون :has لدعم المتصفحات القديمة)
+(function () {
+  var panel = document.getElementById('panel');
+  if (!panel) return;
+  function sync() { document.body.classList.toggle('biz-open', !!document.getElementById('bizHead')); }
+  new MutationObserver(sync).observe(panel, { childList: true, subtree: true });
+  sync();
+})();

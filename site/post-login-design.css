@@ -489,8 +489,8 @@
 }
 /* يظهر فقط داخل صفحة نشاطي التجاري */
 @media (max-width: 860px) {
-  body:not(:has(#panel #bizHead)) .bottom-nav { display: none; }
-  body:has(#panel #bizHead) .main { padding-bottom: 92px; }
+  body:not(.biz-open) .bottom-nav { display: none; }
+  body.biz-open .main { padding-bottom: 92px; }
 }
 
 /* حلقة دوّارة بدل أيقونة Dubai Fans Radar */

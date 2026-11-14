@@ -84,6 +84,16 @@
     'عملاء محتملين في الإمارات': 'Potential customers in the UAE',
     'توصية من التريندات': 'Recommendation from trends',
     'قارن ظهورك بالمنافسين': 'Compare your visibility with competitors',
-    'جاهزة': 'Ready'
+    'جاهزة': 'Ready',
+    /* ---- مراقبة الويب المظلم (الشاشة الجديدة) ---- */
+    'إجراءات سريعة': 'Quick actions',
+    'بياناتك الشخصية': 'Your personal data',
+    'الحماية جاهزة': 'Protection ready',
+    'لم يتم الفحص بعد': 'Not checked yet',
+    'تسريبات مكتشفة': 'Leaks found',
+    'راجع التفاصيل': 'Review the details',
+    'آخر فحص: الآن': 'Last check: just now',
+    'فحص التسريبات': 'Leak check',
+    'عناصر المراقبة': 'Watch items'
   });
 })();
