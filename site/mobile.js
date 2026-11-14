@@ -63,6 +63,14 @@
     setTimeout(function () { sheet.hidden = true; }, 180);
   }
   if ($('plusBtn')) $('plusBtn').addEventListener('click', openSheet);
+  // أيقونات الإرفاق الدائرية تحت مربع الكتابة (بدل زر +)
+  Array.prototype.forEach.call(document.querySelectorAll('.cmp-ico'), function (b) {
+    b.addEventListener('click', function () {
+      var k = b.getAttribute('data-k');
+      if (k === 'mic') { var m = $('micBtn'); if (m) m.click(); return; }
+      if (D.attach) D.attach.pick(k);
+    });
+  });
 
   // ---------- 2) بحث في المحادثات ----------
   var search = $('chatSearch');

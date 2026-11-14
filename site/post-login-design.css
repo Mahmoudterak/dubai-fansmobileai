@@ -360,3 +360,39 @@
 }
 :root[data-theme="dark"] .sidebar #toolList svg { stroke: #2E7BE6; }
 
+
+/* الرئيسية كما في التصميم: بدون زر + وبدون الباقة من الأعلى، وأيقونات دائرية تحت مربع الكتابة،
+   والبطاقات الأربع ظاهرة في الشبكة 2×2 */
+.cmp-plus { display: none !important; }
+.main.is-home .plan-pill { display: none; }
+#cards.cards { display: grid !important; grid-template-columns: 1fr 1fr; gap: 10px; overflow: visible; padding: 0; order: 0; }
+.main.is-home #cards.cards { display: grid !important; flex-wrap: initial; justify-content: initial; }
+#cards .card.card-home { width: 100%; max-width: none; min-width: 0; flex: none; }
+
+.cmp-icons {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 6px 2px;
+}
+.cmp-ico {
+  width: 40px;
+  height: 40px;
+  flex: none;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: #F4F4F7;
+  cursor: pointer;
+}
+.cmp-ico svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.cmp-ico:hover { border-color: #2E7BE6; background: rgba(46, 123, 230, 0.16); }
+
+/* خلفية الرئيسية الداكنة بالتوهج الأحمر من التصميم */
+:root[data-theme="dark"] .main.is-home {
+  background: radial-gradient(440px 340px at 50% -40px, rgba(122, 24, 36, 0.85), rgba(122, 24, 36, 0) 70%), #06091A;
+}

@@ -925,7 +925,8 @@ td.pro .cmp-yes { stroke: var(--lav); }
 .result-btn:disabled { opacity: .7; cursor: progress; }
 
 /* الاقتراحات والحملات مخفية من الرئيسية، وتظهر لما العميل يضغط + */
-#cards, #seasonCards { display: none !important; }
+#seasonCards { display: none !important; }
+.main:not(.is-home) #cards { display: none; }
 .sheet-sug { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
 #toolsSheet #sheetSug #cards, #toolsSheet #sheetSug #seasonCards { display: flex !important; flex-direction: column; gap: 8px; margin: 0; padding: 0; max-width: none; overflow: visible; order: 0; }
 #toolsSheet .card { flex: none; width: 100%; max-width: none; padding: 12px 14px; }
