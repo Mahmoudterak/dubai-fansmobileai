@@ -10,36 +10,96 @@
 }
 
 /* الكرة المتوهجة أعلى النموذج */
+/* الكوكب بحرف D: مطابق لتصميم Dubai Fans AI. الحلقة المدارية تدور حول الحرف. */
 #login .login-orb {
   position: relative;
-  width: 170px;
-  height: 170px;
+  width: 230px;
+  height: 230px;
   margin: 4px auto 0;
   flex: none;
 }
-#login .login-orb::before {
-  content: "";
+#login .orb-ring {
   position: absolute;
   inset: 0;
   border-radius: 50%;
   border: 2px solid rgba(205, 185, 255, 0.7);
   box-shadow: 0 0 18px rgba(167, 139, 250, 0.45), inset 0 0 18px rgba(167, 139, 250, 0.25);
 }
-#login .orb-core {
+#login .orb-sphere {
   position: absolute;
-  inset: 8%;
+  left: 22px;
+  top: 22px;
+  width: 186px;
+  height: 186px;
   border-radius: 50%;
   overflow: hidden;
-  background: conic-gradient(from 200deg, #2BD4F5, #3B6CF2, #7B3FF2, #D23CF0, #F07ACB, #5B5CF6, #2BD4F5);
+  background: radial-gradient(circle at 50% 50%, #0B0A2E 0%, #110D3D 45%, rgba(17, 13, 61, 0) 70%),
+    conic-gradient(from 200deg, #2BD4F5, #3B6CF2, #7B3FF2, #D23CF0, #F07ACB, #5B5CF6, #2BD4F5);
   box-shadow: 0 0 50px rgba(123, 63, 242, 0.55), 0 0 90px rgba(43, 212, 245, 0.18);
 }
-#login .orb-core::after {
-  content: "";
+#login .orb-sweep {
+  position: absolute;
+  inset: -20%;
+  background: conic-gradient(from 0deg, transparent 0deg, rgba(43, 212, 245, 0.55) 40deg, transparent 90deg,
+    rgba(210, 60, 240, 0.6) 170deg, transparent 230deg, rgba(91, 92, 246, 0.6) 300deg, transparent 360deg);
+  filter: blur(14px);
+  mix-blend-mode: screen;
+  animation: orb-spin 9s linear infinite;
+}
+#login .orb-shade {
   position: absolute;
   inset: 18%;
   border-radius: 50%;
   background: radial-gradient(circle at 45% 45%, rgba(6, 6, 26, 0.95), rgba(6, 6, 26, 0.55) 60%, transparent 75%);
   filter: blur(6px);
+  animation: orb-breathe 10s ease-in-out infinite;
+}
+#login .orb-gloss {
+  position: absolute;
+  left: 18%;
+  top: 12%;
+  width: 46%;
+  height: 22%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(255, 255, 255, 0.55), transparent 70%);
+  filter: blur(4px);
+  transform: rotate(-20deg);
+}
+#login .orb-edge {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18), inset -10px -14px 30px rgba(0, 0, 0, 0.45);
+}
+/* حرف D والحلقة المدارية: الحلقة الخلفية والأمامية تدوران معًا حول مركز الحرف */
+#login .orb-logo {
+  position: absolute;
+  left: 22px;
+  top: 22px;
+  width: 186px;
+  height: 186px;
+  overflow: visible;
+  filter: drop-shadow(0 0 8px rgba(123, 92, 246, 0.55));
+}
+#login .orb-ring-back,
+#login .orb-ring-front {
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+  animation: orb-spin 12s linear infinite;
+}
+#login .orb-star {
+  position: absolute;
+  border-radius: 50%;
+  background: #E9E2FF;
+  animation-name: orb-twinkle;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+@keyframes orb-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes orb-breathe { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(4%, -3%) scale(1.06); } }
+@keyframes orb-twinkle { 0%, 100% { transform: scale(0.8); } 50% { transform: scale(1.2); } }
+@media (prefers-reduced-motion: reduce) {
+  #login .orb-sweep, #login .orb-shade, #login .orb-ring-back, #login .orb-ring-front, #login .orb-star { animation: none; }
 }
 
 /* حقول بشكل حبوب (pill) */
