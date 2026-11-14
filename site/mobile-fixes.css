@@ -9,6 +9,14 @@
   background: radial-gradient(440px 340px at 50% -40px, rgba(122, 24, 36, 0.85), rgba(122, 24, 36, 0) 70%), #06091A;
 }
 
+/* الوضع الداكن هو الأساسي: شاشات الكود والمحرر كانت بيضاء بسبب ألوان ثابتة */
+:root[data-theme="dark"] .md pre { background: #0B1020; border-color: rgba(155, 124, 246, 0.2); color: #E6E9F5; }
+:root[data-theme="dark"] .editor { background: #06091A; }
+:root[data-theme="dark"] .ed-bar,
+:root[data-theme="dark"] .ed-side { background: #0C1228; }
+:root[data-theme="dark"] .modal-box { background: #0C1228; }
+:root[data-theme="dark"] .login-hero-side { background: #06091A; }
+
 /* بطاقات الرئيسية: النص الإنجليزي الطويل يلتف داخل البطاقة بدل ما يخرج برّا */
 .card.card-home { min-width: 0; overflow: hidden; }
 .card.card-home .card-title { white-space: normal; overflow-wrap: anywhere; word-break: normal; min-width: 0; line-height: 1.4; text-align: start; }

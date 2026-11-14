@@ -1281,6 +1281,31 @@
     box.appendChild(wrap);
   }
 
+  // يعرض رابط الصفحة المنشورة داخل الرد، مع زر نسخ
+  function showPublishedLink(host, url) {
+    var old = host.querySelector('.pub-link');
+    if (old) old.remove();
+    var box = document.createElement('div');
+    box.className = 'pub-link';
+    box.style.cssText = 'width:100%;display:grid;gap:8px;margin-top:10px;padding:12px;border-radius:14px;border:1px solid var(--line-2);background:var(--surface)';
+    var a = document.createElement('a');
+    a.href = url;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.textContent = url;
+    a.style.cssText = 'direction:ltr;text-align:left;word-break:break-all;color:var(--accent);font-size:14px';
+    var copy = document.createElement('button');
+    copy.type = 'button';
+    copy.className = 'result-btn';
+    copy.textContent = 'نسخ الرابط';
+    copy.addEventListener('click', function () {
+      if (navigator.clipboard) navigator.clipboard.writeText(url).then(function () { toast('تم النسخ'); }, function () { toast('تعذّر النسخ.'); });
+    });
+    box.appendChild(a);
+    box.appendChild(copy);
+    host.appendChild(box);
+  }
+
   // ينشر صفحة الهبوط اللي ولّدها المساعد على رابط عام (من غير توليد جديد)
   function publishSite(m, btn) {
     var html = extractHtml(m.content) || '';
@@ -1291,7 +1316,7 @@
     apiJson('/api/landing', { method: 'POST', body: JSON.stringify({ brief: brief, slug: slug, html: html }) })
       .then(function (d) {
         toast('تم النشر');
-        if (d && d.url) window.open(d.url, '_blank');
+        if (d && d.url && btn && btn.parentNode) showPublishedLink(btn.parentNode, d.url);
       })
       .catch(function (ex) { toast(ex.message || 'تعذّر النشر.'); })
       .then(function () { if (btn) btn.disabled = false; });
