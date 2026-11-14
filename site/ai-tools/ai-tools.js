@@ -105,7 +105,55 @@
     var cr = me && me.credits;
     var wrap = el('div', 'ait-hub');
 
-    // عنوان اللوحة وعدد الأدوات (مطابق لتصميم Claude Design)
+    // رأس الصفحة: أيقونة + عنوان ووصف + زر إغلاق (مطابق لتصميم Claude Design)
+    var hero = el('div', 'aih-hero');
+    var hico = el('span', 'aih-hero-ico');
+    hico.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/></svg>';
+    var htxt = el('div', 'aih-hero-txt');
+    htxt.appendChild(el('h1', '', 'مركز الأدوات الذكية'));
+    htxt.appendChild(el('p', '', 'أدوات الذكاء الاصطناعي لنشاطك. ولا تنفيذ من غير موافقتك.'));
+    var close = el('button', 'aih-close');
+    close.type = 'button';
+    close.setAttribute('aria-label', 'إغلاق');
+    close.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+    close.addEventListener('click', function () { D.hidePanel(); });
+    hero.appendChild(hico);
+    hero.appendChild(htxt);
+    hero.appendChild(close);
+    wrap.appendChild(hero);
+
+    // بطاقة استهلاك الرصيد وثلاث بطاقات أرقام
+    var used = 0;
+    var limit = cr ? cr.limit : 0;
+    var unlimited = !!cr && cr.limit === -1;
+    if (cr && !unlimited) used = Math.max(0, cr.limit - cr.left);
+    var pct = (!cr || unlimited || !limit) ? 0 : Math.min(100, Math.round(used / limit * 100));
+    var credit = el('div', 'aih-credit');
+    var chead = el('div', 'aih-cr-head');
+    chead.appendChild(el('strong', '', 'استهلاك الرصيد'));
+    chead.appendChild(el('span', '', pct + '%'));
+    var cbar = el('div', 'aih-cr-bar');
+    var cfill = el('span', '');
+    cfill.style.width = pct + '%';
+    cbar.appendChild(cfill);
+    var ctxt = el('div', 'aih-cr-txt');
+    if (!cr) ctxt.textContent = 'جارٍ التحميل…';
+    else if (unlimited) ctxt.textContent = 'رصيد غير محدود';
+    else ctxt.textContent = used.toLocaleString('en-US') + ' من ' + limit.toLocaleString('en-US') + ' نقطة مستخدمة هذا الشهر';
+    var stats = el('div', 'aih-stats');
+    ['تشغيلات اليوم', 'توصيات معلّقة', 'أدوات مستخدمة'].forEach(function (label) {
+      var sc = el('div', 'aih-stat');
+      sc.appendChild(el('span', '', label));
+      sc.appendChild(el('b', '', '0'));
+      stats.appendChild(sc);
+    });
+    credit.appendChild(chead);
+    credit.appendChild(cbar);
+    credit.appendChild(ctxt);
+    credit.appendChild(stats);
+    wrap.appendChild(credit);
+
+    // عنوان قسم الأدوات وعدد الأدوات
     var top = el('div', 'aih-top');
     top.appendChild(el('h1', '', 'الأدوات'));
     var cnt = el('span', 'aih-count');

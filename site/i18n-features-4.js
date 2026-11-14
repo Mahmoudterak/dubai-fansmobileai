@@ -96,6 +96,16 @@
     'راجع التفاصيل': 'Review the details',
     'آخر فحص: الآن': 'Last check: just now',
     'فحص التسريبات': 'Leak check',
-    'عناصر المراقبة': 'Watch items'
+    'عناصر المراقبة': 'Watch items',
+    /* ---- مركز الأدوات الذكية: الرأس وبطاقة الرصيد ---- */
+    'مركز الأدوات الذكية': 'AI Tools Center',
+    'أدوات الذكاء الاصطناعي لنشاطك. ولا تنفيذ من غير موافقتك.': 'AI tools for your business. Nothing runs without your approval.',
+    'استهلاك الرصيد': 'Credit usage',
+    'نقطة مستخدمة هذا الشهر': 'points used this month',
+    'رصيد غير محدود': 'Unlimited credit',
+    'تشغيلات اليوم': 'Runs today',
+    'توصيات معلّقة': 'Pending recommendations',
+    'أدوات مستخدمة': 'Tools used',
+    'إغلاق': 'Close'
   });
 })();
