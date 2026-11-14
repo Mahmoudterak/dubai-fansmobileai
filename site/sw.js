@@ -1,7 +1,7 @@
 /* Dubai Fans AI — Service Worker
    الصفحة دايماً من الشبكة الأول (عشان التحديثات توصل على طول)، والملفات الثابتة من الكاش.
    طلبات /api/ مابتتخزنش أبداً. */
-const CACHE = 'dfai-v44';
+const CACHE = 'dfai-v45';
 const SHELL = ['/', '/manifest.json', '/favicon.svg', '/icons/icon-192.png', '/icons/apple-touch-icon.png',
   '/vendor/marked.min.js', '/vendor/purify.min.js'];
 

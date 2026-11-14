@@ -466,7 +466,8 @@
 
   // ---------- حسابي والمدفوعات والاستخدام والتصميم ----------
   var PREFS_KEY = 'dfai.prefs';
-  var PREFS_DEFAULT = { theme: 'light', font: 'default', respFont: 'match', txSize: 'm', txWidth: 'narrow' };
+  // الوضع الداكن هو الأساسي. الترحيل مرة واحدة: المستخدم اللي كان محفوظ عنده "فاتح" بيتحوّل للداكن، وبعدها يقدر يختار أي وضع.
+  var PREFS_DEFAULT = { theme: 'dark', font: 'default', respFont: 'match', txSize: 'm', txWidth: 'narrow' };
   var BOX = 'border:1px solid var(--line-2);border-radius:14px;padding:14px;background:var(--surface);display:grid;gap:10px';
   var USAGE_ROWS = [['messages', 'الرسائل'], ['images', 'الصور والإعلانات'], ['search', 'بحث الويب'], ['slides', 'العروض التقديمية'], ['radar', 'Radar'], ['monitors', 'المتابعة التلقائية']];
   var DESIGN_GROUPS = [
@@ -480,6 +481,10 @@
   function readPrefs() {
     var p = {};
     try { p = JSON.parse(localStorage.getItem(PREFS_KEY) || '{}') || {}; } catch (e) { p = {}; }
+    if (!p.darkMigrated) { // ترحيل مرة واحدة: الوضع الداكن أساسي
+      p.theme = 'dark'; p.darkMigrated = true;
+      savePrefs(p);
+    }
     return Object.assign({}, PREFS_DEFAULT, p);
   }
   function savePrefs(p) { try { localStorage.setItem(PREFS_KEY, JSON.stringify(p)); } catch (e) { /* تجاهل */ } }

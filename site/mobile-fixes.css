@@ -9,5 +9,9 @@
   background: radial-gradient(440px 340px at 50% -40px, rgba(122, 24, 36, 0.85), rgba(122, 24, 36, 0) 70%), #06091A;
 }
 
+/* بطاقات الرئيسية: النص الإنجليزي الطويل يلتف داخل البطاقة بدل ما يخرج برّا */
+.card.card-home { min-width: 0; overflow: hidden; }
+.card.card-home .card-title { white-space: normal; overflow-wrap: anywhere; word-break: normal; min-width: 0; line-height: 1.4; text-align: start; }
+
 * { scrollbar-width: none !important; }
 *::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; }
