@@ -1460,6 +1460,8 @@
     document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch (e) {} ta.remove();
   }
 
+  var SHOW_LAYOUT_STRIP = false;
+
   function renderImageMsg(el, m) {
     var md = el.querySelector('.md');
     md.innerHTML = '';
@@ -1477,7 +1479,8 @@
       ad.compose(m.image, m.design).then(function (cv) { img.src = cv.toDataURL('image/jpeg', 0.92); })
         .catch(function () { /* تفضل الصورة الأصلية ظاهرة */ });
     }
-    if (ad && ad.isPro && ad.isPro(m.design)) {
+    // طلب توليد = تصميم واحد. شريط البدائل (تخطيطات تانية لنفس الصورة) مقفول، ويتفعّل لو المستخدم طلب أكثر من تصميم
+    if (SHOW_LAYOUT_STRIP && ad && ad.isPro && ad.isPro(m.design)) {
       var strip = document.createElement('div');
       strip.className = 'layout-strip';
       var lab = document.createElement('div');
