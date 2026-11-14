@@ -1,0 +1,13 @@
+/* إصلاحات الجوال الأخيرة (تُحمَّل آخراً فتغلب على الملفات السابقة):
+   1) إخفاء الباقة (باقة أعمال) وأيقونة الدردشة من أعلى الشاشة في كل الصفحات
+   2) توهّج نشاطي التجاري الأحمر كما في التصميم
+   3) إخفاء أشرطة التمرير البنفسجية على اليسار */
+
+#planPill, .plan-pill, #topNewChat, .top-new { display: none !important; }
+
+:root[data-theme="dark"] body.biz-open .main {
+  background: radial-gradient(440px 340px at 50% -40px, rgba(122, 24, 36, 0.85), rgba(122, 24, 36, 0) 70%), #06091A;
+}
+
+* { scrollbar-width: none !important; }
+*::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; }
