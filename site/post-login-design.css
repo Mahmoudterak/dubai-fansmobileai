@@ -486,7 +486,11 @@
   .bottom-nav button span { display: none; }
   .bottom-nav button.on { background: linear-gradient(120deg, rgba(94, 200, 242, 0.25), rgba(155, 124, 246, 0.35)); color: #FFFFFF; border: 1px solid rgba(155, 124, 246, 0.5); }
   .bottom-nav button.on span { display: inline; }
-  .main { padding-bottom: 92px; }
+}
+/* يظهر فقط داخل صفحة نشاطي التجاري */
+@media (max-width: 860px) {
+  body:not(:has(#panel #bizHead)) .bottom-nav { display: none; }
+  body:has(#panel #bizHead) .main { padding-bottom: 92px; }
 }
 
 /* حلقة دوّارة بدل أيقونة Dubai Fans Radar */

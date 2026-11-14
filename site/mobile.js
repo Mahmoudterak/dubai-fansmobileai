@@ -243,5 +243,5 @@
     else if (k === 'tools') { if (D.openAiTools) D.openAiTools(); }
     else if (k === 'darkweb') { if (D.openDarkweb) D.openDarkweb(); }
   });
-  setOn('home');
+  setOn('business');
 })();
