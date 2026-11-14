@@ -43,3 +43,6 @@
 @media (max-width: 760px) {
   #login .login-form-side { justify-content: flex-start; padding-top: 24px; padding-bottom: 32px; }
 }
+
+/* عنوان قسم المهارات داخل قائمة النموذج */
+.mo-head { padding: 10px 14px 4px; font-size: 12px; color: var(--muted); }

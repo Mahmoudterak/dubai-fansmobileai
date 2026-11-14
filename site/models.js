@@ -55,6 +55,34 @@
       });
       menu.appendChild(it);
     });
+    // المهارات: كل خبير يفتح نفسه عند الضغط
+    if (agentsCache && agentsCache.length) {
+      var head = document.createElement('div');
+      head.className = 'mo-head';
+      head.textContent = 'المهارات';
+      menu.appendChild(head);
+      agentsCache.forEach(function (a) {
+        var it = document.createElement('button');
+        it.type = 'button';
+        it.className = 'model-opt';
+        it.innerHTML = '<span class="mo-ico" style="background:' + SKILL_BG + '"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + SPARK + '"></path></svg></span>' +
+          '<span class="mo-txt"><span class="mo-name"></span><span class="mo-sub"></span></span>';
+        it.querySelector('.mo-name').textContent = a.name;
+        it.querySelector('.mo-sub').textContent = 'افتح المهارة وابدأ بيها';
+        it.addEventListener('click', function () {
+          if (D.pickAgent) D.pickAgent(a.id, a.name);
+          closeMenu();
+        });
+        menu.appendChild(it);
+      });
+    }
+  }
+
+  var agentsCache = null;
+  var SKILL_BG = 'linear-gradient(135deg,#173A86,#2E7BE6)';
+  function loadAgents() {
+    if (!D.agentList || agentsCache) return;
+    D.agentList().then(function (a) { agentsCache = a; render(); }).catch(function () { /* بدون مهارات */ });
   }
 
   function build() {
@@ -117,6 +145,7 @@
       var cur = saved();
       sel.value = list.some(function (m) { return m.id === cur; }) ? cur : 'auto';
       render();
+      loadAgents();
     }).catch(function () { /* لو القائمة فشلت، يفضل تلقائي */ });
   }
 

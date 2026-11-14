@@ -960,6 +960,11 @@
     if (!noFocus) $('prompt').focus();
   }
 
+  // تعرض قائمة النماذج (منها المهارات) الوكلاء وتفتح الوكيل المختار
+  window.DFAI = window.DFAI || {};
+  window.DFAI.pickAgent = function (id, name) { setAgent(id, name); };
+  window.DFAI.agentList = function () { return loadConfig().then(function (c) { return c.agents || []; }); };
+
   function updateChip(name) {
     var chip = $('toolChip');
     var t = TOOLS.find(function (x) { return x.id === state.tool; });
