@@ -85,10 +85,6 @@ const CFG = {
   azureKey: env('AZURE_SPEECH_KEY').replace(/[^\x21-\x7e]/g, ''),
   azureRegion: env('AZURE_SPEECH_REGION', 'uaenorth').replace(/[^a-z0-9]/gi, '').toLowerCase(),
   azureTtsUrl: env('AZURE_TTS_URL'),
-  // ElevenLabs: احتياطي للصوت بعد Azure. لو المفتاح أو الصوت فاضيين ما يتستخدمش
-  elevenKey: env('ELEVENLABS_API_KEY'),
-  elevenVoice: env('ELEVENLABS_VOICE_ID'),
-  elevenModel: env('ELEVENLABS_MODEL', 'eleven_multilingual_v2'),
   searxUrl: env('SEARXNG_URL').replace(/\/$/, ''),
   adminEmails: env('ADMIN_EMAILS').split(',').map((s) => s.replace(/[^\x21-\x7e]/g, '').toLowerCase()).filter(Boolean),
   tzOffsetMin: Number(env('TZ_OFFSET_MIN', '240')),
@@ -1336,20 +1332,7 @@ const TTS_VOICES = {
   hamdan: { name: 'ar-AE-HamdanNeural', label: 'حمدان' },
   fatima: { name: 'ar-AE-FatimaNeural', label: 'فاطمة' },
 };
-const ttsEnabled = () => Boolean((CFG.azureKey && CFG.azureRegion) || (CFG.elevenKey && CFG.elevenVoice));
-// ElevenLabs: يرجّع MP3 مباشرة. نرفض أي رد صغير جداً (غالباً خطأ مش صوت)
-async function elevenTts(text, signal) {
-  if (!CFG.elevenKey || !CFG.elevenVoice) throw new Error('elevenlabs not configured');
-  const r = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${encodeURIComponent(CFG.elevenVoice)}?output_format=mp3_44100_128`, {
-    method: 'POST', signal, redirect: 'error',
-    headers: { 'xi-api-key': CFG.elevenKey, 'Content-Type': 'application/json', Accept: 'audio/mpeg' },
-    body: JSON.stringify({ text, model_id: CFG.elevenModel }),
-  });
-  if (!r.ok) throw new Error('elevenlabs ' + r.status);
-  const buf = Buffer.from(await r.arrayBuffer());
-  if (buf.length < 500) throw new Error('elevenlabs: empty audio');
-  return buf;
-}
+const ttsEnabled = () => Boolean(CFG.azureKey && CFG.azureRegion);
 const ttsUsage = new Map(); // user:day -> حروف
 const xmlEsc = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
 
@@ -1372,7 +1355,6 @@ async function handleTts(req, res, user) {
   const ssml = `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="ar-AE"><voice name="${voice.name}"><prosody rate="${rate >= 0 ? '+' : ''}${rate}%">${xmlEsc(text)}</prosody></voice></speak>`;
   const t = withTimeout(30000);
   try {
-    if (!CFG.azureKey || !CFG.azureRegion) throw new Error('azure not configured');
     const r = await fetch(CFG.azureTtsUrl || `https://${CFG.azureRegion}.tts.speech.microsoft.com/cognitiveservices/v1`, {
       method: 'POST',
       headers: {
@@ -1385,26 +1367,18 @@ async function handleTts(req, res, user) {
       signal: t.signal,
     });
     if (!r.ok) {
+      ttsUsage.set(key, Math.max(0, (ttsUsage.get(key) || 0) - text.length));
       const msg = await r.text().catch(() => '');
       console.error('tts failed:', r.status, msg.slice(0, 200));
-      throw new Error('azure ' + r.status);
+      return fail(res, r.status === 429 ? 429 : 500, 'upstream', 'الصوت الإماراتي مش متاح دلوقتي.');
     }
     const buf = Buffer.from(await r.arrayBuffer());
     res.writeHead(200, { 'Content-Type': 'audio/mpeg', 'Content-Length': buf.length, 'Cache-Control': 'no-store' });
     return res.end(buf);
   } catch (e) {
-    console.error('tts primary error:', e.message);
-    // احتياطي: ElevenLabs لو مفعّل
-    const t2 = withTimeout(30000);
-    try {
-      const buf = await elevenTts(text, t2.signal);
-      res.writeHead(200, { 'Content-Type': 'audio/mpeg', 'Content-Length': buf.length, 'Cache-Control': 'no-store' });
-      return res.end(buf);
-    } catch (e2) {
-      ttsUsage.set(key, Math.max(0, (ttsUsage.get(key) || 0) - text.length));
-      console.error('tts fallback failed:', e2.message);
-      return fail(res, 500, 'upstream', 'الصوت مش متاح دلوقتي.');
-    } finally { t2.done(); }
+    ttsUsage.set(key, Math.max(0, (ttsUsage.get(key) || 0) - text.length));
+    console.error('tts error:', e.message);
+    return fail(res, 500, 'upstream', 'الصوت الإماراتي مش متاح دلوقتي.');
   } finally { t.done(); }
 }
 setInterval(() => { const d = dayKey(); for (const k of ttsUsage.keys()) if (!k.endsWith(':' + d)) ttsUsage.delete(k); }, 3600000).unref();
