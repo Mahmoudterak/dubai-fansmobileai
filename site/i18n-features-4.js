@@ -85,6 +85,8 @@
     'توصية من التريندات': 'Recommendation from trends',
     'قارن ظهورك بالمنافسين': 'Compare your visibility with competitors',
     'جاهزة': 'Ready',
+    'مستخدمة': 'used',
+    'تشغيل': 'runs',
     /* ---- مراقبة الويب المظلم (الشاشة الجديدة) ---- */
     'إجراءات سريعة': 'Quick actions',
     'بياناتك الشخصية': 'Your personal data',

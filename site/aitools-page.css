@@ -39,3 +39,9 @@
 
 .ait-panel .aih-card strong { font-size: 15px; font-weight: 700; color: #FFFFFF; }
 .ait-panel .aih-card small { font-size: 12.5px; line-height: 1.6; color: #8A90A8; }
+
+/* شريط التقدّم وعداد التشغيل أسفل كل بطاقة (كما في التصميم) */
+.ait-panel .aih-bar { height: 4px; border-radius: 4px; background: rgba(255, 255, 255, 0.07); margin: 12px 0 10px; }
+.ait-panel .aih-foot { display: flex; gap: 4px; font-size: 12px; color: #8A90A8; }
+.ait-panel .aih-foot b { color: #FFFFFF; font-weight: 700; }
+.ait-panel .aih-count b { font-weight: 700; }

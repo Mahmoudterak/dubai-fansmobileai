@@ -110,7 +110,9 @@
     top.appendChild(el('h1', '', 'الأدوات'));
     var cnt = el('span', 'aih-count');
     cnt.appendChild(el('b', '', String(HUB_TOOLS.length)));
-    cnt.appendChild(el('span', '', ' أدوات'));
+    cnt.appendChild(el('span', '', ' أدوات · '));
+    cnt.appendChild(el('b', '', '0'));
+    cnt.appendChild(el('span', '', ' مستخدمة'));
     top.appendChild(cnt);
     wrap.appendChild(top);
 
@@ -129,6 +131,11 @@
       b.appendChild(row);
       b.appendChild(el('strong', '', t.label));
       b.appendChild(el('small', '', t.sub));
+      b.appendChild(el('div', 'aih-bar'));
+      var foot = el('div', 'aih-foot');
+      foot.appendChild(el('b', '', '0'));
+      foot.appendChild(el('span', '', ' تشغيل'));
+      b.appendChild(foot);
       b.addEventListener('click', function () { openTool(t.id); });
       grid.appendChild(b);
     });
