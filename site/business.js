@@ -827,10 +827,6 @@
     html += '<section class="card-box biz-card biz-full"><div class="biz-card-head"><span class="biz-ico spark">' + ICONS.spark + '</span><div><h2>التحليل الشامل وخطة 30 يوم</h2>' +
       '<p>بيجمع بيانات نشاطك وتحليل موقعك ومتجرك، ويطلّعلك خطة نمو أسبوع بأسبوع، وخطة محتوى 14 يوم، وتوصيات إعلانات.</p></div></div>' +
       '<div class="form-foot">' + runBtn('full', 'اعمل التحليل الشامل') + '</div></section>';
-    // قريباً
-    html += '<section class="card-box biz-card"><h2>ربط الحسابات (قريباً)</h2><p class="biz-hint">بنجهّز ربط الحسابات دي بالتعاون مع المنصات نفسها. هتقدر تربطها من هنا أول ما تتفعّل.</p><div class="soon-grid">' +
-      SOON.map(function (s) { return '<div class="soon-item"><span class="soon-dot" style="background:' + s[2] + '"></span><div><b>' + s[0] + '</b><span>' + s[1] + '</span></div><em>قريباً</em></div>'; }).join('') +
-      '</div></section>';
     body.innerHTML = html;
 
     Array.prototype.forEach.call(body.querySelectorAll('[data-run]'), function (b) { b.onclick = function () { run(b.getAttribute('data-run')); }; });
