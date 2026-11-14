@@ -215,9 +215,12 @@
   function openRadar(prefill) {
     var panel = D.showPanel('radar');
     panel.innerHTML =
-      '<div class="pv">' +
+      '<div class="pv rd-page">' +
       '<div class="pv-head"><div class="pv-ico ring-ico" aria-hidden="true"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" transform="rotate(-70 50 50)"></circle></svg></div><div><h1>Dubai Fans Radar</h1>' +
       '<p>شوف علامتك بتظهر قد إيه في نتائج البحث وفي إجابات الذكاء الاصطناعي، مقارنةً بمنافسينك.</p></div></div>' +
+      '<div class="rd-score"><div class="rd-score-head"><span class="rd-score-t">درجة ظهور علامتك</span><span class="rd-score-lbl" id="rdScoreLbl">لسه ما اتحللش</span></div>' +
+      '<div class="rd-track" dir="ltr"><div class="rd-rail"></div><div class="rd-bubble" id="rdBubble">0</div><input type="range" id="rdRange" min="0" max="100" value="0" disabled aria-label="درجة ظهور علامتك"></div>' +
+      '<div class="rd-scale" dir="ltr"><span>0</span><span>100</span></div></div>' +
       '<div id="radarTop">' + radarFormHtml() + '</div>' +
       '<div id="radarHistory"></div>' +
       '</div>';
@@ -391,10 +394,22 @@
       .catch(function (ex) { D.toast(D.netMessage(ex)); openRadar(); });
   }
 
+  // يعرض آخر درجة ظهور في شريط الدرجة (للقراءة فقط)
+  function setRadarScore(score, has) {
+    var v = Math.max(0, Math.min(100, Number(score) || 0));
+    var r = $('rdRange'), b = $('rdBubble'), l = $('rdScoreLbl');
+    if (!r || !b) return;
+    r.value = v;
+    b.textContent = v;
+    b.style.left = 'calc(' + v + '% - ' + (v * 0.22).toFixed(1) + 'px + 11px)';
+    if (l) l.textContent = has ? 'آخر تحليل' : 'لسه ما اتحللش';
+  }
+
   function loadHistory() {
     D.apiJson('/api/radar/reports').then(function (d) {
       var box = $('radarHistory');
       if (!box) return;
+      if (d.reports.length) setRadarScore(d.reports[0].score, true);
       if (!d.reports.length) { box.innerHTML = ''; return; }
       box.innerHTML = '<div class="card-box"><h2>تحليلاتك السابقة</h2><div class="hist-list"></div></div>';
       var list = box.querySelector('.hist-list');

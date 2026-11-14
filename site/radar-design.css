@@ -1,0 +1,110 @@
+/* Dubai Fans Radar — مطابق لتصميم Claude Design (صفحة الرادار فقط) */
+
+/* أيقونة الحلقة الدوّارة داخل مربع داكن */
+.rd-page .pv-ico.ring-ico {
+  width: 58px; height: 58px; flex: none;
+  border-radius: 16px;
+  background: rgba(20, 28, 62, 0.85);
+  border: 1px solid rgba(90, 120, 220, 0.35);
+  display: flex; align-items: center; justify-content: center;
+}
+.rd-page .pv-ico.ring-ico svg { width: 34px; height: 34px; }
+.rd-page .pv-ico.ring-ico circle { stroke: #F4F4F7; stroke-width: 7; }
+
+/* بطاقة درجة الظهور */
+.rd-page .rd-score {
+  margin: 16px 0 14px;
+  padding: 14px 16px 10px;
+  border-radius: 20px;
+  background: linear-gradient(180deg, #131A36, #0E1430);
+  border: 1px solid rgba(80, 110, 220, 0.25);
+}
+.rd-page .rd-score-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.rd-page .rd-score-t { font-size: 15px; font-weight: 700; color: #FFFFFF; }
+.rd-page .rd-score-lbl {
+  font-size: 12px; color: #B9BFD6;
+  padding: 4px 12px; border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  white-space: nowrap;
+}
+.rd-page .rd-track { position: relative; height: 46px; margin-top: 6px; }
+.rd-page .rd-rail {
+  position: absolute; left: 0; right: 0; top: 50%;
+  height: 6px; margin-top: -3px; border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+}
+.rd-page .rd-track input[type="range"] {
+  position: absolute; left: 0; right: 0; top: 50%; width: 100%;
+  margin: 0; transform: translateY(-50%);
+  -webkit-appearance: none; appearance: none;
+  background: transparent; pointer-events: none;
+  height: 22px;
+}
+.rd-page .rd-track input[type="range"]::-webkit-slider-runnable-track { height: 6px; background: transparent; }
+.rd-page .rd-track input[type="range"]::-moz-range-track { height: 6px; background: transparent; }
+.rd-page .rd-track input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: #FFFFFF;
+  border: 4px solid #E5484D;
+  box-shadow: 0 0 12px rgba(229, 72, 77, 0.45);
+  margin-top: -8px;
+}
+.rd-page .rd-track input[type="range"]::-moz-range-thumb {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: #FFFFFF; border: 4px solid #E5484D;
+}
+.rd-page .rd-bubble {
+  position: absolute; top: -4px;
+  transform: translateX(-50%);
+  min-width: 26px; padding: 3px 8px; border-radius: 8px;
+  background: #FFFFFF; color: #0B1020;
+  font-size: 13px; font-weight: 700; text-align: center;
+  left: 11px;
+}
+.rd-page .rd-bubble::after {
+  content: ""; position: absolute; left: 50%; bottom: -5px; margin-left: -5px;
+  border: 5px solid transparent; border-bottom: 0; border-top-color: #FFFFFF;
+}
+.rd-page .rd-scale {
+  display: flex; justify-content: space-between;
+  font-size: 12px; color: #8A90A8; margin-top: 2px;
+}
+
+/* بطاقة النموذج */
+.rd-page #radarForm {
+  padding: 18px 16px 16px;
+  border-radius: 24px;
+  background: linear-gradient(180deg, #111830, #0C1228);
+  border: 1px solid rgba(70, 110, 255, 0.35);
+  box-shadow: 0 0 24px rgba(50, 90, 230, 0.12);
+}
+.rd-page #radarForm h2 { font-size: 20px; font-weight: 800; color: #FFFFFF; text-align: right; margin: 0 0 14px; }
+.rd-page #radarForm .form-grid { display: flex; flex-direction: column; gap: 14px; }
+.rd-page #radarForm .f { display: flex; flex-direction: column; }
+.rd-page #radarForm .f label { font-size: 13px; color: #E6E9F5; margin-bottom: 7px; text-align: right; }
+.rd-page #radarForm .req { color: #F04848; }
+.rd-page #radarForm .f input {
+  height: 48px; padding: 0 20px;
+  border-radius: 999px;
+  border: 1.5px solid #3E63F0;
+  background: linear-gradient(120deg, rgba(20, 30, 84, 0.85), rgba(34, 22, 84, 0.75));
+  color: #FFFFFF; font-size: 14px;
+  box-shadow: 0 0 14px rgba(62, 99, 240, 0.18);
+}
+.rd-page #radarForm .f input::placeholder { color: #6B7394; }
+.rd-page #radarForm .f input:focus { outline: none; box-shadow: 0 0 0 3px rgba(62, 99, 240, 0.35); }
+.rd-page #radarForm .f-hint { font-size: 12px; color: #8A90A8; margin-top: 7px; text-align: right; }
+.rd-page #radarForm .form-error { color: #F87171; font-size: 13px; margin: 12px 0 0; }
+
+/* زر التحليل وتذييل النموذج */
+.rd-page #radarForm .form-foot { display: flex; flex-direction: column; align-items: stretch; gap: 12px; margin-top: 18px; }
+.rd-page #radarForm .form-foot .btn-primary {
+  width: 100%; height: 52px; border-radius: 999px;
+  background: linear-gradient(90deg, #1A2A6C, #2B1E66);
+  border: 1px solid rgba(90, 130, 255, 0.7);
+  box-shadow: 0 0 18px rgba(70, 110, 255, 0.35);
+  color: #FFFFFF; font-size: 16px; font-weight: 800;
+}
+.rd-page #radarForm .form-foot .muted { display: block; text-align: center; font-size: 12.5px; color: #8A90A8; }

@@ -69,6 +69,10 @@
     'في التطبيق انسخ': 'In the app, copy',
     'وحطهم هنا.': 'and paste them here.',
     'بياناتك بتتحفظ مشفّرة، وتقدر تفصل المتجر في أي وقت.': 'Your data is stored encrypted, and you can disconnect the store at any time.',
-    'سياسة الخصوصية': 'Privacy policy'
+    'سياسة الخصوصية': 'Privacy policy',
+    /* ---- درجة ظهور الرادار ---- */
+    'درجة ظهور علامتك': 'Your brand visibility score',
+    'لسه ما اتحللش': 'Not analysed yet',
+    'آخر تحليل': 'Last analysis'
   });
 })();
