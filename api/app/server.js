@@ -773,9 +773,16 @@ async function webSearch(query) {
     for (const r of j.results || []) {
       if (!r.url || !/^https?:\/\//.test(r.url) || seen.has(r.url)) continue;
       seen.add(r.url);
+      let domain = '';
+      try { domain = new URL(r.url).hostname.replace(/^www\./, ''); } catch (_) { continue; }
+      // تاريخ النشر بصيغة YYYY-MM-DD لو SearXNG رجّعه (مش كل الصفحات بتوفره)
+      let date = '';
+      if (r.publishedDate) { const d = new Date(r.publishedDate); if (!isNaN(d)) date = d.toISOString().slice(0, 10); }
       out.push({
         title: String(r.title || r.url).slice(0, 160),
         url: String(r.url).slice(0, 500),
+        domain: domain.slice(0, 120),
+        date,
         snippet: String(r.content || '').replace(/\s+/g, ' ').slice(0, 400),
       });
       if (out.length >= 6) break;

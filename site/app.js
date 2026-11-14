@@ -1262,20 +1262,57 @@
     el.querySelector('.ai-name').appendChild(tag);
   }
 
+  // تاريخ النشر بالعربي (لو موجود فقط)
+  function formatSourceDate(iso) {
+    if (!iso) return '';
+    var d = new Date(iso);
+    if (isNaN(d)) return '';
+    try { return new Intl.DateTimeFormat('ar', { year: 'numeric', month: 'long', day: 'numeric' }).format(d); }
+    catch (_) { return iso; }
+  }
+
   function renderSources(el, sources) {
     var box = el.querySelector('.extra');
     if (!sources || !sources.length || box.querySelector('.sources')) return;
     var wrap = document.createElement('div');
     wrap.className = 'sources';
-    wrap.innerHTML = '<div class="sources-title">المصادر</div><ol></ol>';
+    wrap.innerHTML = '<div class="sources-title">المصادر</div><ol class="src-list"></ol>';
     var ol = wrap.querySelector('ol');
     sources.forEach(function (s) {
       var li = document.createElement('li');
+      li.className = 'src-row';
+      // أيقونة الموقع: خدمة Google S2 المجانية، ولو فشلت تظهر دائرة فيها أول حرف من اسم الموقع
+      var domain = s.domain || '';
+      var ico = document.createElement('span');
+      ico.className = 'src-ico';
+      var letter = (domain || s.title || '?').trim().charAt(0).toUpperCase();
+      if (domain) {
+        var img = document.createElement('img');
+        img.alt = '';
+        img.loading = 'lazy';
+        img.referrerPolicy = 'no-referrer';
+        img.src = 'https://www.google.com/s2/favicons?sz=64&domain=' + encodeURIComponent(domain);
+        img.onerror = function () { ico.textContent = letter; ico.classList.add('src-ico-fallback'); img.remove(); };
+        ico.appendChild(img);
+      } else {
+        ico.textContent = letter;
+        ico.classList.add('src-ico-fallback');
+      }
+      var body = document.createElement('div');
+      body.className = 'src-body';
       var a = document.createElement('a');
       a.href = /^https?:\/\//.test(s.url) ? s.url : '#';
       a.target = '_blank'; a.rel = 'noopener nofollow';
       a.textContent = s.title || s.url;
-      li.appendChild(a);
+      body.appendChild(a);
+      var meta = document.createElement('div');
+      meta.className = 'src-meta';
+      meta.textContent = domain;
+      var dateTxt = formatSourceDate(s.date);
+      if (dateTxt) meta.textContent += (domain ? ' · ' : '') + dateTxt;
+      if (meta.textContent) body.appendChild(meta);
+      li.appendChild(ico);
+      li.appendChild(body);
       ol.appendChild(li);
     });
     box.appendChild(wrap);
