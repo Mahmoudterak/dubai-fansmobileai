@@ -1,0 +1,66 @@
+/* تصميم نشاطي التجاري (من ملف Dubai Fans AI v3، شاشة Business).
+   طبقة تعديل فوق app.css تخص صفحة نشاطي التجاري (pv و biz-*) في الوضع الداكن فقط.
+   حلقة الجاهزية الكبيرة في التصميم لم تُنفّذ هنا، لأنها تحتاج تعديل في بنية الصفحة. */
+
+:root[data-theme="dark"] .pv-head h1 {
+  color: #F4F4F7;
+  font-size: 26px;
+}
+:root[data-theme="dark"] .pv-head p {
+  color: #B4BAD0;
+}
+:root[data-theme="dark"] .pv-ico.green {
+  background: radial-gradient(circle at 40% 35%, #2E7BE6, #173A86);
+  color: #FFFFFF;
+  border: 1px solid #2E7BE6;
+  box-shadow: 0 0 30px rgba(46, 123, 230, 0.4);
+}
+
+:root[data-theme="dark"] .biz-tabs {
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 999px;
+  backdrop-filter: blur(18px);
+}
+:root[data-theme="dark"] .biz-tabs button {
+  color: #9EA5BE;
+  border-radius: 999px;
+}
+:root[data-theme="dark"] .biz-tabs button.on {
+  background: linear-gradient(120deg, rgba(94, 200, 242, 0.25), rgba(155, 124, 246, 0.35), rgba(232, 121, 249, 0.25));
+  color: #FFFFFF;
+  box-shadow: inset 0 0 0 1px rgba(155, 124, 246, 0.55);
+}
+
+:root[data-theme="dark"] .biz-ico {
+  background: rgba(255, 255, 255, 0.045);
+  border-color: rgba(255, 255, 255, 0.09);
+  color: #B4BAD0;
+}
+:root[data-theme="dark"] .biz-full {
+  background: linear-gradient(135deg, rgba(109, 74, 255, 0.22), rgba(34, 211, 238, 0.06));
+  border-color: #6D4AFF;
+}
+:root[data-theme="dark"] .biz-rep {
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 18px;
+  backdrop-filter: blur(18px);
+  color: #F4F4F7;
+}
+:root[data-theme="dark"] .biz-rep:hover {
+  border-color: #6D4AFF;
+}
+:root[data-theme="dark"] .biz-connected {
+  background: rgba(28, 122, 69, 0.18);
+  border-color: rgba(52, 211, 153, 0.35);
+}
+:root[data-theme="dark"] .biz-connected .muted {
+  color: #6EE7A8;
+}
+:root[data-theme="dark"] .biz-loading,
+:root[data-theme="dark"] .biz-hint,
+:root[data-theme="dark"] .biz-card-head p,
+:root[data-theme="dark"] .biz-empty p {
+  color: #9EA5BE;
+}
