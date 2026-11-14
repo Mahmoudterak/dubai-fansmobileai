@@ -78,6 +78,8 @@ const CFG = {
   renderUrl: env('RENDER_URL', 'http://dfai_render:3300'),
   renderToken: env('RENDER_TOKEN'),
   cfImageFallback: env('CF_IMAGE_FALLBACK', '@cf/black-forest-labs/flux-1-schnell'),
+  // DeepAI: احتياطي للصور بعد Cloudflare. لو المفتاح فاضي ما يتستخدمش
+  deepaiKey: env('DEEPAI_API_KEY'),
   cfSttModel: env('CF_STT_MODEL', '@cf/openai/whisper-large-v3-turbo'),
   cfVisionModel: env('CF_VISION_MODEL', '@cf/meta/llama-4-scout-17b-16e-instruct'),
   azureKey: env('AZURE_SPEECH_KEY').replace(/[^\x21-\x7e]/g, ''),
@@ -1195,12 +1197,37 @@ async function generateAd(opts) {
     catch (e) { console.error('image model failed:', e.message); }
     finally { t.done(); }
   }
+  if (!buf && CFG.deepaiKey) {
+    const t = withTimeout(90000);
+    try { buf = await deepaiImage(english + NO_TEXT, t.signal); }
+    catch (e) { console.error('deepai image failed:', e.message); }
+    finally { t.done(); }
+  }
   if (!buf) throw new Error('all image models failed');
   buf = await compressImage(buf);
   const isPng = buf[0] === 0x89 && buf[1] === 0x50;
   const id = crypto.randomBytes(16).toString('hex') + (isPng ? '.png' : '.jpg');
   saveUserImage(opts.userId, id, buf);
   return { id, buf, url: `/api/images/${id}`, prompt: english, overlay, post, product: useProduct };
+}
+// DeepAI text2img: الطلب بالـ api-key، والرد فيه output_url. نقبل الرابط بس لو على نطاق DeepAI (حماية من أي رابط غريب)
+async function deepaiImage(prompt, signal) {
+  const form = new FormData();
+  form.append('text', prompt.slice(0, 1000));
+  const r = await fetch('https://api.deepai.org/api/text2img', {
+    method: 'POST', signal, redirect: 'error', headers: { 'api-key': CFG.deepaiKey }, body: form,
+  });
+  if (!r.ok) throw new Error(`deepai ${r.status}`);
+  const j = await r.json().catch(() => ({}));
+  const out = String(j.output_url || '');
+  let u;
+  try { u = new URL(out); } catch { throw new Error('deepai: no output_url'); }
+  if (u.protocol !== 'https:' || !/(^|\.)deepai\.org$/.test(u.hostname)) throw new Error('deepai: unexpected output host');
+  const img = await fetch(u.href, { signal, redirect: 'error' });
+  if (!img.ok) throw new Error(`deepai file ${img.status}`);
+  const buf = Buffer.from(await img.arrayBuffer());
+  if (buf.length < 1000 || buf.length > 15 * 1024 * 1024) throw new Error('deepai: bad image size');
+  return buf;
 }
 function productFromDataUrl(s) {
   const pm = /^data:image\/(?:jpeg|png|webp);base64,([A-Za-z0-9+/=]+)$/.exec(String(s || ''));
