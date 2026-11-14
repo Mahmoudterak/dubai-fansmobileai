@@ -27,6 +27,21 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Readex+Pro:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="app.css?v=__V__">
 <link rel="stylesheet" href="login-design.css?v=__V__">
+<link rel="stylesheet" href="pricing-design.css?v=__V__">
+<link rel="stylesheet" href="settings-design.css?v=__V__">
+<link rel="stylesheet" href="business-design.css?v=__V__">
+<link rel="stylesheet" href="agents-design.css?v=__V__">
+<link rel="stylesheet" href="darkweb-design.css?v=__V__">
+<link rel="stylesheet" href="monitor-design.css?v=__V__">
+<link rel="stylesheet" href="menu-design.css?v=__V__">
+<link rel="stylesheet" href="home-design.css?v=__V__">
+<link rel="stylesheet" href="post-login-design.css?v=__V__">
+<link rel="stylesheet" href="radar-design.css?v=__V__">
+<link rel="stylesheet" href="darkweb-page.css?v=__V__">
+<link rel="stylesheet" href="monitor-page.css?v=__V__">
+<link rel="stylesheet" href="aitools-page.css?v=__V__">
+<link rel="stylesheet" href="mobile-fixes.css?v=__V__">
+<link rel="stylesheet" href="ai-tools-design.css?v=__V__">
 <script src="i18n.js?v=__V__"></script>
 <script src="i18n-features-1.js?v=__V__"></script>
 <script src="i18n-features-2.js?v=__V__"></script>
@@ -56,7 +71,34 @@
           <span class="brand-sub">دبي فانز</span>
         </div>
       </div>
-      <div class="login-orb" aria-hidden="true"><span class="orb-core"></span></div>
+      <div class="login-orb" aria-hidden="true">
+        <span class="orb-ring"></span>
+        <span class="orb-sphere">
+          <span class="orb-sweep"></span>
+          <span class="orb-shade"></span>
+          <span class="orb-gloss"></span>
+          <span class="orb-edge"></span>
+        </span>
+        <svg class="orb-logo" viewBox="0 0 100 100" focusable="false">
+          <g class="orb-ring-back"><g transform="rotate(-25 50 50)"><ellipse cx="50" cy="50" rx="40" ry="15" fill="none" stroke="#7B5CF6" stroke-width="4.5" opacity="0.95"/></g></g>
+          <path d="M33 27h13a23 23 0 0 1 0 46H33a3.5 3.5 0 0 1-3.5-3.5v-39A3.5 3.5 0 0 1 33 27zM40.5 37.5v25h5.5a12.5 12.5 0 0 0 0-25z" fill="#F3F3F8" fill-rule="evenodd"/>
+          <g class="orb-ring-front"><g transform="rotate(-25 50 50)">
+            <path d="M10 50A40 15 0 0 0 46 64.9" fill="none" stroke="#7B5CF6" stroke-width="4.5" stroke-linecap="round"/>
+            <circle r="7.5" fill="rgba(123,92,246,.45)" cx="0" cy="0"><animateMotion dur="5s" repeatCount="indefinite" path="M90 50A40 15 0 1 1 10 50A40 15 0 1 1 90 50"/></circle>
+            <circle r="4.5" fill="#D8CEFF" cx="0" cy="0"><animateMotion dur="5s" repeatCount="indefinite" path="M90 50A40 15 0 1 1 10 50A40 15 0 1 1 90 50"/></circle>
+          </g></g>
+        </svg>
+        <span class="orb-star" style="left:8%;top:6%;width:2px;height:2px;opacity:.35;animation-duration:1.4s;animation-delay:0s"></span>
+        <span class="orb-star" style="left:45%;top:59%;width:3px;height:3px;opacity:.5;animation-duration:1.7s;animation-delay:.2s"></span>
+        <span class="orb-star" style="left:82%;top:24%;width:4px;height:4px;opacity:.65;animation-duration:2s;animation-delay:.4s"></span>
+        <span class="orb-star" style="left:33%;top:77%;width:2px;height:2px;opacity:.8;animation-duration:1.4s;animation-delay:.6s"></span>
+        <span class="orb-star" style="left:70%;top:42%;width:3px;height:3px;opacity:.35;animation-duration:1.7s;animation-delay:.8s"></span>
+        <span class="orb-star" style="left:21%;top:7%;width:4px;height:4px;opacity:.5;animation-duration:2s;animation-delay:1s"></span>
+        <span class="orb-star" style="left:58%;top:60%;width:2px;height:2px;opacity:.65;animation-duration:1.4s;animation-delay:1.2s"></span>
+        <span class="orb-star" style="left:9%;top:25%;width:3px;height:3px;opacity:.8;animation-duration:1.7s;animation-delay:1.4s"></span>
+        <span class="orb-star" style="left:46%;top:78%;width:4px;height:4px;opacity:.35;animation-duration:2s;animation-delay:1.6s"></span>
+        <span class="orb-star" style="left:83%;top:83%;width:2px;height:2px;opacity:.5;animation-duration:1.4s;animation-delay:1.8s"></span>
+      </div>
       <div class="login-head">
         <h1 id="authTitle">أهلاً بك من جديد</h1>
         <p id="authSub">سجّل دخولك لمساعدك الذكي في التسويق الرقمي.</p>
@@ -108,6 +150,30 @@
 </div>
 
 <!-- ============ التطبيق ============ -->
+<div id="splash" class="df-splash" hidden aria-hidden="true">
+  <button id="splashSkip" type="button" class="df-splash-skip">تخطي</button>
+  <div class="df-splash-brand"><span class="logo-slot"></span><span>DUBAI FANS AI</span></div>
+  <div class="df-splash-stage">
+    <div class="df-splash-sphere"></div>
+    <span class="df-splash-dot" style="--x:-150px;--y:-40px;--s:8px"></span>
+    <span class="df-splash-dot" style="--x:-120px;--y:-120px;--s:10px"></span>
+    <span class="df-splash-dot" style="--x:-40px;--y:-160px;--s:6px"></span>
+    <span class="df-splash-dot" style="--x:60px;--y:-150px;--s:12px"></span>
+    <span class="df-splash-dot" style="--x:130px;--y:-90px;--s:7px"></span>
+    <span class="df-splash-dot" style="--x:165px;--y:10px;--s:9px"></span>
+    <span class="df-splash-dot" style="--x:140px;--y:110px;--s:6px"></span>
+    <span class="df-splash-dot" style="--x:40px;--y:160px;--s:11px"></span>
+    <span class="df-splash-dot" style="--x:-60px;--y:150px;--s:7px"></span>
+    <span class="df-splash-dot" style="--x:-150px;--y:90px;--s:9px"></span>
+    <svg class="df-splash-ring" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="40" transform="rotate(-70 50 50)"></circle></svg>
+  </div>
+  <div class="df-splash-text">
+    <div class="df-p1"><h2>مرحباً بك في Dubai Fans AI</h2><p>مساعدك الذكي لنمو أعمالك</p></div>
+    <div class="df-p2"><h2>من الفكرة إلى التنفيذ…</h2><p>اجعل الذكاء الاصطناعي شريكك في التسويق والنمو.</p></div>
+  </div>
+  <div class="df-splash-bar"><span></span></div>
+</div>
+
 <div id="app" class="app" hidden>
   <aside id="sidebar" class="sidebar" aria-label="القائمة الجانبية">
     <div class="brand">
@@ -183,6 +249,7 @@
       <button id="menuBtn" type="button" class="icon-btn menu-btn" aria-label="القائمة">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h16M4 16h10"/></svg>
       </button>
+      <span class="top-ring" aria-hidden="true"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" transform="rotate(-70 50 50)"></circle></svg></span>
       <div class="model-pill" title="النموذج المستخدم">
         <span class="dot-cyan"></span>
         <span id="modelName">Dubai Fans AI</span>
@@ -197,9 +264,13 @@
     </header>
 
     <section id="home" class="home">
-      <div class="orb" role="img" aria-label="المساعد جاهز"></div>
-      <h1 id="greeting">بماذا نبدأ اليوم؟</h1>
-      <p>اختر اقتراحاً أو اكتب طلبك مباشرة، والمساعد يتكفّل بالباقي.</p>
+      <div class="home-orb" role="img" aria-label="المساعد جاهز">
+        <span class="ho-glow"></span>
+        <span class="ho-sphere"></span>
+        <span class="ho-ring"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="40" transform="rotate(-70 50 50)"></circle></svg></span>
+      </div>
+      <h1 id="greeting">ماذا تريد أن تنجز اليوم؟</h1>
+      <div id="cards" class="cards"></div>
     </section>
 
     <section id="thread" class="thread" aria-live="polite"></section>
@@ -225,11 +296,24 @@
             <svg class="ic-stop" viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="2"/></svg>
           </button>
         </div>
+        <div class="cmp-icons" aria-label="إرفاق">
+          <button type="button" class="cmp-ico" data-k="camera" aria-label="فيديو" title="فيديو"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="13" height="12" rx="2.5"/><path d="m16 10 5-3v10l-5-3"/></svg></button>
+          <button type="button" class="cmp-ico" data-k="photos" aria-label="صورة" title="صورة"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/></svg></button>
+          <button type="button" class="cmp-ico" data-k="files" aria-label="إرفاق ملف" title="إرفاق ملف"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5 12.5 20a5 5 0 0 1-7-7l8.5-8.5a3.5 3.5 0 0 1 5 5L10.5 18a2 2 0 0 1-3-3l7.5-7.5"/></svg></button>
+          <button type="button" class="cmp-ico" data-k="mic" aria-label="إملاء صوتي" title="إملاء صوتي"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
+        </div>
       </form>
-      <div id="cards" class="cards"></div>
       <p class="disclaimer">قد يخطئ الذكاء الاصطناعي أحياناً، راجِع المعلومات المهمة قبل نشرها.</p>
     </div>
   </main>
+
+  <!-- شريط التنقل السفلي (الجوال): الرئيسية، نشاطي، الأدوات، الويب المظلم -->
+  <nav id="bottomNav" class="bottom-nav" aria-label="التنقل السريع">
+    <button type="button" data-bn="home" aria-label="الرئيسية"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 12 4l9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg><span>الرئيسية</span></button>
+    <button type="button" data-bn="business" aria-label="نشاطي التجاري"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9l1.5-5h15L21 9"/><path d="M4 9v11h16V9"/><path d="M9 20v-6h6v6"/></svg><span>نشاطي</span></button>
+    <button type="button" data-bn="tools" aria-label="الأدوات"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c.6 4.6 2.4 7.4 7 8-4.6.6-6.4 3.4-7 8-.6-4.6-2.4-7.4-7-8 4.6-.6 6.4-3.4 7-8Z"/></svg><span>الأدوات</span></button>
+    <button type="button" data-bn="darkweb" aria-label="مراقبة الويب المظلم"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 6v6c0 4.5 3.4 8 8 9 4.6-1 8-4.5 8-9V6z"/></svg><span>الويب المظلم</span></button>
+  </nav>
 </div>
 
 <!-- ============ الباقات ============ -->
@@ -251,6 +335,7 @@
     <button id="agentsClose" type="button" class="icon-btn modal-close" aria-label="إغلاق">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
     </button>
+    <div class="ag-ring" aria-hidden="true"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" transform="rotate(-70 50 50)"></circle></svg></div>
     <h2 id="agentsTitle">استعن بوكيل متخصص</h2>
     <p class="modal-sub">اختار الخبير المناسب، وقوله محتاج إيه بس.</p>
     <div id="agentsGrid" class="agents-grid"></div>
@@ -281,6 +366,7 @@
     <button id="contentClose" type="button" class="icon-btn modal-close" aria-label="إغلاق">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
     </button>
+    <div class="ag-ring" aria-hidden="true"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" transform="rotate(-70 50 50)"></circle></svg></div>
     <h2 id="contentTitle">مولد المحتوى</h2>
     <p id="contentSub" class="modal-sub">اختار نوع المحتوى، واملأ بيانات بسيطة، والباقي علينا.</p>
     <div id="contentBody"></div>

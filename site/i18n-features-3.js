@@ -108,6 +108,17 @@
     /* ---- نافذة الباقات: بطاقات مستقلة ---- */
     'الأكثر طلباً': 'Most popular',
     'في الشهر': 'per month',
+    /* ---- مركز الأدوات الذكية: اللوحة الرئيسية ---- */
+    'الرصيد المتبقي': 'Remaining balance',
+    'حد الباقة': 'Plan limit',
+    'الأدوات المتاحة': 'Available tools',
+    'غير محدود': 'Unlimited',
+    'خلي كل نص يطلع بأسلوب علامتك': 'Make every text sound like your brand',
+    'اعرض إعلانك على ثلاث شخصيات افتراضية': 'Show your ad to three virtual personas',
+    'حوّل لقطة شاشة لصفحة HTML قابلة للتعديل': 'Turn a screenshot into an editable HTML page',
+    'ابحث عن عملاء محتملين لنشاطك': 'Find potential customers for your business',
+    'اسأل عن قرار تجاري واخذ رأي واضح': 'Ask about a business decision and get a clear view',
+    'قارن موقعك أو عرضك بمنافس': 'Compare your site or offer with a competitor',
     /* ---- مركز الأدوات الذكية: الرأس ---- */
     'أدوات الذكاء الاصطناعي لنشاطك. ولا تنفيذ من غير موافقتك.': 'AI tools for your business. Nothing is executed without your approval.',
     'دخل الشهر': 'Income this month',

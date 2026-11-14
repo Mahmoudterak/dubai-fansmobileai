@@ -78,6 +78,8 @@ const CFG = {
   renderUrl: env('RENDER_URL', 'http://dfai_render:3300'),
   renderToken: env('RENDER_TOKEN'),
   cfImageFallback: env('CF_IMAGE_FALLBACK', '@cf/black-forest-labs/flux-1-schnell'),
+  // DeepAI: احتياطي للصور بعد Cloudflare. لو المفتاح فاضي ما يتستخدمش
+  deepaiKey: env('DEEPAI_API_KEY'),
   cfSttModel: env('CF_STT_MODEL', '@cf/openai/whisper-large-v3-turbo'),
   cfVisionModel: env('CF_VISION_MODEL', '@cf/meta/llama-4-scout-17b-16e-instruct'),
   azureKey: env('AZURE_SPEECH_KEY').replace(/[^\x21-\x7e]/g, ''),
@@ -137,6 +139,7 @@ const BASE_SYSTEM = [
   '- إذا نقصتك معلومة جوهرية فاسأل سؤالاً أو سؤالين قصيرين فقط، لكن قدّم في نفس الرد نسخة مفيدة مبدئية بدل أن تكتفي بالسؤال.',
   '- طول الرد على قدر السؤال: سؤال بسيط = جواب قصير. الطلبات الكبيرة = عناوين ### ونقاط وجداول مرتبة، والأرقام المهمة بخط عريض.',
   '- عند كتابة محتوى للنشر قدّم بديلين أو ثلاثة عند الفائدة، واقترح هاشتاجات ووقت نشر مناسب.',
+  '- إذا طلب المستخدم تحليل متجره أو موقعه أو نشاطه، ولم يرسل رابطاً أو بيانات عنه (المنتجات، الأسعار، الجمهور، الأهداف)، فلا تقدّم تحليلاً ولا جدولاً عاماً ولا ملاحظات عامة. اطلب منه الرابط أو البيانات المطلوبة في قائمة قصيرة لا تتجاوز 3 نقاط، وأخبره أن التحليل سيكون دقيقاً بعد وصولها. إذا كانت معلومات النشاط أو ملخص آخر تحليل للمتجر موجودة في السياق، فاستخدمها ولا تسأل من جديد.',
   '- إذا طلب المستخدم صورة أو تصميماً، فأخبره أن يختار أداة "توليد الصور" وسيتم التنفيذ هناك.',
   '- إذا طلب المستخدم مخرجاً جاهزاً (نص، منشور، جدول، خطة)، فقدّمه مباشرة في الرد، ولا تشرح طريقة تنفيذه ولا تصف خطوات يمكنك تنفيذها بنفسك. اجعل الرد قصيراً ومركّزاً ولا تكرر السؤال.',
   '',
@@ -725,7 +728,7 @@ function availableModels() {
   const list = [{ id: 'auto', name: 'تلقائي' }];
   if (cfEnabled()) list.push({ id: 'cloud', name: 'الخبير' });
   if (cfEnabled() && CFG.cfSmallModel) list.push({ id: 'small', name: 'سريع' });
-  if (extEnabled()) list.push({ id: 'external', name: 'النموذج الخارجي' });
+  if (extEnabled()) list.push({ id: 'external', name: 'الذكاء المخصص' });
   list.push({ id: 'local', name: 'النموذج المحلي' });
   return list;
 }
@@ -772,9 +775,16 @@ async function webSearch(query) {
     for (const r of j.results || []) {
       if (!r.url || !/^https?:\/\//.test(r.url) || seen.has(r.url)) continue;
       seen.add(r.url);
+      let domain = '';
+      try { domain = new URL(r.url).hostname.replace(/^www\./, ''); } catch (_) { continue; }
+      // تاريخ النشر بصيغة YYYY-MM-DD لو SearXNG رجّعه (مش كل الصفحات بتوفره)
+      let date = '';
+      if (r.publishedDate) { const d = new Date(r.publishedDate); if (!isNaN(d)) date = d.toISOString().slice(0, 10); }
       out.push({
         title: String(r.title || r.url).slice(0, 160),
         url: String(r.url).slice(0, 500),
+        domain: domain.slice(0, 120),
+        date,
         snippet: String(r.content || '').replace(/\s+/g, ' ').slice(0, 400),
       });
       if (out.length >= 6) break;
@@ -1187,12 +1197,37 @@ async function generateAd(opts) {
     catch (e) { console.error('image model failed:', e.message); }
     finally { t.done(); }
   }
+  if (!buf && CFG.deepaiKey) {
+    const t = withTimeout(90000);
+    try { buf = await deepaiImage(english + NO_TEXT, t.signal); }
+    catch (e) { console.error('deepai image failed:', e.message); }
+    finally { t.done(); }
+  }
   if (!buf) throw new Error('all image models failed');
   buf = await compressImage(buf);
   const isPng = buf[0] === 0x89 && buf[1] === 0x50;
   const id = crypto.randomBytes(16).toString('hex') + (isPng ? '.png' : '.jpg');
   saveUserImage(opts.userId, id, buf);
   return { id, buf, url: `/api/images/${id}`, prompt: english, overlay, post, product: useProduct };
+}
+// DeepAI text2img: الطلب بالـ api-key، والرد فيه output_url. نقبل الرابط بس لو على نطاق DeepAI (حماية من أي رابط غريب)
+async function deepaiImage(prompt, signal) {
+  const form = new FormData();
+  form.append('text', prompt.slice(0, 1000));
+  const r = await fetch('https://api.deepai.org/api/text2img', {
+    method: 'POST', signal, redirect: 'error', headers: { 'api-key': CFG.deepaiKey }, body: form,
+  });
+  if (!r.ok) throw new Error(`deepai ${r.status}`);
+  const j = await r.json().catch(() => ({}));
+  const out = String(j.output_url || '');
+  let u;
+  try { u = new URL(out); } catch { throw new Error('deepai: no output_url'); }
+  if (u.protocol !== 'https:' || !/(^|\.)deepai\.org$/.test(u.hostname)) throw new Error('deepai: unexpected output host');
+  const img = await fetch(u.href, { signal, redirect: 'error' });
+  if (!img.ok) throw new Error(`deepai file ${img.status}`);
+  const buf = Buffer.from(await img.arrayBuffer());
+  if (buf.length < 1000 || buf.length > 15 * 1024 * 1024) throw new Error('deepai: bad image size');
+  return buf;
 }
 function productFromDataUrl(s) {
   const pm = /^data:image\/(?:jpeg|png|webp);base64,([A-Za-z0-9+/=]+)$/.exec(String(s || ''));
@@ -1954,6 +1989,17 @@ async function route(req, res) {
   const m = req.method;
   const ip = clientIp(req);
 
+  // صفحات الهبوط المنشورة: nginx يمرّر /lp/ للـ API، والصفحة تُقرأ من مجلد landing داخل volume البيانات
+  const lp = p.match(/^\/lp\/([a-z0-9-]{3,80})$/);
+  if (m === 'GET' && lp) {
+    const file = path.join(process.env.LANDING_DIR || '/data/landing', lp[1], 'index.html');
+    let html = null;
+    try { html = fs.readFileSync(file, 'utf8'); } catch { /* غير موجودة */ }
+    if (html === null) { res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' }); return res.end('Not found'); }
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'X-Robots-Tag': 'noindex, nofollow, noarchive', 'Cache-Control': 'no-cache' });
+    return res.end(html);
+  }
+
   if (m === 'GET' && p === '/api/health') return send(res, 200, { ok: true, cloud: cfEnabled(), search: Boolean(CFG.searxUrl) });
 
   const img = p.match(/^\/api\/images\/([^/]+)$/);
@@ -2331,12 +2377,12 @@ async function route(req, res) {
     }
     if (m === 'POST') {
       if (rateLimited('landing:' + user.id, 3, 60000)) return fail(res, 429, 'rate', 'طلبات كتير ورا بعض. استنى دقيقة.');
-      const body = await readJson(req, 16 * 1024);
+      const body = await readJson(req, 400 * 1024);
       const paid = effectivePlan(user).id !== 'free';
       const credits = creditsFor(user);
       if (credits.limit !== -1 && credits.left < LANDING_CREDIT_COST) return fail(res, 429, 'credits', `رصيدك لا يكفي لصفحة الهبوط (${LANDING_CREDIT_COST} نقطة).`);
       const r = await landing.createLandingPage(db, {
-        userId: user.id, paid, brief: body.brief, slug: body.slug, day: dayKey(),
+        userId: user.id, paid, brief: body.brief, slug: body.slug, html: body.html, day: dayKey(),
         charge: (uid) => { q.creditAdd.run(uid, monthKey(), LANDING_CREDIT_COST); },
       });
       if (!r.ok) return fail(res, 400, 'landing', r.error);

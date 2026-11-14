@@ -1,0 +1,43 @@
+/* تصميم مراقبة الويب المظلم الجديد (من ملف Dubai Fans AI v3، شاشة Dark Web).
+   طبقة تعديل فوق app.css تخص صفحة الويب المظلم (dw-box) في الوضع الداكن فقط. */
+
+:root[data-theme="dark"] .pv:has(.dw-box) .pv-ico.red {
+  background: radial-gradient(circle at 40% 35%, #E5484D, #7A1A1E);
+  color: #FFFFFF;
+  border: 1px solid #E5484D;
+  box-shadow: 0 0 30px rgba(229, 72, 77, 0.4);
+}
+
+:root[data-theme="dark"] .dw-box {
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 20px;
+  backdrop-filter: blur(18px);
+  color: #F4F4F7;
+}
+:root[data-theme="dark"] .dw-box h2 {
+  color: #F4F4F7;
+}
+:root[data-theme="dark"] .dw-box .biz-hint,
+:root[data-theme="dark"] .dw-box .muted {
+  color: #9EA5BE;
+}
+:root[data-theme="dark"] .dw-box input {
+  background: linear-gradient(135deg, rgba(60, 44, 140, 0.35), rgba(18, 16, 48, 0.9));
+  border: 1.5px solid rgba(155, 124, 246, 0.55);
+  color: #F4F4F7;
+  border-radius: 999px;
+  padding: 0 18px;
+  min-height: 48px;
+}
+:root[data-theme="dark"] .dw-box input:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(155, 124, 246, 0.25), 0 0 22px rgba(155, 124, 246, 0.35);
+}
+:root[data-theme="dark"] .dw-box .btn-primary {
+  border-radius: 999px;
+  background: linear-gradient(120deg, #4FB8EE 0%, #6D7CF5 40%, #A97CF6 72%, #E08AEE 100%);
+  color: #FFFFFF;
+  border: 0;
+  box-shadow: 0 8px 22px rgba(155, 124, 246, 0.35);
+}

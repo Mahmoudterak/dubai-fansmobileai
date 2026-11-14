@@ -1,0 +1,35 @@
+/* تصميم الشاشة الرئيسية الجديد (من ملف Dubai Fans AI v3، شاشة Home).
+   طبقة تعديل فوق app.css تخص الرئيسية (.home) وبطاقات الاقتراحات (.card) والمُدخل (.composer) في الوضع الداكن فقط. */
+
+:root[data-theme="dark"] .home h1 {
+  color: #F4F4F7;
+}
+:root[data-theme="dark"] .home p {
+  color: #B4BAD0;
+}
+
+:root[data-theme="dark"] .card {
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 20px;
+  backdrop-filter: blur(18px);
+  color: #F4F4F7;
+  box-shadow: none;
+}
+:root[data-theme="dark"] .card:hover {
+  border-color: #6D4AFF;
+  box-shadow: 0 0 18px rgba(109, 74, 255, 0.35);
+}
+:root[data-theme="dark"] .card-sub {
+  color: #9EA5BE;
+}
+
+:root[data-theme="dark"] .composer {
+  background: linear-gradient(180deg, rgba(20, 24, 56, 0.85), rgba(9, 14, 36, 0.9));
+  border: 1px solid rgba(155, 124, 246, 0.35);
+  border-radius: 24px;
+  backdrop-filter: blur(18px);
+}
+:root[data-theme="dark"] .composer textarea::placeholder {
+  color: #7E86A6;
+}

@@ -1,0 +1,49 @@
+/* تصميم المتابعة التلقائية والرادار (من ملف Dubai Fans AI v3، شاشتي Auto Monitor و Radar).
+   طبقة تعديل فوق app.css في الوضع الداكن فقط. */
+
+/* ---- المتابعة التلقائية (#monBody) ---- */
+:root[data-theme="dark"] .pv:has(#monBody) .pv-ico.orange {
+  background: radial-gradient(circle at 40% 35%, #F59E0B, #7C3A0A);
+  color: #FFFFFF;
+  border: 1px solid #F59E0B;
+  box-shadow: 0 0 30px rgba(245, 158, 11, 0.4);
+}
+:root[data-theme="dark"] .mon {
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 20px;
+  backdrop-filter: blur(18px);
+  color: #F4F4F7;
+}
+:root[data-theme="dark"] .mon-name {
+  color: #F4F4F7;
+}
+:root[data-theme="dark"] .mon-meta {
+  color: #9EA5BE;
+}
+:root[data-theme="dark"] .mon-score b {
+  color: #F4F4F7;
+}
+
+/* ---- الرادار (#radarTop و #radarHistory) ---- */
+:root[data-theme="dark"] .pv:has(#radarTop) .pv-ico {
+  background: radial-gradient(circle at 40% 35%, #2BD4F5, #1F3D8A);
+  color: #FFFFFF;
+  border: 1px solid #2BD4F5;
+  box-shadow: 0 0 30px rgba(43, 212, 245, 0.35);
+}
+:root[data-theme="dark"] #radarTop .card-box,
+:root[data-theme="dark"] #radarHistory .card-box {
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 20px;
+  backdrop-filter: blur(18px);
+  color: #F4F4F7;
+}
+:root[data-theme="dark"] #radarTop input {
+  background: linear-gradient(135deg, rgba(60, 44, 140, 0.35), rgba(18, 16, 48, 0.9));
+  border: 1.5px solid rgba(155, 124, 246, 0.55);
+  color: #F4F4F7;
+  border-radius: 999px;
+  padding: 0 18px;
+}

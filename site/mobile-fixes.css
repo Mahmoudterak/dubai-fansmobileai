@@ -1,0 +1,45 @@
+/* إصلاحات الجوال الأخيرة (تُحمَّل آخراً فتغلب على الملفات السابقة):
+   1) إخفاء الباقة (باقة أعمال) وأيقونة الدردشة من أعلى الشاشة في كل الصفحات
+   2) توهّج نشاطي التجاري الأحمر كما في التصميم
+   3) إخفاء أشرطة التمرير البنفسجية على اليسار */
+
+#planPill, .plan-pill, #topNewChat, .top-new { display: none !important; }
+
+:root[data-theme="dark"] body.biz-open .main {
+  background: radial-gradient(440px 340px at 50% -40px, rgba(122, 24, 36, 0.85), rgba(122, 24, 36, 0) 70%), #06091A;
+}
+
+/* الوضع الداكن هو الأساسي: شاشات الكود والمحرر كانت بيضاء بسبب ألوان ثابتة */
+:root[data-theme="dark"] .md pre { background: #0B1020; border-color: rgba(155, 124, 246, 0.2); color: #E6E9F5; }
+:root[data-theme="dark"] .editor { background: #06091A; }
+:root[data-theme="dark"] .ed-bar,
+:root[data-theme="dark"] .ed-side { background: #0C1228; }
+:root[data-theme="dark"] .modal-box { background: #0C1228; }
+:root[data-theme="dark"] .login-hero-side { background: #06091A; }
+
+/* بطاقات الرئيسية: النص الإنجليزي الطويل يلتف داخل البطاقة بدل ما يخرج برّا */
+.card.card-home { min-width: 0; overflow: hidden; }
+.card.card-home .card-title { white-space: normal; overflow-wrap: anywhere; word-break: normal; min-width: 0; line-height: 1.4; text-align: start; }
+
+* { scrollbar-width: none !important; }
+*::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; }
+
+/* مسافات موحدة لكل الشاشات الجانبية (نشاطي، الأدوات، الويب المظلم، المراقبة):
+   نفس الهامش الأعلى، ونفس المسافة بين الأقسام، ونفس الحواف الجانبية */
+/* الويب المظلم والمراقبة لهم تصميمهم الخاص (darkweb-page.css / monitor-page.css)، فما يتأثروش بالقاعدة دي */
+.ait-hub,
+.pv:not(.dw-page):not(.mon-page) {
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-top: 12px;
+  box-sizing: border-box;
+}
+.ait-hub, .pv:not(.dw-page):not(.mon-page) { gap: 16px; }
+
+/* شاشة الدخول على الجوال: المحتوى أطول من الشاشة، والتوسيط كان بيقص الجزء العلوي (الكرة و D) ويخليه مش قابل للسحب */
+@media (max-width: 760px) {
+  #login .login-form-side { justify-content: flex-start; padding-top: 24px; padding-bottom: 32px; }
+}

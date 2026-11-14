@@ -1,0 +1,154 @@
+/* تصميم الوكلاء الجديد (من ملف Dubai Fans AI v3، شاشة Agents / Content).
+   طبقة تعديل فوق app.css تخص نافذة الوكلاء #agentsModal فقط، وفي الوضع الداكن فقط. */
+
+:root[data-theme="dark"] #agentsModal .modal-box {
+  background: linear-gradient(180deg, #0B1030 0%, #06091A 100%);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+}
+:root[data-theme="dark"] #agentsModal .agent-card {
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 22px;
+  backdrop-filter: blur(18px);
+  color: #F4F4F7;
+  box-shadow: none;
+}
+:root[data-theme="dark"] #agentsModal .agent-card:hover {
+  border-color: #6D4AFF;
+  box-shadow: 0 0 18px rgba(109, 74, 255, 0.35);
+}
+:root[data-theme="dark"] #agentsModal .agent-card.active {
+  border-color: #6D4AFF;
+  box-shadow: 0 0 18px rgba(109, 74, 255, 0.45);
+}
+:root[data-theme="dark"] #agentsModal .agent-ico {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #2E7BE6, #173A86);
+  border: 1px solid #2E7BE6;
+  box-shadow: 0 0 24px rgba(46, 123, 230, 0.4);
+  font-size: 20px;
+}
+:root[data-theme="dark"] #agentsModal .agent-desc {
+  color: #9EA5BE;
+}
+
+/* صفحة الوكلاء كما في التصميم: خلفية بالتوهج البنفسجي، حلقة دوّارة فوق العنوان،
+   وبطاقات صف واحد (أيقونة، الاسم والوصف، سهم) */
+:root[data-theme="dark"] #agentsModal .modal-box {
+  background: radial-gradient(380px 260px at 50% -30px, rgba(90, 35, 144, 0.8), rgba(90, 35, 144, 0) 70%), #06091A;
+  border: 0;
+}
+:root[data-theme="dark"] #agentsModal #agentsTitle { text-align: center; font-size: 28px; color: #E4DBFF; margin-top: 4px; }
+:root[data-theme="dark"] #agentsModal .modal-sub { text-align: center; color: #9EA5BE; }
+#agentsModal .ag-ring { width: 46px; height: 46px; margin: 8px auto 0; }
+#agentsModal .ag-ring svg { width: 100%; height: 100%; overflow: visible; animation: ag-spin 10s linear infinite; }
+#agentsModal .ag-ring circle { fill: none; stroke: #6D4AFF; stroke-width: 7; stroke-linecap: round; stroke-dasharray: 52 11; }
+:root[data-theme="dark"] #agentsModal .ag-ring circle { stroke: #F4F4F7; }
+@keyframes ag-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { #agentsModal .ag-ring svg { animation: none; } }
+#agentsModal .agents-grid { grid-template-columns: 1fr; gap: 10px; }
+#agentsModal .agent-card {
+  display: grid;
+  grid-template-columns: 52px 1fr 14px;
+  align-items: center;
+  column-gap: 14px;
+  row-gap: 2px;
+  padding: 16px;
+  text-align: start;
+}
+#agentsModal .agent-ico {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0;
+  color: #C9B8FF;
+}
+#agentsModal .agent-ico svg { width: 22px; height: 22px; }
+#agentsModal .agent-name { font-size: 16px; font-weight: 700; }
+#agentsModal .agent-desc { font-size: 13px; color: #9EA5BE; grid-column: 2; }
+#agentsModal .agent-chev { width: 8px; height: 8px; border-left: 2px solid #9EA5BE; border-bottom: 2px solid #9EA5BE; transform: rotate(45deg); justify-self: center; }
+#agentsModal .agent-ico { grid-row: 1 / span 2; }
+#agentsModal .agent-name { grid-column: 2; grid-row: 1; }
+#agentsModal .agent-chev { grid-column: 3; grid-row: 1 / span 2; }
+
+/* ضغط صفحة الوكلاء لتظهر كلها بدون تمرير، وإخفاء شريط التمرير */
+#agentsModal .modal-box { padding: 12px 16px 16px; scrollbar-width: none; }
+#agentsModal .modal-box::-webkit-scrollbar { display: none; }
+#agentsModal #agentsTitle { font-size: 24px; margin-top: 0; }
+#agentsModal .modal-sub { margin: 2px 0 10px; font-size: 13px; }
+#agentsModal .ag-ring { width: 38px; height: 38px; margin-top: 4px; }
+#agentsModal .agents-grid { gap: 8px; }
+#agentsModal .agent-card { grid-template-columns: 40px 1fr 12px; column-gap: 12px; padding: 10px 12px; border-radius: 16px; }
+#agentsModal .agent-ico { width: 40px; height: 40px; border-radius: 13px; }
+#agentsModal .agent-ico svg { width: 18px; height: 18px; }
+#agentsModal .agent-name { font-size: 15px; }
+#agentsModal .agent-desc { font-size: 12px; line-height: 1.45; }
+#agentsModal .agent-chev { width: 7px; height: 7px; }
+
+/* مولد المحتوى بنفس شكل صفحة الوكلاء: صفوف بأيقونة وسهم، وحلقة دوّارة فوق العنوان */
+:root[data-theme="dark"] #contentModal .modal-box {
+  background: radial-gradient(380px 260px at 50% -30px, rgba(90, 35, 144, 0.8), rgba(90, 35, 144, 0) 70%), #06091A;
+  border: 0;
+  padding: 12px 16px 16px;
+  scrollbar-width: none;
+}
+#contentModal .modal-box::-webkit-scrollbar { display: none; }
+:root[data-theme="dark"] #contentModal #contentTitle { text-align: center; font-size: 24px; color: #E4DBFF; margin: 0; }
+:root[data-theme="dark"] #contentModal .modal-sub { text-align: center; color: #9EA5BE; margin: 2px 0 10px; font-size: 13px; }
+#contentModal .ag-ring { width: 38px; height: 38px; margin: 4px auto 0; }
+#contentModal .ag-ring svg { width: 100%; height: 100%; overflow: visible; animation: ag-spin 10s linear infinite; }
+#contentModal .ag-ring circle { fill: none; stroke: #6D4AFF; stroke-width: 7; stroke-linecap: round; stroke-dasharray: 52 11; }
+:root[data-theme="dark"] #contentModal .ag-ring circle { stroke: #F4F4F7; }
+#contentModal .tpl-grid { grid-template-columns: 1fr; gap: 8px; }
+:root[data-theme="dark"] #contentModal .tpl {
+  display: grid;
+  grid-template-columns: 40px 1fr 12px;
+  align-items: center;
+  column-gap: 12px;
+  row-gap: 2px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  backdrop-filter: blur(18px);
+  color: #F4F4F7;
+  text-align: start;
+  box-shadow: none;
+}
+:root[data-theme="dark"] #contentModal .tpl:hover { border-color: #6D4AFF; box-shadow: 0 0 18px rgba(109, 74, 255, 0.35); }
+:root[data-theme="dark"] #contentModal .tpl-ico {
+  grid-row: 1 / span 2;
+  grid-column: 1;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  background: radial-gradient(circle at 40% 35%, #2E7BE6, #173A86);
+  border: 1px solid #2E7BE6;
+  box-shadow: 0 0 20px rgba(46, 123, 230, 0.4);
+  color: #FFFFFF;
+  font-size: 0;
+}
+:root[data-theme="dark"] #contentModal .tpl-ico svg { width: 18px; height: 18px; }
+:root[data-theme="dark"] #contentModal .tpl b { grid-column: 2; grid-row: 1; font-size: 15px; font-weight: 700; }
+:root[data-theme="dark"] #contentModal .tpl > span:not(.tpl-ico) { grid-column: 2; grid-row: 2; font-size: 12px; color: #9EA5BE; line-height: 1.45; }
+:root[data-theme="dark"] #contentModal .tpl::after {
+  content: "";
+  grid-column: 3;
+  grid-row: 1 / span 2;
+  width: 7px;
+  height: 7px;
+  justify-self: center;
+  border-left: 2px solid #9EA5BE;
+  border-bottom: 2px solid #9EA5BE;
+  transform: rotate(45deg);
+}

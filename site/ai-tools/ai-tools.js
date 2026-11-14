@@ -67,11 +67,128 @@
       tabs.appendChild(b);
     });
 
-    p.appendChild(head);
-    p.appendChild(tabs);
-    p.appendChild(body);
+    // الرجوع للوحة الرئيسية (الكروت) من أي أداة
+    var back = el('button', 'btn-ghost sm ait-back', 'رجوع');
+    back.type = 'button';
+    back.addEventListener('click', showHub);
+
+    function openTool(id) {
+      p.innerHTML = '';
+      p.appendChild(head);
+      p.appendChild(back);
+      p.appendChild(tabs);
+      p.appendChild(body);
+      show(id);
+    }
+
+    function showHub() {
+      p.innerHTML = '';
+      p.appendChild(buildHub(openTool));
+    }
+
     p.classList.add('ait-panel');
-    show('voice');
+    showHub();
+  }
+
+  // اللوحة الرئيسية: رصيد النقاط، ثلاث بطاقات أرقام، وست أدوات
+  var HUB_TOOLS = [
+    { id: 'voice', label: 'صوت العلامة', sub: 'أسلوب كتابة علامتك', ico: 'M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3zM5 11a7 7 0 0 0 14 0M12 18v3' },
+    { id: 'personas', label: 'تقييم الجمهور', sub: 'قيّم أفكارك قبل النشر', ico: 'M16 11a4 4 0 1 0-8 0M4 21a8 8 0 0 1 16 0' },
+    { id: 'shot', label: 'من صورة لكود', sub: 'تصميم ← كود HTML', ico: 'M4 5h16v14H4zM4 15l5-5 4 4 3-3 4 4' },
+    { id: 'leads', label: 'باحث العملاء', sub: 'عملاء محتملين في الإمارات', ico: 'M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM20 20l-4-4' },
+    { id: 'advisor', label: 'المستشار', sub: 'توصية من التريندات', ico: 'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z' },
+    { id: 'bench', label: 'قارن بالمنافس', sub: 'قارن ظهورك بالمنافسين', ico: 'M4 19V9M10 19V5M16 19v-7M22 19H2' }
+  ];
+
+  function buildHub(openTool) {
+    var me = D.state && D.state.me;
+    var cr = me && me.credits;
+    var wrap = el('div', 'ait-hub');
+
+    // رأس الصفحة: أيقونة + عنوان ووصف + زر إغلاق (مطابق لتصميم Claude Design)
+    var hero = el('div', 'aih-hero');
+    var hico = el('span', 'aih-hero-ico');
+    hico.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/></svg>';
+    var htxt = el('div', 'aih-hero-txt');
+    htxt.appendChild(el('h1', '', 'مركز الأدوات الذكية'));
+    htxt.appendChild(el('p', '', 'أدوات الذكاء الاصطناعي لنشاطك. ولا تنفيذ من غير موافقتك.'));
+    var close = el('button', 'aih-close');
+    close.type = 'button';
+    close.setAttribute('aria-label', 'إغلاق');
+    close.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+    close.addEventListener('click', function () { D.hidePanel(); });
+    hero.appendChild(hico);
+    hero.appendChild(htxt);
+    hero.appendChild(close);
+    wrap.appendChild(hero);
+
+    // بطاقة استهلاك الرصيد وثلاث بطاقات أرقام
+    var used = 0;
+    var limit = cr ? cr.limit : 0;
+    var unlimited = !!cr && cr.limit === -1;
+    if (cr && !unlimited) used = Math.max(0, cr.limit - cr.left);
+    var pct = (!cr || unlimited || !limit) ? 0 : Math.min(100, Math.round(used / limit * 100));
+    var credit = el('div', 'aih-credit');
+    var chead = el('div', 'aih-cr-head');
+    chead.appendChild(el('strong', '', 'استهلاك الرصيد'));
+    chead.appendChild(el('span', '', pct + '%'));
+    var cbar = el('div', 'aih-cr-bar');
+    var cfill = el('span', '');
+    cfill.style.width = pct + '%';
+    cbar.appendChild(cfill);
+    var ctxt = el('div', 'aih-cr-txt');
+    if (!cr) ctxt.textContent = 'جارٍ التحميل…';
+    else if (unlimited) ctxt.textContent = 'رصيد غير محدود';
+    else ctxt.textContent = used.toLocaleString('en-US') + ' من ' + limit.toLocaleString('en-US') + ' نقطة مستخدمة هذا الشهر';
+    var stats = el('div', 'aih-stats');
+    ['تشغيلات اليوم', 'توصيات معلّقة', 'أدوات مستخدمة'].forEach(function (label) {
+      var sc = el('div', 'aih-stat');
+      sc.appendChild(el('span', '', label));
+      sc.appendChild(el('b', '', '0'));
+      stats.appendChild(sc);
+    });
+    credit.appendChild(chead);
+    credit.appendChild(cbar);
+    credit.appendChild(ctxt);
+    credit.appendChild(stats);
+    wrap.appendChild(credit);
+
+    // عنوان قسم الأدوات وعدد الأدوات
+    var top = el('div', 'aih-top');
+    top.appendChild(el('h1', '', 'الأدوات'));
+    var cnt = el('span', 'aih-count');
+    cnt.appendChild(el('b', '', String(HUB_TOOLS.length)));
+    cnt.appendChild(el('span', '', ' أدوات · '));
+    cnt.appendChild(el('b', '', '0'));
+    cnt.appendChild(el('span', '', ' مستخدمة'));
+    top.appendChild(cnt);
+    wrap.appendChild(top);
+
+    var grid = el('div', 'ait-grid aih-grid');
+    HUB_TOOLS.forEach(function (t) {
+      var b = el('button', 'ait-tool aih-card');
+      b.type = 'button';
+      var row = el('div', 'aih-row');
+      var ico = el('span', 'aih-ico');
+      ico.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + t.ico + '"/></svg>';
+      var st = el('span', 'aih-status');
+      st.appendChild(el('i', ''));
+      st.appendChild(el('span', '', 'جاهزة'));
+      row.appendChild(ico);
+      row.appendChild(st);
+      b.appendChild(row);
+      b.appendChild(el('strong', '', t.label));
+      b.appendChild(el('small', '', t.sub));
+      b.appendChild(el('div', 'aih-bar'));
+      var foot = el('div', 'aih-foot');
+      foot.appendChild(el('b', '', '0'));
+      foot.appendChild(el('span', '', ' تشغيل'));
+      b.appendChild(foot);
+      b.addEventListener('click', function () { openTool(t.id); });
+      grid.appendChild(b);
+    });
+    wrap.appendChild(grid);
+    return wrap;
   }
 
   // ---------- 1) صوت العلامة ----------

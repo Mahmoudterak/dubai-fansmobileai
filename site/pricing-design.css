@@ -1,0 +1,46 @@
+/* تصميم الباقات الجديد (من ملف Dubai Fans AI v3، شاشة Pricing).
+   طبقة تعديل فوق app.css تخص نافذة الباقات #plansModal فقط، وفي الوضع الداكن فقط. */
+
+:root[data-theme="dark"] #plansModal .modal-box {
+  background: linear-gradient(180deg, #0B1030 0%, #06091A 100%);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+}
+:root[data-theme="dark"] #plansModal .plan-card {
+  background: linear-gradient(180deg, rgba(20, 24, 56, 0.92), rgba(9, 14, 36, 0.92));
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 26px;
+  padding: 22px;
+  box-shadow: none;
+}
+:root[data-theme="dark"] #plansModal .plan-card.featured {
+  border-color: #6D4AFF;
+  box-shadow: 0 0 14px rgba(109, 74, 255, 0.45);
+}
+:root[data-theme="dark"] #plansModal .plan-card.current {
+  border-color: #1C7A45;
+  box-shadow: 0 0 14px rgba(28, 122, 69, 0.4);
+}
+:root[data-theme="dark"] #plansModal .plan-name,
+:root[data-theme="dark"] #plansModal .plan-price b {
+  color: #F4F4F7;
+}
+:root[data-theme="dark"] #plansModal .plan-price span,
+:root[data-theme="dark"] #plansModal .plan-feats {
+  color: #9EA5BE;
+}
+:root[data-theme="dark"] #plansModal .plan-feats li.soon {
+  color: #5E6582;
+}
+:root[data-theme="dark"] #plansModal .plan-badge {
+  background: #090E24;
+  color: #F4F4F7;
+  border: 1px solid #6D4AFF;
+}
+:root[data-theme="dark"] #plansModal .plan-badge:empty {
+  display: none;
+}
+:root[data-theme="dark"] #plansModal .plan-card.current .plan-badge {
+  border-color: #1C7A45;
+  color: #F4F4F7;
+  background: #090E24;
+}

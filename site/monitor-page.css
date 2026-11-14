@@ -1,0 +1,59 @@
+/* المتابعة التلقائية — مطابق لتصميم Claude Design (شاشة المتابعة) */
+
+.mon-page { padding-top: 10px; }
+/* رأس المتابعة التلقائية كما في التصميم: مربع داكن بإطار أزرق وأيقونة نبض زرقاء */
+.mon-page .pv-ico.mon-ico {
+  width: 56px; height: 56px; flex: none; border-radius: 16px;
+  background: rgba(20, 28, 62, 0.85); border: 1px solid rgba(90, 120, 220, 0.35);
+  display: flex; align-items: center; justify-content: center;
+}
+.mon-page .pv-ico.mon-ico svg { width: 24px; height: 24px; fill: none; stroke: #5B8CFF; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.mon-page .mn-form {
+  padding: 18px 16px 16px;
+  margin: 0 0 14px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, #111830, #0C1228);
+  border: 1px solid rgba(70, 110, 255, 0.3);
+  box-shadow: none;
+}
+.mon-page .mn-form h2 { font-size: 18px; font-weight: 800; color: #FFFFFF; text-align: right; margin: 0 0 14px; }
+.mon-page .mn-form .form-grid { display: flex; flex-direction: column; gap: 14px; }
+.mon-page .mn-form .f { display: flex; flex-direction: column; }
+.mon-page .mn-form .f label { font-size: 13px; color: #E6E9F5; margin-bottom: 7px; text-align: right; }
+.mon-page .mn-form .req { color: #F04848; }
+.mon-page .mn-form input {
+  height: 48px; padding: 0 20px;
+  border-radius: 999px;
+  border: 1.5px solid #3E63F0;
+  background: linear-gradient(120deg, rgba(20, 30, 84, 0.85), rgba(34, 22, 84, 0.75));
+  color: #FFFFFF; font-size: 14px;
+  box-shadow: 0 0 14px rgba(62, 99, 240, 0.18);
+}
+.mon-page .mn-form input::placeholder { color: #6B7394; }
+.mon-page .mn-form input:focus { outline: none; box-shadow: 0 0 0 3px rgba(62, 99, 240, 0.35); }
+
+/* مفتاح "يومياً / أسبوعياً" */
+.mon-page .mn-seg {
+  display: flex; padding: 4px; gap: 4px;
+  border-radius: 999px;
+  background: #0A0F24;
+  border: 1px solid rgba(70, 110, 255, 0.35);
+}
+.mon-page .mn-seg button {
+  flex: 1; height: 40px; border: 1px solid transparent; border-radius: 999px;
+  background: transparent; color: #9EA5BE; font: inherit; font-size: 14px; cursor: pointer;
+}
+.mon-page .mn-seg button.on {
+  background: #13204A; border-color: #2F6BFF; color: #FFFFFF; font-weight: 700;
+}
+
+/* زر البدء وتذييل النموذج */
+.mon-page .mn-form .form-foot { display: flex; flex-direction: column; gap: 12px; margin-top: 18px; }
+.mon-page .mn-form .form-foot .btn-primary {
+  width: 100%; height: 52px; border-radius: 999px;
+  background: #0E1A3A;
+  border: 1.5px solid #2F6BFF;
+  box-shadow: 0 0 16px rgba(47, 107, 255, 0.25);
+  color: #FFFFFF; font-size: 16px; font-weight: 800;
+}
+.mon-page .mn-form .form-foot .muted { display: block; text-align: center; font-size: 13px; color: #8A90A8; }

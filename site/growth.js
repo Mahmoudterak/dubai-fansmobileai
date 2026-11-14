@@ -95,6 +95,17 @@
       } }
   ];
 
+  // أيقونات القوالب بخط بسيط كما في التصميم (بدل الإيموجي)
+  var TPL_SVG = {
+    blog: '<path d="M7 3h7l5 5v13H7zM14 3v5h5M10 13h6M10 17h6"/>',
+    email: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
+    social: '<rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M11 18h2"/>',
+    product: '<path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="7.5" r="1.5"/>',
+    ad: '<path d="M4 10v4h3l7 4V6L7 10z"/><path d="M18 9a4 4 0 0 1 0 6"/>',
+    whatsapp: '<path d="M4 5h16v11H9l-5 4z"/>',
+    reel: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3z"/>'
+  };
+
   function openContent() {
     renderTemplates();
     D.openModal('contentModal', 'contentClose');
@@ -109,7 +120,9 @@
     var grid = h('<div class="tpl-grid"></div>');
     TEMPLATES.forEach(function (t) {
       var b = h('<button type="button" class="tpl"><span class="tpl-ico" aria-hidden="true"></span><b></b><span></span></button>');
-      b.querySelector('.tpl-ico').textContent = t.ico;
+      var tIco = TPL_SVG[t.id];
+      if (tIco) b.querySelector('.tpl-ico').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' + tIco + '</svg>';
+      else b.querySelector('.tpl-ico').textContent = t.ico;
       b.querySelector('b').textContent = t.name;
       b.querySelector('span:last-child').textContent = t.desc;
       b.addEventListener('click', function () { renderForm(t); });
@@ -202,9 +215,12 @@
   function openRadar(prefill) {
     var panel = D.showPanel('radar');
     panel.innerHTML =
-      '<div class="pv">' +
-      '<div class="pv-head"><div class="pv-ico">' + ICON.radar + '</div><div><h1>Dubai Fans Radar</h1>' +
+      '<div class="pv rd-page">' +
+      '<div class="pv-head"><div class="pv-ico ring-ico" aria-hidden="true"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" transform="rotate(-70 50 50)"></circle></svg></div><div><h1>Dubai Fans Radar</h1>' +
       '<p>شوف علامتك بتظهر قد إيه في نتائج البحث وفي إجابات الذكاء الاصطناعي، مقارنةً بمنافسينك.</p></div></div>' +
+      '<div class="rd-score"><div class="rd-score-head"><span class="rd-score-t">درجة ظهور علامتك</span><span class="rd-score-lbl" id="rdScoreLbl">لسه ما اتحللش</span></div>' +
+      '<div class="rd-track" dir="ltr"><div class="rd-rail"></div><div class="rd-bubble" id="rdBubble">0</div><input type="range" id="rdRange" min="0" max="100" value="0" disabled aria-label="درجة ظهور علامتك"></div>' +
+      '<div class="rd-scale" dir="ltr"><span>0</span><span>100</span></div></div>' +
       '<div id="radarTop">' + radarFormHtml() + '</div>' +
       '<div id="radarHistory"></div>' +
       '</div>';
@@ -378,10 +394,22 @@
       .catch(function (ex) { D.toast(D.netMessage(ex)); openRadar(); });
   }
 
+  // يعرض آخر درجة ظهور في شريط الدرجة (للقراءة فقط)
+  function setRadarScore(score, has) {
+    var v = Math.max(0, Math.min(100, Number(score) || 0));
+    var r = $('rdRange'), b = $('rdBubble'), l = $('rdScoreLbl');
+    if (!r || !b) return;
+    r.value = v;
+    b.textContent = v;
+    b.style.left = 'calc(' + v + '% - ' + (v * 0.22).toFixed(1) + 'px + 11px)';
+    if (l) l.textContent = has ? 'آخر تحليل' : 'لسه ما اتحللش';
+  }
+
   function loadHistory() {
     D.apiJson('/api/radar/reports').then(function (d) {
       var box = $('radarHistory');
       if (!box) return;
+      if (d.reports.length) setRadarScore(d.reports[0].score, true);
       if (!d.reports.length) { box.innerHTML = ''; return; }
       box.innerHTML = '<div class="card-box"><h2>تحليلاتك السابقة</h2><div class="hist-list"></div></div>';
       var list = box.querySelector('.hist-list');
@@ -449,7 +477,8 @@
 
   function openMonitors(prefill) {
     var panel = D.showPanel('monitors');
-    panel.innerHTML = '<div class="pv"><div class="pv-head"><div class="pv-ico orange">' + ICON.pulse + '</div><div><h1>المتابعة التلقائية</h1>' +
+    panel.innerHTML = '<div class="pv mon-page">' +
+      '<div class="pv-head"><div class="pv-ico mon-ico">' + ICON.pulse + '</div><div><h1>المتابعة التلقائية</h1>' +
       '<p>فوّض Dubai Fans AI يتابع علامتك ومنافسينك لوحده، ويطلعلك تقرير يومي أو أسبوعي بتغيّر الظهور.</p></div></div>' +
       '<div id="monBody"><div class="card-box"><div class="progress-steps"><div class="pstep on"><span class="dot"></span>جارٍ التحميل…</div></div></div></div></div>';
     D.apiJson('/api/monitors').then(function (d) { renderMonitors(d, prefill); D.refreshMe(); })
@@ -470,7 +499,7 @@
     var active = d.monitors.filter(function (m) { return m.active; }).length;
     if (d.limit) {
       var canAdd = active < d.limit;
-      var form = h('<form class="card-box" novalidate></form>');
+      var form = h('<form class="card-box mn-form" novalidate></form>');
       form.innerHTML = '<h2>متابعة جديدة <span class="muted" style="font-size:13px;font-weight:400;color:var(--muted)">(' + active + ' من ' + d.limit + ' في باقتك)</span></h2>' +
         '<div class="form-grid">' +
         '<div class="f"><label for="mn_brand">اسم العلامة <span class="req">*</span></label><input id="mn_brand" type="text"></div>' +
@@ -489,6 +518,22 @@
         form.querySelector('#mn_website').value = prefill.website || '';
         form.querySelector('#mn_comp').value = (prefill.competitors || []).join('، ');
       }
+      // "كل قد إيه؟" بشكل زرين متجاورين بدل القائمة (القائمة مخفية وتحفظ القيمة)
+      var freqSel = form.querySelector('#mn_freq');
+      var freqF = freqSel.closest('.f');
+      freqF.style.display = 'none';
+      var seg = h('<div class="f mn-freq"><label>كل قد إيه؟</label><div class="mn-seg"><button type="button" data-v="daily">يومياً</button><button type="button" data-v="weekly">أسبوعياً</button></div></div>');
+      var paintSeg = function () {
+        seg.querySelectorAll('button').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-v') === freqSel.value); });
+      };
+      seg.querySelector('.mn-seg').addEventListener('click', function (e) {
+        var b = e.target.closest('button');
+        if (!b) return;
+        freqSel.value = b.getAttribute('data-v');
+        paintSeg();
+      });
+      paintSeg();
+      form.querySelector('.form-grid').after(seg);
       form.addEventListener('submit', function (e) {
         e.preventDefault();
         var v = {
