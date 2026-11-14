@@ -56,11 +56,16 @@
       menu.appendChild(it);
     });
     // المهارات: كل خبير يفتح نفسه عند الضغط
+    // المهارات داخل قائمة منسدلة مطوية، عشان ما تاخدش مساحة في القائمة
     if (agentsCache && agentsCache.length) {
-      var head = document.createElement('div');
+      var head = document.createElement('button');
+      head.type = 'button';
       head.className = 'mo-head';
-      head.textContent = 'المهارات';
+      head.setAttribute('aria-expanded', String(skillsOpen));
+      head.innerHTML = '<span>المهارات</span><svg viewBox="0 0 24 24" aria-hidden="true" class="mo-head-chev' + (skillsOpen ? ' open' : '') + '"><path d="' + CHEVRON + '"></path></svg>';
+      head.addEventListener('click', function (e) { e.stopPropagation(); skillsOpen = !skillsOpen; render(); });
       menu.appendChild(head);
+      if (!skillsOpen) return;
       agentsCache.forEach(function (a) {
         var it = document.createElement('button');
         it.type = 'button';
@@ -79,6 +84,7 @@
   }
 
   var agentsCache = null;
+  var skillsOpen = false;
   var SKILL_BG = 'linear-gradient(135deg,#173A86,#2E7BE6)';
   function loadAgents() {
     if (!D.agentList || agentsCache) return;

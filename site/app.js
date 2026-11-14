@@ -33,8 +33,6 @@
     { id: 'site', label: 'موقع إلكتروني', color: '#67E8F9',
       icon: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M7 6.5h.01M10 6.5h.01"/>',
       placeholder: 'اوصف الموقع: مثال: صفحة هبوط لصالون تجميل في دبي مع حجز عبر واتساب…' },
-    { id: 'agent', label: 'وكلاء متخصصين', color: '#FCD34D', picker: true,
-      icon: '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>' },
     { id: 'content', label: 'مولد المحتوى', color: '#C4B5FD', action: 'openContent',
       icon: '<path d="M4 4h16v16H4z"/><path d="M8 8h8M8 12h8M8 16h5"/>' },
     { id: 'radar', label: 'Dubai Fans Radar', color: '#22D3EE', action: 'openRadar',
