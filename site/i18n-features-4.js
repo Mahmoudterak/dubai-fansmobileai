@@ -73,6 +73,17 @@
     /* ---- درجة ظهور الرادار ---- */
     'درجة ظهور علامتك': 'Your brand visibility score',
     'لسه ما اتحللش': 'Not analysed yet',
-    'آخر تحليل': 'Last analysis'
+    'آخر تحليل': 'Last analysis',
+    /* ---- الويب المظلم، المتابعة، مركز الأدوات ---- */
+    'بريد مراقَب': 'Monitored email',
+    'رقم هاتف': 'Phone number',
+    'تسريبات': 'Leaks',
+    'أسلوب كتابة علامتك': 'Your brand’s writing style',
+    'قيّم أفكارك قبل النشر': 'Test your ideas before publishing',
+    'تصميم ← كود HTML': 'Design → HTML code',
+    'عملاء محتملين في الإمارات': 'Potential customers in the UAE',
+    'توصية من التريندات': 'Recommendation from trends',
+    'قارن ظهورك بالمنافسين': 'Compare your visibility with competitors',
+    'جاهزة': 'Ready'
   });
 })();

@@ -1,0 +1,41 @@
+/* مركز الأدوات الذكية — مطابق لتصميم Claude Design (شاشة الأدوات) */
+
+.ait-panel .aih-top {
+  display: flex; align-items: baseline; justify-content: space-between;
+  padding: 16px 4px 14px;
+}
+.ait-panel .aih-top h1 { font-size: 22px; font-weight: 800; color: #FFFFFF; margin: 0; }
+.ait-panel .aih-count { font-size: 13px; color: #9EA5BE; }
+.ait-panel .aih-count b { color: #FFFFFF; font-weight: 700; }
+
+.ait-panel .aih-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+}
+.ait-panel .aih-card {
+  display: flex; flex-direction: column; align-items: stretch; gap: 6px;
+  padding: 14px 14px 12px;
+  border-radius: 18px;
+  background: #111628;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: none;
+  text-align: right; color: #FFFFFF; cursor: pointer;
+  font: inherit;
+}
+.ait-panel .aih-card:hover { border-color: rgba(47, 107, 255, 0.6); }
+.ait-panel .aih-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+
+.ait-panel .aih-ico {
+  width: 38px; height: 38px; border-radius: 12px;
+  display: grid; place-items: center;
+  background: #14204A; border: 1px solid #2F6BFF;
+}
+.ait-panel .aih-ico svg {
+  width: 20px; height: 20px; fill: none; stroke: #FFFFFF;
+  stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+}
+
+.ait-panel .aih-status { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: #9EA5BE; }
+.ait-panel .aih-status i { width: 7px; height: 7px; border-radius: 50%; background: #3B82F6; display: inline-block; }
+
+.ait-panel .aih-card strong { font-size: 15px; font-weight: 700; color: #FFFFFF; }
+.ait-panel .aih-card small { font-size: 12.5px; line-height: 1.6; color: #8A90A8; }

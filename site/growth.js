@@ -477,8 +477,7 @@
 
   function openMonitors(prefill) {
     var panel = D.showPanel('monitors');
-    panel.innerHTML = '<div class="pv"><div class="pv-head"><div class="pv-ico orange">' + ICON.pulse + '</div><div><h1>المتابعة التلقائية</h1>' +
-      '<p>فوّض Dubai Fans AI يتابع علامتك ومنافسينك لوحده، ويطلعلك تقرير يومي أو أسبوعي بتغيّر الظهور.</p></div></div>' +
+    panel.innerHTML = '<div class="pv mon-page">' +
       '<div id="monBody"><div class="card-box"><div class="progress-steps"><div class="pstep on"><span class="dot"></span>جارٍ التحميل…</div></div></div></div></div>';
     D.apiJson('/api/monitors').then(function (d) { renderMonitors(d, prefill); D.refreshMe(); })
       .catch(function (ex) { $('monBody').innerHTML = '<div class="card-box empty-box"></div>'; $('monBody').firstChild.textContent = D.netMessage(ex); });
@@ -498,7 +497,7 @@
     var active = d.monitors.filter(function (m) { return m.active; }).length;
     if (d.limit) {
       var canAdd = active < d.limit;
-      var form = h('<form class="card-box" novalidate></form>');
+      var form = h('<form class="card-box mn-form" novalidate></form>');
       form.innerHTML = '<h2>متابعة جديدة <span class="muted" style="font-size:13px;font-weight:400;color:var(--muted)">(' + active + ' من ' + d.limit + ' في باقتك)</span></h2>' +
         '<div class="form-grid">' +
         '<div class="f"><label for="mn_brand">اسم العلامة <span class="req">*</span></label><input id="mn_brand" type="text"></div>' +
@@ -517,6 +516,22 @@
         form.querySelector('#mn_website').value = prefill.website || '';
         form.querySelector('#mn_comp').value = (prefill.competitors || []).join('، ');
       }
+      // "كل قد إيه؟" بشكل زرين متجاورين بدل القائمة (القائمة مخفية وتحفظ القيمة)
+      var freqSel = form.querySelector('#mn_freq');
+      var freqF = freqSel.closest('.f');
+      freqF.style.display = 'none';
+      var seg = h('<div class="f mn-freq"><label>كل قد إيه؟</label><div class="mn-seg"><button type="button" data-v="daily">يومياً</button><button type="button" data-v="weekly">أسبوعياً</button></div></div>');
+      var paintSeg = function () {
+        seg.querySelectorAll('button').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-v') === freqSel.value); });
+      };
+      seg.querySelector('.mn-seg').addEventListener('click', function (e) {
+        var b = e.target.closest('button');
+        if (!b) return;
+        freqSel.value = b.getAttribute('data-v');
+        paintSeg();
+      });
+      paintSeg();
+      form.querySelector('.form-grid').after(seg);
       form.addEventListener('submit', function (e) {
         e.preventDefault();
         var v = {
