@@ -86,7 +86,7 @@
   function open(startTab) {
     var panel = D.showPanel('business');
     if (startTab) tab = startTab;
-    panel.innerHTML = '<div class="pv"><div class="pv-head"><div class="pv-ico green">' + ICONS.store + '</div><div><h1>نشاطي التجاري</h1>' +
+    panel.innerHTML = '<div class="pv"><div class="pv-head" id="bizHead"><div class="pv-ico green">' + ICONS.store + '</div><div><h1>نشاطي التجاري</h1>' +
       '<p>اربط نشاطك، والمساعد يحلله ويخصّص كل ردوده ومحتواه وإعلاناته عليه.</p></div></div>' +
       '<div class="biz-tabs" role="tablist">' +
       '<button type="button" role="tab" data-t="overview">نظرة عامة</button>' +
@@ -112,6 +112,8 @@
       b.classList.toggle('on', on);
       b.setAttribute('aria-selected', String(on));
     });
+    var head = $('bizHead');
+    if (head) head.style.display = tab === 'overview' ? 'none' : '';
     if (tab === 'overview') renderOverview(body);
     else if (tab === 'profile') renderProfile(body);
     else if (tab === 'connect') renderConnect(body);
@@ -139,10 +141,13 @@
       '<div class="ov-ring"><span class="ov-glow"></span><span class="ov-sphere"></span>' +
       '<span class="ov-spin"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="40" transform="rotate(-70 50 50)"></circle></svg></span>' +
       '<div class="ov-center"><b>' + pct + '%</b><span>جاهزية نشاطك</span></div></div>' +
+      '<h2 class="ov-title">نشاطي التجاري</h2>' +
       '<p class="ov-note">اربط نشاطك، والمساعد يخصّص كل ردوده ومحتواه عليه.</p></div>' +
       '<div class="ov-grid">' +
-      '<div class="ov-stat"><span>الخطوات المكتملة</span><b>' + done + ' / ' + steps.length + '</b></div>' +
-      '<div class="ov-stat"><span>توصيات بانتظار موافقتك</span><b>' + recs + '</b></div>' +
+      '<div class="ov-stat alert"><span class="ov-stat-top"><i></i></span><small>المتجر</small><b>يتطلب ربطاً</b></div>' +
+      '<div class="ov-stat"><span class="ov-stat-top"><i class="off"></i></span><small>الموقع الإلكتروني</small><b>' + (p.website ? 'تم إدخاله' : 'لم يُحلَّل بعد') + '</b></div>' +
+      '<div class="ov-stat"><span class="ov-stat-top"><i class="off"></i></span><small>المحاسبة</small><b>لا قيود بعد</b></div>' +
+      '<div class="ov-stat"><span class="ov-stat-top"><i class="off"></i></span><small>التوصيات</small><b>' + recs + ' بانتظار موافقتك</b></div>' +
       '</div>' +
       '<div class="ov-card"><div class="ov-card-head"><b>جاهزية النشاط</b><span>' + done + ' / ' + steps.length + '</span></div>' +
       '<div class="ov-bar"><i style="width:' + pct + '%"></i></div>' +

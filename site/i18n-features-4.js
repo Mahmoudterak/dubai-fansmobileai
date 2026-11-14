@@ -34,6 +34,15 @@
     'أهم المنتجات والعروض': 'Main products and offers',
     'هدفك الحالي': 'Your current goal',
     'تم': 'Done',
+    'المتجر': 'Store',
+    'يتطلب ربطاً': 'Needs connecting',
+    'الموقع الإلكتروني': 'Website',
+    'لم يُحلَّل بعد': 'Not analysed yet',
+    'تم إدخاله': 'Entered',
+    'المحاسبة': 'Accounting',
+    'لا قيود بعد': 'No entries yet',
+    'التوصيات': 'Recommendations',
+    'بانتظار موافقتك': 'awaiting your approval',
     'ابدأ': 'Start',
 
     /* ---- نافذة عرض التطبيق والموقع ---- */
