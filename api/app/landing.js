@@ -1,12 +1,26 @@
 'use strict';
-// صفحات الهبوط للحملات: توليد من وصف، فلتر محتوى، عدم فهرسة، نشر معاينة على Vercel، وحصص يومية.
-// الإعدادات من البيئة: ANTHROPIC_API_KEY, VERCEL_TOKEN, LANDING_MODEL (اختياري).
+// صفحات الهبوط للحملات: توليد من وصف، فلتر محتوى، عدم فهرسة، نشر على خادمنا، وحصص يومية.
+// التوليد عبر نماذج Cloudflare الموجودة أصلاً (CF_API_TOKEN, CF_ACCOUNT_ID, CF_MODEL) بدون مفتاح جديد ومجاناً ضمن الحصة.
+// النشر: ملف HTML داخل LANDING_DIR يخدمه nginx على LANDING_BASE_URL (بدون Vercel).
 // لا يعتمد على server.js، وتُمرَّر له الاعتماديات (db، والرصيد) من الخارج.
+
+const fs = require('fs');
+const path = require('path');
 
 const DAILY_LIMIT_FREE = 2;
 const DAILY_LIMIT_PAID = 10;
 const MAX_BRIEF = 2000;
-const MODEL = process.env.LANDING_MODEL || 'claude-sonnet-5-5';
+const CF_BASE = (process.env.CF_API_BASE || 'https://api.cloudflare.com/client/v4').replace(/\/$/, '');
+const MODEL = process.env.LANDING_MODEL || process.env.CF_MODEL || '@cf/qwen/qwen3-30b-a3b-fp8';
+// المجلد داخل volume البيانات (/data) حتى يكون قابلاً للكتابة، وnginx يقرأه من المسار المقابل على الخادم
+
+// الرابط العام للصفحات: LANDING_BASE_URL، ولو غير مضبوط يُشتق من APP_URL على المسار /lp
+function publicBase() {
+  const explicit = (process.env.LANDING_BASE_URL || '').replace(/\/$/, '');
+  if (explicit) return explicit;
+  const app = (process.env.APP_URL || '').replace(/\/$/, '');
+  return app ? app + '/lp' : '';
+}
 
 // أنماط مرفوضة قبل التوليد وبعده. قائمة أولية، وليست كاملة.
 const BLOCKED = [
@@ -66,8 +80,9 @@ function extractHtml(raw) {
     .replace(/<\/head>/i, '<meta name="robots" content="noindex, nofollow, noarchive"></head>');
 }
 
-async function generateHtml(brief, { fetchImpl = fetch, apiKey = process.env.ANTHROPIC_API_KEY } = {}) {
-  if (!apiKey) throw new Error('ANTHROPIC_API_KEY غير مضبوط');
+// يولّد الصفحة عبر Cloudflare Workers AI (نفس الحساب والمفتاح المستخدمين في باقي المنصة)
+async function generateHtml(brief, { fetchImpl = fetch, token = process.env.CF_API_TOKEN, account = process.env.CF_ACCOUNT_ID } = {}) {
+  if (!token || !account) throw new Error('إعدادات Cloudflare غير مضبوطة');
   const prompt = [
     'أنشئ صفحة هبوط واحدة كاملة لحملة تسويقية بناءً على هذا الوصف.',
     'أعد HTML فقط بين <html> و</html>، بالعربية، واتجاه RTL، وتصميم متجاوب.',
@@ -78,34 +93,28 @@ async function generateHtml(brief, { fetchImpl = fetch, apiKey = process.env.ANT
     'الوصف:',
     String(brief).slice(0, MAX_BRIEF),
   ].join('\n');
-  const res = await fetchImpl('https://api.anthropic.com/v1/messages', {
+  const res = await fetchImpl(`${CF_BASE}/accounts/${account}/ai/run/${MODEL}`, {
     method: 'POST',
-    headers: { 'x-api-key': apiKey, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
-    body: JSON.stringify({ model: MODEL, max_tokens: 6000, messages: [{ role: 'user', content: prompt }] }),
+    headers: { Authorization: `Bearer ${token}`, 'content-type': 'application/json' },
+    body: JSON.stringify({ messages: [{ role: 'user', content: prompt }], max_tokens: 6000 }),
   });
-  const data = await res.json();
+  const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error('فشل التوليد: ' + res.status);
-  const text = (data.content || []).filter((b) => b.type === 'text').map((b) => b.text).join('');
-  return text;
+  const r = data.result || data;
+  if (typeof r.response === 'string') return r.response;
+  const msg = r.choices && r.choices[0] && r.choices[0].message;
+  return (msg && typeof msg.content === 'string') ? msg.content : '';
 }
 
-// ينشر الصفحة معاينة على Vercel مع ترويسة عدم الفهرسة
-async function deployPreview(slug, html, { fetchImpl = fetch, token = process.env.VERCEL_TOKEN } = {}) {
-  if (!token) throw new Error('VERCEL_TOKEN غير مضبوط');
-  const vercelConfig = { headers: [{ source: '/(.*)', headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive' }] }] };
-  const files = [
-    { file: 'index.html', data: Buffer.from(html, 'utf8').toString('base64'), encoding: 'base64' },
-    { file: 'vercel.json', data: Buffer.from(JSON.stringify(vercelConfig), 'utf8').toString('base64'), encoding: 'base64' },
-  ];
-  const name = `dfai-lp-${slug}-${Date.now().toString(36)}`;
-  const res = await fetchImpl('https://api.vercel.com/v13/deployments?skipAutoDetectionConfirmation=1', {
-    method: 'POST',
-    headers: { authorization: `Bearer ${token}`, 'content-type': 'application/json' },
-    body: JSON.stringify({ name, files, projectSettings: { framework: null } }),
-  });
-  const data = await res.json();
-  if (!res.ok || !data.url) throw new Error('فشل النشر على Vercel: ' + res.status);
-  return 'https://' + data.url;
+// ينشر الصفحة على خادمنا: ملف index.html في مجلد باسم فريد، ويرجع الرابط العام
+async function publishPage(slug, html, { dir = process.env.LANDING_DIR || '/data/landing', baseUrl = publicBase(), now = Date.now() } = {}) {
+  if (!baseUrl) throw new Error('LANDING_BASE_URL غير مضبوط');
+  if (!cleanSlug(slug)) throw new Error('اسم الصفحة غير صالح');
+  const name = `${slug}-${now.toString(36)}`;
+  const folder = path.join(dir, name);
+  fs.mkdirSync(folder, { recursive: true });
+  fs.writeFileSync(path.join(folder, 'index.html'), html, 'utf8');
+  return `${baseUrl}/${name}/`;
 }
 
 // الدالة الرئيسية: تتحقق من الحصة والمحتوى، ثم تولّد وتنشر وتخصم الرصيد
@@ -131,7 +140,7 @@ async function createLandingPage(db, { userId, paid, brief, slug, day, charge, n
     if (!html) throw new Error('لم يُنتج النموذج صفحة صالحة');
     const blockedOut = screenText(html);
     if (blockedOut) throw new Error(blockedOut);
-    const url = await deployPreview(s, html, { fetchImpl });
+    const url = await publishPage(s, html, { now });
     setStatus.run('ok', url, null, rowId);
     if (typeof charge === 'function') await charge(userId, 1);
     return { ok: true, url, used: quota.used + 1, limit: quota.limit };
