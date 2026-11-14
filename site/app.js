@@ -1276,6 +1276,22 @@
     box.appendChild(wrap);
   }
 
+  // ينشر صفحة الهبوط اللي ولّدها المساعد على رابط عام (من غير توليد جديد)
+  function publishSite(m, btn) {
+    var html = extractHtml(m.content) || '';
+    if (!html) { toast('ما فيش صفحة تتنشر.'); return; }
+    if (btn) btn.disabled = true;
+    var slug = 'lp-' + Date.now().toString(36);
+    var brief = 'صفحة هبوط منشورة من المساعد: ' + (m.title || 'بدون عنوان');
+    apiJson('/api/landing', { method: 'POST', body: JSON.stringify({ brief: brief, slug: slug, html: html }) })
+      .then(function (d) {
+        toast('تم النشر');
+        if (d && d.url) window.open(d.url, '_blank');
+      })
+      .catch(function (ex) { toast(ex.message || 'تعذّر النشر.'); })
+      .then(function () { if (btn) btn.disabled = false; });
+  }
+
   function actionButton(html, label, onClick) {
     var b = document.createElement('button');
     b.type = 'button';
@@ -1337,6 +1353,7 @@
         if (window.DFAI && window.DFAI.openEditor) window.DFAI.openEditor(m, el);
       }));
       actions.appendChild(actionButton(ICON_EYE, 'معاينة الموقع', function () { openSite(extractHtml(m.content) || html, m.title); }));
+      actions.appendChild(actionButton('<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>', 'نشر الصفحة', function () { publishSite(m, this); }));
       actions.appendChild(actionButton(ICON_DL, 'تحميل HTML', function () {
         downloadBlob(new Blob([extractHtml(m.content) || html], { type: 'text/html;charset=utf-8' }), safeName(m.title) + '.html');
       }));

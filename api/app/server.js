@@ -2332,12 +2332,12 @@ async function route(req, res) {
     }
     if (m === 'POST') {
       if (rateLimited('landing:' + user.id, 3, 60000)) return fail(res, 429, 'rate', 'طلبات كتير ورا بعض. استنى دقيقة.');
-      const body = await readJson(req, 16 * 1024);
+      const body = await readJson(req, 400 * 1024);
       const paid = effectivePlan(user).id !== 'free';
       const credits = creditsFor(user);
       if (credits.limit !== -1 && credits.left < LANDING_CREDIT_COST) return fail(res, 429, 'credits', `رصيدك لا يكفي لصفحة الهبوط (${LANDING_CREDIT_COST} نقطة).`);
       const r = await landing.createLandingPage(db, {
-        userId: user.id, paid, brief: body.brief, slug: body.slug, day: dayKey(),
+        userId: user.id, paid, brief: body.brief, slug: body.slug, html: body.html, day: dayKey(),
         charge: (uid) => { q.creditAdd.run(uid, monthKey(), LANDING_CREDIT_COST); },
       });
       if (!r.ok) return fail(res, 400, 'landing', r.error);

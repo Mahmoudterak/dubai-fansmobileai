@@ -106,6 +106,11 @@
     'تشغيلات اليوم': 'Runs today',
     'توصيات معلّقة': 'Pending recommendations',
     'أدوات مستخدمة': 'Tools used',
-    'إغلاق': 'Close'
+    'إغلاق': 'Close',
+    /* ---- نشر صفحة الهبوط من المحادثة ---- */
+    'نشر الصفحة': 'Publish page',
+    'ما فيش صفحة تتنشر.': 'There is no page to publish.',
+    'تم النشر': 'Published',
+    'تعذّر النشر.': 'Could not publish.'
   });
 })();

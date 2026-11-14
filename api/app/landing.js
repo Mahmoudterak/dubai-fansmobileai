@@ -118,11 +118,13 @@ async function publishPage(slug, html, { dir = process.env.LANDING_DIR || '/data
 }
 
 // الدالة الرئيسية: تتحقق من الحصة والمحتوى، ثم تولّد وتنشر وتخصم الرصيد
-async function createLandingPage(db, { userId, paid, brief, slug, day, charge, now = Date.now(), fetchImpl } = {}) {
+// إن أُرسل html جاهز (صفحة ولّدها المساعد في المحادثة) يُنشر مباشرة بدون توليد جديد
+async function createLandingPage(db, { userId, paid, brief, slug, html: readyHtml, day, charge, now = Date.now(), fetchImpl } = {}) {
   const s = cleanSlug(slug);
   if (!s) return { ok: false, error: 'اسم الصفحة غير صالح' };
   const b = String(brief || '').trim();
   if (b.length < 10) return { ok: false, error: 'الوصف قصير جداً' };
+  if (readyHtml && String(readyHtml).length > 300000) return { ok: false, error: 'الصفحة كبيرة جداً' };
 
   const quota = checkQuota(db, userId, day, paid);
   if (!quota.allowed) return { ok: false, error: `بلغت الحد اليومي (${quota.limit} صفحات)` };
@@ -135,7 +137,7 @@ async function createLandingPage(db, { userId, paid, brief, slug, day, charge, n
   const setStatus = db.prepare('UPDATE landing_pages SET status = ?, url = ?, error = ? WHERE id = ?');
 
   try {
-    const raw = await generateHtml(b, { fetchImpl });
+    const raw = readyHtml ? String(readyHtml) : await generateHtml(b, { fetchImpl });
     const html = extractHtml(raw);
     if (!html) throw new Error('لم يُنتج النموذج صفحة صالحة');
     const blockedOut = screenText(html);
