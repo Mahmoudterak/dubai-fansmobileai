@@ -199,3 +199,50 @@
   stroke-linecap: round;
   stroke-linejoin: round;
 }
+
+/* الكرة الرئيسية في الهوم: نفس تصميم Dubai Fans AI، والحلقة البيضاء تدور حول الكرة */
+.home-orb {
+  position: relative;
+  width: 104px;
+  height: 104px;
+  margin: 0 auto 8px;
+  flex: none;
+}
+.ho-glow {
+  position: absolute;
+  inset: -36px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(46, 123, 230, 0.32) 0%, transparent 65%);
+  animation: ho-breath 1.6s ease-in-out infinite;
+}
+.ho-sphere {
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 64%, #04060F 55%, #0A1228 76%, #1B2D52 92%, #3A5A8C 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+.ho-ring {
+  position: absolute;
+  inset: 0;
+  animation: df-splash-spin 10s linear infinite;
+}
+.ho-ring svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.85)) drop-shadow(0 0 16px rgba(46, 123, 230, 0.75));
+}
+.ho-ring circle {
+  fill: none;
+  stroke: #F4F4F7;
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-dasharray: 52 11;
+}
+:root:not([data-theme="dark"]) .ho-ring circle { stroke: #6D4AFF; }
+:root:not([data-theme="dark"]) .ho-ring { filter: none; }
+@keyframes ho-breath { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.06); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .ho-glow, .ho-ring { animation: none; }
+}
