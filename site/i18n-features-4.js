@@ -27,6 +27,8 @@
     'الذكاء المخصص': 'Custom AI',
     'الذكاء المخصص (OpenAI)': 'Custom AI (OpenAI)',
     'يمكنه المساعدة في التطوير الرقمي لعملك': 'Can help with digital growth for your business',
+    'ربط التطبيقات': 'App connections',
+    'مهام بسيطة': 'Simple tasks',
     /* ---- نظرة عامة في نشاطي التجاري ---- */
     'نظرة عامة': 'Overview',
     'جاهزية نشاطك': 'Your readiness',
