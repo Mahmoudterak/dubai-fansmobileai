@@ -221,3 +221,27 @@
     if ((f === 'left' && dx > 70) || (f === 'right' && dx < -70)) closeTop();
   }, { passive: true });
 })();
+
+// ---------- شريط التنقل السفلي ----------
+(function () {
+  var D = window.DFAI;
+  if (!D) return;
+  var nav = document.getElementById('bottomNav');
+  if (!nav) return;
+  function setOn(key) {
+    Array.prototype.forEach.call(nav.querySelectorAll('button'), function (b) {
+      b.classList.toggle('on', b.getAttribute('data-bn') === key);
+    });
+  }
+  nav.addEventListener('click', function (e) {
+    var b = e.target.closest('button');
+    if (!b) return;
+    var k = b.getAttribute('data-bn');
+    setOn(k);
+    if (k === 'home') { if (D.hidePanel) D.hidePanel(); if (D.newChat) D.newChat(); }
+    else if (k === 'business') { if (D.openBusiness) D.openBusiness(); }
+    else if (k === 'tools') { if (D.openAiTools) D.openAiTools(); }
+    else if (k === 'darkweb') { if (D.openDarkweb) D.openDarkweb(); }
+  });
+  setOn('home');
+})();

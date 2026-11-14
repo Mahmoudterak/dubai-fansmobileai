@@ -216,7 +216,7 @@
     var panel = D.showPanel('radar');
     panel.innerHTML =
       '<div class="pv">' +
-      '<div class="pv-head"><div class="pv-ico">' + ICON.radar + '</div><div><h1>Dubai Fans Radar</h1>' +
+      '<div class="pv-head"><div class="pv-ico ring-ico" aria-hidden="true"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" transform="rotate(-70 50 50)"></circle></svg></div><div><h1>Dubai Fans Radar</h1>' +
       '<p>شوف علامتك بتظهر قد إيه في نتائج البحث وفي إجابات الذكاء الاصطناعي، مقارنةً بمنافسينك.</p></div></div>' +
       '<div id="radarTop">' + radarFormHtml() + '</div>' +
       '<div id="radarHistory"></div>' +
