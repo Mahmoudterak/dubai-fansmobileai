@@ -16,6 +16,7 @@
     'تحليل متجري أو الموقع': 'Analyze my store or website',
     /* ---- اختيار النموذج ---- */
     'يختار الأنسب لكل سؤال': 'Picks the best fit for each question',
+    'Cloudflare الافتراضي · يختار الأنسب لكل سؤال': 'Cloudflare default · picks the best fit for each question',
     'تفكير أعمق للخطط والتحليل': 'Deeper thinking for plans and analysis',
     'ردود أسرع للأسئلة البسيطة': 'Faster replies for simple questions',
     'نموذج خارجي حسب إعداداتك': 'External model based on your settings',
