@@ -246,11 +246,27 @@
   setOn('business');
 })();
 
-// يظهر شريط التنقل السفلي فقط عندما تكون صفحة نشاطي التجاري مفتوحة (بدون :has لدعم المتصفحات القديمة)
+// يظهر شريط التنقل السفلي فقط في: نشاطي التجاري، الأدوات الذكية، مراقبة الويب المظلم (بدون :has لدعم المتصفحات القديمة)
 (function () {
   var panel = document.getElementById('panel');
   if (!panel) return;
-  function sync() { document.body.classList.toggle('biz-open', !!document.getElementById('bizHead')); }
+  var KEYS = { business: 1, tools: 1, darkweb: 1 };
+  function setNavOn(key) {
+    var nav = document.getElementById('bottomNav');
+    if (!nav) return;
+    Array.prototype.forEach.call(nav.querySelectorAll('button'), function (b) {
+      b.classList.toggle('on', b.getAttribute('data-bn') === key);
+    });
+  }
+  function sync() {
+    var key = null;
+    if (panel.hidden) key = null; // الصفحة مقفولة (الدردشة ظاهرة): الشريط يختفي
+    else if (document.getElementById('bizHead')) key = 'business';
+    else if (panel.classList.contains('ait-panel')) key = 'tools';
+    else if (panel.querySelector('.dw-page')) key = 'darkweb';
+    document.body.classList.toggle('biz-open', !!(key && KEYS[key]));
+    if (key) setNavOn(key);
+  }
   new MutationObserver(sync).observe(panel, { childList: true, subtree: true });
   sync();
 })();

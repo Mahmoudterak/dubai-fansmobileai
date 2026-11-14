@@ -198,10 +198,11 @@ a:hover { color: var(--lav-2); }
 .md th { background: var(--surface-2); font-weight: 700; }
 .md td:first-child, .md th:first-child { width: 128px; font-weight: 600; }
 @media (max-width: 600px) {
-  /* على الموبايل: أعمدة بعرض ثابت (fixed) حتى ما المتصفح يضغطها، والجدول يعدّي عرض الشاشة ويتمرّر جوّه الغلاف بس */
-  .md table { font-size: 14px; table-layout: fixed; width: max-content; min-width: 0; }
-  .md th, .md td { padding: 6px 8px; width: 112px; }
-  .md td:first-child, .md th:first-child { width: 124px; }
+  /* على الموبايل: الجدول يملأ عرض الشاشة كله، والأعمدة تتوزّع حسب المحتوى، والنص يلتف داخل الخلية.
+     كده ما فيش جزء من الجدول مختفي على الشمال (في الـ RTL الغلاف بيبدأ التمرير من اليمين). */
+  .md table { font-size: 13.5px; table-layout: auto; width: 100%; min-width: 0; }
+  .md th, .md td { padding: 6px 7px; width: auto; }
+  .md td:first-child, .md th:first-child { width: auto; }
 }
 .md hr { border: 0; border-top: 1px solid var(--line); margin: 16px 0; }
 .typing { display: inline-flex; gap: 5px; padding: 8px 0; }
