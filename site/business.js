@@ -5,7 +5,7 @@
   if (!D) return;
 
   var data = { profile: null, connections: [], reports: [] };
-  var tab = 'profile';
+  var tab = 'overview';
   var running = null; // نوع التحليل الشغّال
   var storeKind = 'shopify';
   var shopMode = 'new';
@@ -89,6 +89,7 @@
     panel.innerHTML = '<div class="pv"><div class="pv-head"><div class="pv-ico green">' + ICONS.store + '</div><div><h1>نشاطي التجاري</h1>' +
       '<p>اربط نشاطك، والمساعد يحلله ويخصّص كل ردوده ومحتواه وإعلاناته عليه.</p></div></div>' +
       '<div class="biz-tabs" role="tablist">' +
+      '<button type="button" role="tab" data-t="overview">نظرة عامة</button>' +
       '<button type="button" role="tab" data-t="profile">بيانات النشاط</button>' +
       '<button type="button" role="tab" data-t="connect">الربط والتحليل</button>' +
       '<button type="button" role="tab" data-t="customers">العملاء</button>' +
@@ -111,13 +112,43 @@
       b.classList.toggle('on', on);
       b.setAttribute('aria-selected', String(on));
     });
-    if (tab === 'profile') renderProfile(body);
+    if (tab === 'overview') renderOverview(body);
+    else if (tab === 'profile') renderProfile(body);
     else if (tab === 'connect') renderConnect(body);
     else if (tab === 'memory') renderMemory(body);
     else if (tab === 'customers') renderCustomers(body);
     else if (tab === 'alerts') renderAlerts(body);
     else if (tab === 'ops') renderOps(body);
     else renderReports(body);
+  }
+
+  // ---------- نظرة عامة: حلقة الجاهزية الدوّارة وخطوات التجهيز (من التصميم) ----------
+  function renderOverview(body) {
+    var p = data.profile || {};
+    var steps = [
+      ['بيانات النشاط', !!(p.name && p.category)],
+      ['الجمهور المستهدف', !!p.audience],
+      ['أهم المنتجات والعروض', !!p.offers],
+      ['موقع أو حساب سوشيال', !!(p.website || p.instagram || p.tiktok || p.facebook)],
+      ['هدفك الحالي', !!p.goals]
+    ];
+    var done = steps.filter(function (s) { return s[1]; }).length;
+    var pct = Math.round(done / steps.length * 100);
+    var recs = (data.recs || []).length;
+    body.innerHTML = '<div class="ov-hero">' +
+      '<div class="ov-ring"><span class="ov-glow"></span><span class="ov-sphere"></span>' +
+      '<span class="ov-spin"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="40" transform="rotate(-70 50 50)"></circle></svg></span>' +
+      '<div class="ov-center"><b>' + pct + '%</b><span>جاهزية نشاطك</span></div></div>' +
+      '<p class="ov-note">اربط نشاطك، والمساعد يخصّص كل ردوده ومحتواه عليه.</p></div>' +
+      '<div class="ov-grid">' +
+      '<div class="ov-stat"><span>الخطوات المكتملة</span><b>' + done + ' / ' + steps.length + '</b></div>' +
+      '<div class="ov-stat"><span>توصيات بانتظار موافقتك</span><b>' + recs + '</b></div>' +
+      '</div>' +
+      '<div class="ov-card"><div class="ov-card-head"><b>جاهزية النشاط</b><span>' + done + ' / ' + steps.length + '</span></div>' +
+      '<div class="ov-bar"><i style="width:' + pct + '%"></i></div>' +
+      steps.map(function (s) {
+        return '<div class="ov-step' + (s[1] ? ' done' : '') + '"><span class="ov-dot"></span><span>' + esc(s[0]) + '</span><em>' + (s[1] ? 'تم' : 'ابدأ') + '</em></div>';
+      }).join('') + '</div>';
   }
 
   // ---------- المحاسبة والموظفين (أرقام تقديرية من إدخالك) ----------

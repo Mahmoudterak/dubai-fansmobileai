@@ -23,6 +23,18 @@
     'الخبير': 'Expert',
     'سريع': 'Fast',
     'النموذج الخارجي': 'External model',
+    /* ---- نظرة عامة في نشاطي التجاري ---- */
+    'نظرة عامة': 'Overview',
+    'جاهزية نشاطك': 'Your readiness',
+    'اربط نشاطك، والمساعد يخصّص كل ردوده ومحتواه عليه.': 'Connect your business and the assistant tailors every reply and piece of content to it.',
+    'الخطوات المكتملة': 'Completed steps',
+    'توصيات بانتظار موافقتك': 'Recommendations awaiting your approval',
+    'جاهزية النشاط': 'Business readiness',
+    'موقع أو حساب سوشيال': 'Website or social account',
+    'أهم المنتجات والعروض': 'Main products and offers',
+    'هدفك الحالي': 'Your current goal',
+    'تم': 'Done',
+    'ابدأ': 'Start',
 
     /* ---- نافذة عرض التطبيق والموقع ---- */
     'الشكل ده بيعرض 3 شاشات. لو رفعت أقل، هنكرر الأولى. الصورة رقم 1 بتبقى في النص.': 'This layout shows 3 screens. If you upload fewer, we will repeat the first one. Image 1 goes in the centre.',

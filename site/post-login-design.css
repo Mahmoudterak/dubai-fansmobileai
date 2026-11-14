@@ -396,3 +396,32 @@
 :root[data-theme="dark"] .main.is-home {
   background: radial-gradient(440px 340px at 50% -40px, rgba(122, 24, 36, 0.85), rgba(122, 24, 36, 0) 70%), #06091A;
 }
+
+/* الكرة الدوّارة في نظرة عامة (نشاطي التجاري) */
+.ov-hero { display: flex; flex-direction: column; align-items: center; gap: 10px; margin: 8px 0 18px; text-align: center; }
+.ov-ring { position: relative; width: 260px; height: 260px; flex: none; }
+.ov-glow { position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle, rgba(46,123,230,.32) 0%, transparent 65%); }
+.ov-sphere { position: absolute; inset: 22px; border-radius: 50%; background: radial-gradient(circle at 50% 64%, #04060F 55%, #0A1228 76%, #1B2D52 92%, #3A5A8C 100%); box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 0 70px rgba(46,123,230,.28); }
+.ov-spin { position: absolute; inset: 0; animation: ov-rotate 10s linear infinite; }
+.ov-spin svg { width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 0 5px rgba(255,255,255,.85)) drop-shadow(0 0 16px rgba(46,123,230,.75)); }
+.ov-spin circle { fill: none; stroke: #F4F4F7; stroke-width: 5; stroke-linecap: round; stroke-dasharray: 52 11; }
+.ov-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; }
+.ov-center b { font-size: 44px; font-weight: 800; color: #F4F4F7; }
+.ov-center span { font-size: 14px; color: #9EA5BE; }
+.ov-note { margin: 0; font-size: 14px; color: #B4BAD0; max-width: 340px; line-height: 1.6; }
+.ov-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.ov-stat, .ov-card { background: rgba(255,255,255,.045); border: 1px solid rgba(255,255,255,.09); border-radius: 18px; padding: 14px; color: #F4F4F7; }
+.ov-stat span { display: block; font-size: 13px; color: #9EA5BE; }
+.ov-stat b { display: block; margin-top: 8px; font-size: 26px; font-weight: 700; }
+.ov-card { display: flex; flex-direction: column; gap: 10px; }
+.ov-card-head { display: flex; justify-content: space-between; align-items: center; font-size: 15px; }
+.ov-card-head span { font-size: 13px; color: #9EA5BE; }
+.ov-bar { height: 6px; border-radius: 999px; background: rgba(255,255,255,.08); overflow: hidden; }
+.ov-bar i { display: block; height: 100%; background: linear-gradient(90deg, #2E7BE6, #5A2B9B); border-radius: 999px; }
+.ov-step { display: flex; align-items: center; gap: 10px; font-size: 14px; padding: 8px 0; border-top: 1px solid rgba(255,255,255,.06); }
+.ov-step em { margin-inline-start: auto; font-style: normal; font-size: 12px; color: #2E7BE6; }
+.ov-step.done em { color: #3DDC97; }
+.ov-dot { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid #9EA5BE; flex: none; }
+.ov-step.done .ov-dot { background: #3DDC97; border-color: #3DDC97; }
+@keyframes ov-rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .ov-spin { animation: none; } }
