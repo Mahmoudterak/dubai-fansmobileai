@@ -1,0 +1,37 @@
+/* تصميم الوكلاء الجديد (من ملف Dubai Fans AI v3، شاشة Agents / Content).
+   طبقة تعديل فوق app.css تخص نافذة الوكلاء #agentsModal فقط، وفي الوضع الداكن فقط. */
+
+:root[data-theme="dark"] #agentsModal .modal-box {
+  background: linear-gradient(180deg, #0B1030 0%, #06091A 100%);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+}
+:root[data-theme="dark"] #agentsModal .agent-card {
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 22px;
+  backdrop-filter: blur(18px);
+  color: #F4F4F7;
+  box-shadow: none;
+}
+:root[data-theme="dark"] #agentsModal .agent-card:hover {
+  border-color: #6D4AFF;
+  box-shadow: 0 0 18px rgba(109, 74, 255, 0.35);
+}
+:root[data-theme="dark"] #agentsModal .agent-card.active {
+  border-color: #6D4AFF;
+  box-shadow: 0 0 18px rgba(109, 74, 255, 0.45);
+}
+:root[data-theme="dark"] #agentsModal .agent-ico {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #2E7BE6, #173A86);
+  border: 1px solid #2E7BE6;
+  box-shadow: 0 0 24px rgba(46, 123, 230, 0.4);
+  font-size: 20px;
+}
+:root[data-theme="dark"] #agentsModal .agent-desc {
+  color: #9EA5BE;
+}
