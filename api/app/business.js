@@ -322,6 +322,9 @@ function metaContent(html, name) {
 async function socialAudit(user, rawUrl, profile) {
   const t = socialTarget(rawUrl);
   const res = await safeFetch(t.url, { timeout: 12000 }, 1024 * 1024);
+  if (res.status === 429 || res.status === 403) {
+    throw userErr(`${t.platform} حدّدت الطلبات من السيرفر دلوقتي. جرّب بعد شوية، أو اكتب وصف الحساب يدوياً في بيانات النشاط.`);
+  }
   if (res.status >= 400) throw userErr(`الصفحة رجّعت خطأ (${res.status}). تأكد إن الحساب عام.`);
   const html = res.body || '';
   const ogTitle = metaContent(html, 'og:title');
