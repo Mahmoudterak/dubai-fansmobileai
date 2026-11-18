@@ -81,3 +81,13 @@ test('أداة تسويق مربوطة لا تُفعَّل للمحادثة، و
   assert.equal(r.body.error.code, 'not_chat');
   await assert.rejects(() => svc.openAddonStream(1, 'hubspot', [{ role: 'user', content: 'hi' }], 100, new AbortController().signal));
 });
+
+test('WhatsApp: التوكن في Authorization فقط، والفحص على Graph API', async () => {
+  const f = recordingFetch(200);
+  const { svc } = mkService(f);
+  const r = await call(svc, 'POST', '/api/addons/integrations', { addon: 'whatsapp', apiKey: 'EAAG-TESTTOKEN789' });
+  assert.equal(r.status, 201);
+  assert.ok(f.calls[0].url.startsWith('https://graph.facebook.com/'));
+  assert.ok(!f.calls[0].url.includes('EAAG-TESTTOKEN789'));
+  assert.equal(f.calls[0].headers.Authorization, 'Bearer EAAG-TESTTOKEN789');
+});
