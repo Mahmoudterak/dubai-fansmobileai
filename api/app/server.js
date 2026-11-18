@@ -21,6 +21,7 @@ const tracesMod = require('./traces.js');
 const kbMod = require('./kb.js');
 const affiliateMod = require('./affiliate.js');
 const aiToolsMod = require('./ai-tools/index.js');
+const addonsMod = require('./addons/index.js');
 const advisorMod = require('./advisor/index.js');
 const tasksMod = require('./tasks/index.js');
 const memoryMod = require('./memory.js');
@@ -94,6 +95,8 @@ const CFG = {
   ziinaTest: env('ZIINA_TEST') === '1',
   ziinaBase: env('ZIINA_API_BASE', 'https://api-v2.ziina.com/api').replace(/\/$/, ''),
   secretKey: env('SECRET_KEY'),
+  // مفتاح تشفير مفاتيح الإضافات (32 بايت hex أو base64). فاضي = الإضافات معطّلة
+  addonsMasterKey: env('ADDONS_MASTER_KEY'),
   shopifyVersion: env('SHOPIFY_API_VERSION', '2025-01'),
   appUrl: env('APP_URL', 'https://ai.mtuaefans.com').replace(/\/$/, ''),
   purchaseUrls: { basic: env('PURCHASE_URL_BASIC'), pro: env('PURCHASE_URL_PRO'), business: env('PURCHASE_URL_BUSINESS') },
@@ -964,18 +967,25 @@ async function handleChatInner(req, res, user, tr) {
       models: { small: CFG.cfSmallModel, site: CFG.siteModel, analysis: CFG.analysisModel, chat: CFG.chatModel } });
     if (route.kind !== 'chat') tr.note = 'route:' + route.kind;
     // اختيار المستخدم من القائمة: لو مش auto، بنستخدم النموذج ده بالتحديد (من غير رجوع لمحرك تاني)
+    // الإضافة (BYOK): لو اختار المستخدم إضافة مفعّلة لديه، الرد يأتي من مزوده بمفتاحه هو (Tool Router في addons/)
+    const addonSlug = !tool && !agent && !voice && typeof body.addon === 'string' ? body.addon.slice(0, 40) : '';
     const pick = typeof body.model === 'string' ? body.model : 'auto';
-    if (!availableModels().some((m) => m.id === pick)) { release(); tr.status = 'bad_request'; return fail(res, 400, 'model', 'النموذج المختار غير متاح.'); }
+    if (!addonSlug && !availableModels().some((m) => m.id === pick)) { release(); tr.status = 'bad_request'; return fail(res, 400, 'model', 'النموذج المختار غير متاح.'); }
     if (pick !== 'auto') tr.note = 'model:' + pick;
     const only = pick === 'auto' ? null : pick;
     // النموذج داخل كل مسار: لو المستخدم اختار نموذج بعينه بنحترمه، لو auto بنستخدم نموذج المسار (null = الافتراضي)
     const cfPick = pick === 'small' ? CFG.cfSmallModel : pick === 'auto' ? route.model : null;
     // نسجّل اسم النموذج المستخدم فعلاً عشان نتحقق من الاختيار من السجل
     if (cfPick) tr.note = (tr.note ? tr.note + ' ' : '') + 'cfm:' + cfPick;
-    try { stream = await openStream([{ role: 'system', content: system }, ...msgs], maxTokens, controller.signal, cfPick, only); }
+    try {
+      stream = addonSlug
+        ? await addons.openAddonStream(user.id, addonSlug, [{ role: 'system', content: system }, ...msgs], maxTokens, controller.signal, typeof body.addonModel === 'string' ? body.addonModel : undefined)
+        : await openStream([{ role: 'system', content: system }, ...msgs], maxTokens, controller.signal, cfPick, only);
+    }
     catch (e) {
       release();
       if (controller.signal.aborted) { tr.status = 'aborted'; return; }
+      if (e && e.addon) { tr.status = 'addon'; return fail(res, e.httpStatus || 400, 'addon', e.message); }
       tr.status = 'upstream';
       console.error('model unavailable:', e.message);
       return fail(res, 500, 'upstream', 'تعذّر الوصول لمحرك الذكاء الاصطناعي. جرّب بعد شوية.');
@@ -1571,6 +1581,8 @@ function serveImage(req, res, id) {
 }
 
 // أدوات الذكاء الاصطناعي (صوت العلامة، مقيّم الجمهور، من صورة لكود)
+// الإضافات (BYOK): كل مستخدم يربط مفتاحه الخاص، والمزود يحاسبه مباشرة
+const addons = addonsMod.init(db, { send, fail, rateLimited, readJson, now: () => now(), masterKey: CFG.addonsMasterKey });
 const aiTools = aiToolsMod.init(db, {
   readJson, send, fail, reserve, rateLimited,
   complete: (m, t, ms) => complete(m, t, ms),
@@ -2388,6 +2400,11 @@ async function route(req, res) {
 
   if (p.startsWith('/api/ai-tools')) {
     const handled = await aiTools.routes(req, res, user, p, m);
+    if (handled !== null) return handled;
+  }
+
+  if (p.startsWith('/api/addons')) {
+    const handled = await addons.routes(req, res, user, p, m);
     if (handled !== null) return handled;
   }
 

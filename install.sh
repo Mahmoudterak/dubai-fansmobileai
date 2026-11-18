@@ -22,6 +22,8 @@ cp "$SRC/api/app/tasks/"*.js "$API_DIR/app/tasks/"
 cp "$SRC/api/app/advisor/"*.js "$API_DIR/app/advisor/"
 cp "$SRC/api/app/advisor/market-sources/"*.js "$API_DIR/app/advisor/market-sources/"
 cp "$SRC/api/app/ai-tools/"*.js "$API_DIR/app/ai-tools/"
+# الإضافات (BYOK): وحدة الربط والتشفير ومحوّلات المزودين
+mkdir -p "$API_DIR/app/addons/adapters" && cp "$SRC/api/app/addons/"*.js "$API_DIR/app/addons/" && cp "$SRC/api/app/addons/adapters/"*.js "$API_DIR/app/addons/adapters/"
 cd "$API_DIR" && docker compose up -d --force-recreate dfai-api
 WEB=/var/www/dubai-fans-ai
 if [ -d "$WEB" ]; then
