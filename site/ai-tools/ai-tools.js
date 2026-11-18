@@ -100,14 +100,62 @@
     return wrap;
   }
 
+  // وصف قصير لكل مزود يظهر تحت اسمه في القائمة
+  var ADDON_DESC = {
+    openai: 'نماذج GPT للمحادثة والكتابة',
+    gemini: 'نماذج Google Gemini',
+    claude: 'نماذج Anthropic Claude',
+    groq: 'استدلال سريع لنماذج مفتوحة',
+    openrouter: 'عشرات النماذج بمفتاح واحد',
+    semrush: 'أبحاث الكلمات المفتاحية والمنافسين',
+    ahrefs: 'تحليل الروابط وأبحاث SEO',
+    hubspot: 'CRM وتسويق وأتمتة المبيعات',
+    mailchimp: 'إرسال النشرات والحملات البريدية',
+    'google-trends': 'اتجاهات البحث عبر SerpApi'
+  };
+
+  var ADDON_CSS = '.ait-row{border:1px solid rgba(127,127,127,.22);border-radius:14px;background:rgba(127,127,127,.07);margin-bottom:10px;overflow:hidden}' +
+    '.ait-row-main{display:flex;align-items:center;gap:12px;padding:12px 14px;cursor:pointer}' +
+    '.ait-row-txt{flex:1;min-width:0;display:flex;flex-direction:column}' +
+    '.ait-row-txt small{opacity:.7;font-size:12px;margin-top:2px}' +
+    '.ait-row-end{display:flex;align-items:center;gap:8px}' +
+    '.ait-chip{font-size:12px;opacity:.85;white-space:nowrap}' +
+    '.ait-plus{width:32px;height:32px;border-radius:50%;border:1px solid rgba(127,127,127,.45);background:transparent;color:inherit;font-size:18px;line-height:1;cursor:pointer}' +
+    '.ait-row-det{padding:0 14px 14px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}' +
+    '.ait-row-det[hidden]{display:none}' +
+    '.ait-row-det input{flex:1;min-width:180px}' +
+    '.ait-pinned{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0 6px}' +
+    '.ait-pin{border:1px solid rgba(127,127,127,.25);border-radius:12px;background:rgba(127,127,127,.07);padding:6px;cursor:pointer;display:inline-flex}' +
+    '.ait-search{width:100%;margin:10px 0 12px;padding:10px 14px;border-radius:12px;border:1px solid rgba(127,127,127,.3);background:transparent;color:inherit;box-sizing:border-box}' +
+    '.ait-group{margin:18px 0 8px;font-size:15px}';
+
   function renderAddons(body) {
+    if (!document.getElementById('ait-addons-css')) {
+      var st0 = document.createElement('style');
+      st0.id = 'ait-addons-css';
+      st0.textContent = ADDON_CSS;
+      document.head.appendChild(st0);
+    }
     body.appendChild(el('p', '', 'اربط مفتاح API الخاص بك عند المزود. المزود يحاسبك مباشرة على استخدامك، ولا نستخدم مفاتيح أي مستخدم غيرك. عند تفعيل الإضافة يرسل سياق المحادثة إلى مزودك.'));
     var picked = el('div', 'ait-status');
     body.appendChild(picked);
+    var search = el('input', 'ait-search');
+    search.type = 'search';
+    search.placeholder = 'بحث في المكونات الإضافية';
+    body.appendChild(search);
     var status = el('div', 'ait-status', 'جارٍ التحميل…');
     body.appendChild(status);
+    var pinnedWrap = el('div');
+    body.appendChild(pinnedWrap);
     var list = el('div', 'ait-addons');
     body.appendChild(list);
+
+    var cat = null, ints = [];
+    var open = {}; // المزودون المفتوحة تفاصيلهم
+
+    function linkOf(slug) {
+      return ints.filter(function (i) { return i.addon === slug; })[0] || null;
+    }
 
     function renderPicked() {
       var cur = D.getAddon();
@@ -116,51 +164,100 @@
       picked.appendChild(el('span', '', 'المحادثة تستخدم إضافتك الآن: ' + cur + ' '));
       var off = el('button', 'btn-ghost sm', 'رجوع للنموذج العادي');
       off.type = 'button';
-      off.addEventListener('click', function () { D.setAddon(''); renderPicked(); load(); });
+      off.addEventListener('click', function () { D.setAddon(''); renderPicked(); paint(); });
       picked.appendChild(off);
     }
     renderPicked();
+
+    search.addEventListener('input', paint);
 
     function load() {
       status.textContent = 'جارٍ التحميل…';
       Promise.all([D.apiJson('/api/addons/catalog'), D.apiJson('/api/addons/integrations')])
         .then(function (r) {
-          var cat = r[0], ints = r[1].integrations || [];
+          cat = r[0];
+          ints = r[1].integrations || [];
           status.textContent = cat.enabled ? '' : 'الإضافات غير مفعّلة على السيرفر حالياً.';
-          list.innerHTML = '';
-          // مجموعات: 1) نماذج المحادثة (تُفعَّل للمحادثة)، 2) أدوات التسويق والـSEO (ربط وفحص فقط)
-          [
-            { title: '1. نماذج الذكاء الاصطناعي', category: 'chat' },
-            { title: '2. Marketing & SEO', category: 'marketing' }
-          ].forEach(function (g) {
-            var items = (cat.providers || []).filter(function (p) { return p.category === g.category; });
-            if (!items.length) return;
-            var h = el('h3', 'ait-group', g.title);
-            h.style.cssText = 'margin:18px 0 8px;font-size:15px';
-            list.appendChild(h);
-            items.forEach(function (p) {
-              list.appendChild(providerCard(p, ints.filter(function (i) { return i.addon === p.slug; })[0], cat.enabled));
-            });
-          });
+          paint();
         })
         .catch(function (ex) { status.textContent = ex.message || 'تعذّر تحميل الإضافات.'; });
     }
 
-    function providerCard(p, link, enabled) {
-      var card = el('div', 'ait-addon');
-      var head = el('div', 'ait-addon-head');
-      head.style.cssText = 'display:flex;align-items:center;margin-bottom:6px';
-      head.appendChild(providerLogo(p.slug, p.name));
-      head.appendChild(el('h3', '', p.name));
-      card.appendChild(head);
-      var st = el('div', 'ait-status');
-      card.appendChild(st);
-      var box = el('div');
-      box.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;align-items:center';
-      card.appendChild(box);
+    function paint() {
+      if (!cat) return;
+      var q = search.value.trim().toLowerCase();
+      var providers = cat.providers || [];
+      var matches = function (p) {
+        return !q || p.name.toLowerCase().indexOf(q) >= 0 || (ADDON_DESC[p.slug] || '').toLowerCase().indexOf(q) >= 0;
+      };
+
+      // المثبّتة: المزودون المرتبطون والناجح اختبارهم
+      pinnedWrap.innerHTML = '';
+      var pinned = providers.filter(function (p) { var l = linkOf(p.slug); return l && l.status === 'verified'; });
+      if (pinned.length) {
+        pinnedWrap.appendChild(el('h3', 'ait-group', 'المثبّتة'));
+        var prow = el('div', 'ait-pinned');
+        pinned.forEach(function (p) {
+          var b = el('button', 'ait-pin');
+          b.type = 'button';
+          b.title = p.name;
+          b.appendChild(providerLogo(p.slug, p.name));
+          b.addEventListener('click', function () {
+            open[p.slug] = true;
+            paint();
+            var target = list.querySelector('[data-slug="' + p.slug + '"]');
+            if (target) target.scrollIntoView({ block: 'center', behavior: 'smooth' });
+          });
+          prow.appendChild(b);
+        });
+        pinnedWrap.appendChild(prow);
+      }
+
+      list.innerHTML = '';
+      [
+        { title: '1. نماذج الذكاء الاصطناعي', category: 'chat' },
+        { title: '2. Marketing & SEO', category: 'marketing' }
+      ].forEach(function (g) {
+        var items = providers.filter(function (p) { return p.category === g.category && matches(p); });
+        if (!items.length) return;
+        list.appendChild(el('h3', 'ait-group', g.title));
+        items.forEach(function (p) {
+          list.appendChild(providerRow(p, linkOf(p.slug), cat.enabled));
+        });
+      });
+      if (!list.children.length) list.appendChild(el('p', 'ait-status', 'لا توجد نتائج.'));
+    }
+
+    function providerRow(p, link, enabled) {
+      var wrap = el('div', 'ait-row');
+      wrap.setAttribute('data-slug', p.slug);
+
+      var main = el('div', 'ait-row-main');
+      main.appendChild(providerLogo(p.slug, p.name));
+      var txt = el('div', 'ait-row-txt');
+      txt.appendChild(el('strong', '', p.name));
+      txt.appendChild(el('small', '', ADDON_DESC[p.slug] || ''));
+      main.appendChild(txt);
+      var end = el('div', 'ait-row-end');
+      if (link) end.appendChild(el('span', 'ait-chip', link.status === 'verified' ? 'مربوطة ✓' : 'الاختبار الأخير فشل'));
+      var plus = el('button', 'ait-plus', open[p.slug] ? '−' : '+');
+      plus.type = 'button';
+      plus.setAttribute('aria-label', 'تفاصيل');
+      end.appendChild(plus);
+      main.appendChild(end);
+      wrap.appendChild(main);
+
+      var det = el('div', 'ait-row-det');
+      det.hidden = !open[p.slug];
+      var toggle = function () {
+        open[p.slug] = !open[p.slug];
+        det.hidden = !open[p.slug];
+        plus.textContent = open[p.slug] ? '−' : '+';
+      };
+      main.addEventListener('click', toggle);
+      plus.addEventListener('click', function (e) { e.stopPropagation(); toggle(); });
 
       if (!link) {
-        st.textContent = 'غير مربوطة';
         var input = el('input');
         input.type = 'password';
         input.autocomplete = 'off';
@@ -170,56 +267,61 @@
         var go = el('button', 'btn-primary sm', 'اختبار واربط');
         go.type = 'button';
         go.disabled = !enabled;
-        box.appendChild(input);
-        box.appendChild(go);
+        var msg = el('div', 'ait-status');
+        msg.style.width = '100%';
+        det.appendChild(input);
+        det.appendChild(go);
+        det.appendChild(msg);
         go.addEventListener('click', function () {
           var key = input.value.trim();
           input.value = '';
           if (key.length < 8) { D.toast('الصق المفتاح كاملاً.'); return; }
           go.disabled = true;
-          st.textContent = 'جارٍ اختبار المفتاح مع المزود…';
+          msg.textContent = 'جارٍ اختبار المفتاح مع المزود…';
           D.apiJson('/api/addons/integrations', { method: 'POST', body: JSON.stringify({ addon: p.slug, apiKey: key }) })
             .then(function (d) { D.toast(d.message || 'تم الربط ✅'); load(); })
-            .catch(function (ex) { st.textContent = ex.message || 'تعذّر الربط.'; go.disabled = false; });
+            .catch(function (ex) { msg.textContent = ex.message || 'تعذّر الربط.'; go.disabled = false; });
         });
-        return card;
+      } else {
+        det.appendChild(el('span', 'ait-status', 'المفتاح ' + link.keyHint));
+        if (p.category === 'chat') {
+          var on = el('button', link.enabled ? 'btn-ghost sm' : 'btn-primary sm', link.enabled ? 'إيقاف' : 'تفعيل');
+          on.type = 'button';
+          on.disabled = link.status !== 'verified';
+          on.addEventListener('click', function () {
+            on.disabled = true;
+            D.apiJson('/api/addons/enabled/' + p.slug, { method: 'PUT', body: JSON.stringify({ enabled: !link.enabled }) })
+              .then(function () { D.toast(link.enabled ? 'اتوقفت الإضافة' : 'اتفعّلت الإضافة ✅'); load(); })
+              .catch(function (ex) { D.toast(ex.message || 'تعذّر التغيير.'); on.disabled = false; });
+          });
+          var use = el('button', 'btn-primary sm', D.getAddon() === p.slug ? 'مستخدمة في المحادثة الآن' : 'استخدم في المحادثة');
+          use.type = 'button';
+          use.disabled = !link.enabled || link.status !== 'verified' || D.getAddon() === p.slug;
+          use.addEventListener('click', function () { D.setAddon(p.slug); D.toast('تم اختيار الإضافة للمحادثة'); load(); });
+          det.appendChild(on);
+          det.appendChild(use);
+        }
+        var test = el('button', 'btn-ghost sm', 'اختبار الآن');
+        test.type = 'button';
+        test.addEventListener('click', function () {
+          test.disabled = true;
+          D.apiJson('/api/addons/integrations/' + link.id + '/test', { method: 'POST' })
+            .then(function (d) { D.toast(d.message || ''); load(); })
+            .catch(function (ex) { D.toast(ex.message || 'تعذّر الاختبار.'); test.disabled = false; });
+        });
+        var del = el('button', 'btn-ghost sm', 'حذف الربط');
+        del.type = 'button';
+        del.addEventListener('click', function () {
+          if (!window.confirm('تحذف الربط والمفتاح المحفوظ؟ الإضافة هتتوقف.')) return;
+          D.apiJson('/api/addons/integrations/' + link.id, { method: 'DELETE' })
+            .then(function () { D.toast('اتحذف الربط'); load(); })
+            .catch(function (ex) { D.toast(ex.message || 'تعذّر الحذف.'); });
+        });
+        det.appendChild(test);
+        det.appendChild(del);
       }
-
-      st.textContent = (link.status === 'verified' ? 'مربوطة ✓' : 'الاختبار الأخير فشل') + ' · المفتاح ' + link.keyHint;
-      var on = el('button', link.enabled ? 'btn-ghost sm' : 'btn-primary sm', link.enabled ? 'إيقاف' : 'تفعيل');
-      on.type = 'button';
-      on.disabled = link.status !== 'verified';
-      on.addEventListener('click', function () {
-        on.disabled = true;
-        D.apiJson('/api/addons/enabled/' + p.slug, { method: 'PUT', body: JSON.stringify({ enabled: !link.enabled }) })
-          .then(function () { D.toast(link.enabled ? 'اتوقفت الإضافة' : 'اتفعّلت الإضافة ✅'); load(); })
-          .catch(function (ex) { D.toast(ex.message || 'تعذّر التغيير.'); on.disabled = false; });
-      });
-      var test = el('button', 'btn-ghost sm', 'اختبار الآن');
-      test.type = 'button';
-      test.addEventListener('click', function () {
-        test.disabled = true;
-        D.apiJson('/api/addons/integrations/' + link.id + '/test', { method: 'POST' })
-          .then(function (d) { D.toast(d.message || ''); load(); })
-          .catch(function (ex) { D.toast(ex.message || 'تعذّر الاختبار.'); test.disabled = false; });
-      });
-      var del = el('button', 'btn-ghost sm', 'حذف الربط');
-      del.type = 'button';
-      del.addEventListener('click', function () {
-        if (!window.confirm('تحذف الربط والمفتاح المحفوظ؟ الإضافة هتتوقف.')) return;
-        D.apiJson('/api/addons/integrations/' + link.id, { method: 'DELETE' })
-          .then(function () { D.toast('اتحذف الربط'); load(); })
-          .catch(function (ex) { D.toast(ex.message || 'تعذّر الحذف.'); });
-      });
-      var use = el('button', 'btn-primary sm', D.getAddon() === p.slug ? 'مستخدمة في المحادثة الآن' : 'استخدم في المحادثة');
-      use.type = 'button';
-      use.disabled = !link.enabled || link.status !== 'verified' || D.getAddon() === p.slug;
-      use.addEventListener('click', function () { D.setAddon(p.slug); D.toast('تم اختيار الإضافة للمحادثة'); load(); });
-      // التفعيل واستخدام المحادثة للمزودين الذين يدعمون المحادثة فقط
-      if (p.category === 'chat') { box.appendChild(on); box.appendChild(use); }
-      box.appendChild(test);
-      box.appendChild(del);
-      return card;
+      wrap.appendChild(det);
+      return wrap;
     }
 
     load();
