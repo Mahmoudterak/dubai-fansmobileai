@@ -127,7 +127,14 @@
     '.ait-pinned{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0 6px}' +
     '.ait-pin{border:1px solid rgba(127,127,127,.25);border-radius:12px;background:rgba(127,127,127,.07);padding:6px;cursor:pointer;display:inline-flex}' +
     '.ait-search{width:100%;margin:10px 0 12px;padding:10px 14px;border-radius:12px;border:1px solid rgba(127,127,127,.3);background:transparent;color:inherit;box-sizing:border-box}' +
-    '.ait-group{margin:18px 0 8px;font-size:15px}';
+    '.ait-group{margin:18px 0 8px;font-size:15px}' +
+    '.ait-marquee{overflow:hidden;margin:14px 0 4px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}' +
+    '.ait-marquee-track{display:flex;width:max-content;animation:aitMarquee 36s linear infinite}' +
+    '.ait-marquee:hover .ait-marquee-track{animation-play-state:paused}' +
+    '.ait-marquee-group{display:flex;gap:12px;padding-inline-end:12px}' +
+    '.ait-marquee-item{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border:1px solid rgba(127,127,127,.22);border-radius:12px;background:rgba(127,127,127,.07);white-space:nowrap;font-size:13px}' +
+    '@keyframes aitMarquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}' +
+    '@media (prefers-reduced-motion:reduce){.ait-marquee-track{animation:none}}';
 
   function renderAddons(body) {
     if (!document.getElementById('ait-addons-css')) {
@@ -139,6 +146,11 @@
     body.appendChild(el('p', '', 'اربط مفتاح API الخاص بك عند المزود. المزود يحاسبك مباشرة على استخدامك، ولا نستخدم مفاتيح أي مستخدم غيرك. عند تفعيل الإضافة يرسل سياق المحادثة إلى مزودك.'));
     var picked = el('div', 'ait-status');
     body.appendChild(picked);
+    // شريط متحرك بشعارات كل المزودين فوق البحث (يتكرر مرتين لحلقة متصلة)
+    var marq = el('div', 'ait-marquee');
+    var track = el('div', 'ait-marquee-track');
+    marq.appendChild(track);
+    body.appendChild(marq);
     var search = el('input', 'ait-search');
     search.type = 'search';
     search.placeholder = 'بحث في المكونات الإضافية';
@@ -177,6 +189,17 @@
         .then(function (r) {
           cat = r[0];
           ints = r[1].integrations || [];
+          track.innerHTML = '';
+          [0, 1].forEach(function () {
+            var g = el('div', 'ait-marquee-group');
+            (cat.providers || []).forEach(function (p) {
+              var it = el('span', 'ait-marquee-item');
+              it.appendChild(providerLogo(p.slug, p.name));
+              it.appendChild(el('span', '', p.name));
+              g.appendChild(it);
+            });
+            track.appendChild(g);
+          });
           status.textContent = cat.enabled ? '' : 'الإضافات غير مفعّلة على السيرفر حالياً.';
           paint();
         })
