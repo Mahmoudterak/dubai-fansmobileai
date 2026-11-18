@@ -25,7 +25,7 @@ async function probe(fetchImpl, url, headers) {
   if (res.status === 200) return { ok: true, code: null, message: 'تم الاتصال بالمزود بنجاح.' };
   if (res.status === 401 || res.status === 403) return { ok: false, code: 'invalid_key', message: 'المفتاح مرفوض من المزود. تأكد أنه صحيح وفعّال.' };
   if (res.status === 429) return { ok: false, code: 'rate_limited', message: 'المزود رجّع "كثرة طلبات". جرّب بعد دقيقة.' };
-  return { ok: false, code: 'upstream', message: `المزود رجّع خطأ ${res.status}. جرّب لاحقاً.` };
+  return { ok: false, code: 'upstream', status: res.status, message: `المزود رجّع خطأ ${res.status}. جرّب لاحقاً.` };
 }
 
 // طلب POST بجسم JSON لنداء محادثة. يرمي خطأ بكود فقط، بدون نص رد المزود

@@ -104,6 +104,14 @@ test('مفتاح مرفوض (401): يرجع 422 ولا يُحفظ أي شيء', 
   assert.equal(db.prepare('SELECT COUNT(*) AS n FROM addon_credentials').get().n, 0);
 });
 
+test('Gemini يرجّع 400 لمفتاح غير صالح، ويُعامل كـ invalid_key', async () => {
+  const { db, svc } = mkService({ fetch: fakeFetch(() => reply(400)) });
+  const r = await call(svc, 1, 'POST', '/api/addons/integrations', { addon: 'gemini', apiKey: 'AIzaBadKey-123456' });
+  assert.equal(r.status, 422);
+  assert.equal(r.body.error.code, 'invalid_key');
+  assert.equal(db.prepare('SELECT COUNT(*) AS n FROM user_integrations').get().n, 0);
+});
+
 test('فشل الشبكة: رسالة عامة بدون تفاصيل داخلية، ولا حفظ', async () => {
   const { db, svc } = mkService({ fetch: async () => { throw new Error('ECONNRESET'); } });
   const r = await call(svc, 1, 'POST', '/api/addons/integrations', { addon: 'claude', apiKey: 'sk-ant-api-12345678' });

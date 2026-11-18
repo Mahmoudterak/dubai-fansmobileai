@@ -19,6 +19,7 @@
     { id: 'leads', label: 'باحث العملاء' },
     { id: 'advisor', label: 'المستشار' },
     { id: 'bench', label: 'قارن بالمنافس' },
+    { id: 'addons', label: 'الإضافات (مفتاحك)' },
     { id: 'tasks', label: 'المهام' }
   ];
 
@@ -55,6 +56,7 @@
       else if (id === 'advisor') renderAdvisor(body);
       else if (id === 'bench') renderBench(body);
       else if (id === 'tasks') renderTasks(body);
+      else if (id === 'addons') renderAddons(body);
       else renderShot(body);
     }
 
@@ -72,6 +74,99 @@
     p.appendChild(body);
     p.classList.add('ait-panel');
     show('voice');
+  }
+
+  // ---------- الإضافات (BYOK): المستخدم يضيف مفتاح مزوده بنفسه ----------
+  // المفتاح يُرسل للسيرفر مرة واحدة ويُمسح من الحقل فوراً، ولا يُعرض أو يُحفظ في المتصفح.
+  function renderAddons(body) {
+    body.appendChild(el('p', '', 'اربط مفتاح API الخاص بك عند المزود. المزود يحاسبك مباشرة على استخدامك، ولا نستخدم مفاتيح أي مستخدم غيرك. عند تفعيل الإضافة يرسل سياق المحادثة إلى مزودك.'));
+    var status = el('div', 'ait-status', 'جارٍ التحميل…');
+    body.appendChild(status);
+    var list = el('div', 'ait-addons');
+    body.appendChild(list);
+
+    function load() {
+      status.textContent = 'جارٍ التحميل…';
+      Promise.all([D.apiJson('/api/addons/catalog'), D.apiJson('/api/addons/integrations')])
+        .then(function (r) {
+          var cat = r[0], ints = r[1].integrations || [];
+          status.textContent = cat.enabled ? '' : 'الإضافات غير مفعّلة على السيرفر حالياً.';
+          list.innerHTML = '';
+          (cat.providers || []).forEach(function (p) {
+            list.appendChild(providerCard(p, ints.filter(function (i) { return i.addon === p.slug; })[0], cat.enabled));
+          });
+        })
+        .catch(function (ex) { status.textContent = ex.message || 'تعذّر تحميل الإضافات.'; });
+    }
+
+    function providerCard(p, link, enabled) {
+      var card = el('div', 'ait-addon');
+      card.appendChild(el('h3', '', p.name));
+      var st = el('div', 'ait-status');
+      card.appendChild(st);
+      var box = el('div');
+      box.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;align-items:center';
+      card.appendChild(box);
+
+      if (!link) {
+        st.textContent = 'غير مربوطة';
+        var input = el('input');
+        input.type = 'password';
+        input.autocomplete = 'off';
+        input.spellcheck = false;
+        input.placeholder = 'الصق مفتاح ' + p.name + ' هنا';
+        input.disabled = !enabled;
+        var go = el('button', 'btn-primary sm', 'اختبار واربط');
+        go.type = 'button';
+        go.disabled = !enabled;
+        box.appendChild(input);
+        box.appendChild(go);
+        go.addEventListener('click', function () {
+          var key = input.value.trim();
+          input.value = '';
+          if (key.length < 8) { D.toast('الصق المفتاح كاملاً.'); return; }
+          go.disabled = true;
+          st.textContent = 'جارٍ اختبار المفتاح مع المزود…';
+          D.apiJson('/api/addons/integrations', { method: 'POST', body: JSON.stringify({ addon: p.slug, apiKey: key }) })
+            .then(function (d) { D.toast(d.message || 'تم الربط ✅'); load(); })
+            .catch(function (ex) { st.textContent = ex.message || 'تعذّر الربط.'; go.disabled = false; });
+        });
+        return card;
+      }
+
+      st.textContent = (link.status === 'verified' ? 'مربوطة ✓' : 'الاختبار الأخير فشل') + ' · المفتاح ' + link.keyHint;
+      var on = el('button', link.enabled ? 'btn-ghost sm' : 'btn-primary sm', link.enabled ? 'إيقاف' : 'تفعيل');
+      on.type = 'button';
+      on.disabled = link.status !== 'verified';
+      on.addEventListener('click', function () {
+        on.disabled = true;
+        D.apiJson('/api/addons/enabled/' + p.slug, { method: 'PUT', body: JSON.stringify({ enabled: !link.enabled }) })
+          .then(function () { D.toast(link.enabled ? 'اتوقفت الإضافة' : 'اتفعّلت الإضافة ✅'); load(); })
+          .catch(function (ex) { D.toast(ex.message || 'تعذّر التغيير.'); on.disabled = false; });
+      });
+      var test = el('button', 'btn-ghost sm', 'اختبار الآن');
+      test.type = 'button';
+      test.addEventListener('click', function () {
+        test.disabled = true;
+        D.apiJson('/api/addons/integrations/' + link.id + '/test', { method: 'POST' })
+          .then(function (d) { D.toast(d.message || ''); load(); })
+          .catch(function (ex) { D.toast(ex.message || 'تعذّر الاختبار.'); test.disabled = false; });
+      });
+      var del = el('button', 'btn-ghost sm', 'حذف الربط');
+      del.type = 'button';
+      del.addEventListener('click', function () {
+        if (!window.confirm('تحذف الربط والمفتاح المحفوظ؟ الإضافة هتتوقف.')) return;
+        D.apiJson('/api/addons/integrations/' + link.id, { method: 'DELETE' })
+          .then(function () { D.toast('اتحذف الربط'); load(); })
+          .catch(function (ex) { D.toast(ex.message || 'تعذّر الحذف.'); });
+      });
+      box.appendChild(on);
+      box.appendChild(test);
+      box.appendChild(del);
+      return card;
+    }
+
+    load();
   }
 
   // ---------- 1) صوت العلامة ----------
