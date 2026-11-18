@@ -14,6 +14,7 @@
 const { createSealer } = require('./crypto.js');
 const { initSchema } = require('./schema.js');
 const { ADAPTERS, bySlug } = require('./adapters/index.js');
+const { createOauth, initOauthSchema } = require('./oauth.js');
 
 const KEY_RE = /^[\x21-\x7e]{8,300}$/; // بدون مسافات أو محارف تحكم
 const MODEL_RE = /^[A-Za-z0-9._/:-]{1,80}$/;
@@ -44,6 +45,7 @@ async function* singleSseChunk(text) {
 
 function init(db, deps) {
   initSchema(db);
+  initOauthSchema(db);
   const { send, fail, readJson, rateLimited, now } = deps;
   const sealer = createSealer(deps.masterKey);
   const fetchImpl = (...a) => (deps.fetch || globalThis.fetch)(...a);
@@ -101,6 +103,24 @@ function init(db, deps) {
     try { st.logExec.run(userId, slug, action, status, code || null, ms, now()); } catch { /* تجاهل */ }
   };
   const disabled = (res) => fail(res, 503, 'addons_off', 'الإضافات غير مفعّلة على السيرفر حالياً.');
+
+  // ---------- OAuth (Gmail وCanva): مفاتيح التطبيق من البيئة، والمستخدم يوافق على حسابه ----------
+  const oauthCreds = deps.oauth || {};
+  const saveSecret = (userId, slug, secret, ts) => {
+    const cipher = sealer.seal(secret, aadFor(userId, slug));
+    db.exec('BEGIN IMMEDIATE');
+    try {
+      st.upsertIntegration.run(userId, slug, 'OAuth', ts, ts, ts);
+      const id = st.idByUserSlug.get(userId, slug).id;
+      st.upsertCred.run(id, userId, cipher, ts);
+      db.exec('COMMIT');
+    } catch (e) {
+      try { db.exec('ROLLBACK'); } catch { /* تجاهل */ }
+      throw e;
+    }
+  };
+  const verify = (slug, secret) => bySlug(slug).test(secret, fetchImpl, oauthCreds[slug]);
+  const oauth = createOauth({ db, now, creds: oauthCreds, publicBase: deps.publicBase || '', fetch: deps.fetch, saveSecret, verify });
   // يرجّع true ويرد 429 لو تجاوز الحد
   const rateLimitedRes = (res, user) => {
     if (!rateLimited('addon:' + user.id, RATE_MAX, RATE_WINDOW_MS)) return false;
@@ -115,6 +135,7 @@ function init(db, deps) {
     const body = await readJson(req, 4096);
     const adapter = bySlug(body.addon);
     if (!adapter) return fail(res, 400, 'addon', 'الإضافة غير معروفة.');
+    if (adapter.oauth) return fail(res, 400, 'oauth', 'اربط هذه الأداة بحسابك عبر زر الربط.');
     const apiKey = typeof body.apiKey === 'string' ? body.apiKey.trim() : '';
     if (!KEY_RE.test(apiKey)) return fail(res, 400, 'bad_key', 'اكتب مفتاح المزود كاملاً بدون مسافات.');
 
@@ -156,7 +177,8 @@ function init(db, deps) {
     try { apiKey = sealer.open(cred.ciphertext, aadFor(user.id, row.addon_slug)); }
     catch { return fail(res, 500, 'decrypt', 'تعذّر فك تشفير المفتاح. اربطه من جديد.'); }
     const t0 = Date.now();
-    const r = await adapter.test(apiKey, fetchImpl);
+    const r = await adapter.test(apiKey, fetchImpl, oauthCreds[adapter.slug]);
+    if (r.ok && r.secret && r.secret !== apiKey) saveSecret(user.id, row.addon_slug, r.secret, now());
     apiKey = null;
     const ts = now();
     st.setStatus.run(r.ok ? 'verified' : 'failed', ts, ts, id, user.id);
@@ -277,13 +299,20 @@ function init(db, deps) {
       if (m === 'GET' && p === '/api/addons/catalog') {
         return send(res, 200, {
           enabled: Boolean(sealer),
-          providers: ADAPTERS.map((a) => ({ slug: a.slug, name: a.name, category: a.category })),
+          providers: ADAPTERS.map((a) => ({ slug: a.slug, name: a.name, category: a.category, oauth: Boolean(a.oauth) })),
         });
       }
       if (m === 'GET' && p === '/api/addons/integrations') {
         return send(res, 200, { integrations: st.listForUser.all(user.id).map(publicRow) });
       }
       if (m === 'GET' && p === '/api/addons/tools') return send(res, 200, { tools: listTools(user.id) });
+      const os = /^\/api\/addons\/oauth\/([a-z0-9_-]{1,30})\/start$/.exec(p);
+      if (os && m === 'GET') {
+        if (!sealer) return disabled(res);
+        const u = oauth.startUrl(user.id, os[1]);
+        if (!u) return fail(res, 503, 'oauth_off', 'ربط هذه الأداة غير مفعّل على السيرفر حالياً.');
+        return send(res, 200, { url: u });
+      }
       if (m === 'POST' && p === '/api/addons/integrations') return await connect(req, res, user);
       const en = /^\/api\/addons\/enabled\/([a-z0-9_-]{1,30})$/.exec(p);
       if (en && m === 'PUT') return await setEnabled(req, res, user, en[1]);
@@ -302,7 +331,25 @@ function init(db, deps) {
     }
   }
 
-  return { routes, openAddonStream, listTools, enabled: Boolean(sealer) };
+  // يستدعيها الخادم بدون جلسة: المزود يعيد المستخدم هنا بعد الموافقة
+  async function oauthCallback(req, res, url) {
+    const dest = (deps.publicBase || '').replace(/\/+$/, '') + '/?addons=';
+    let result;
+    try {
+      const err = url.searchParams.get('error');
+      if (!sealer) result = { ok: false, code: 'config' };
+      else if (err) result = { ok: false, code: 'denied' };
+      else result = await oauth.finish(url.searchParams.get('state') || '', url.searchParams.get('code') || '');
+    } catch (e) {
+      console.error('addons oauth error:', e && e.name);
+      result = { ok: false, code: 'upstream' };
+    }
+    const q = result.ok ? 'ok:' + result.slug : 'fail:' + result.code;
+    res.writeHead(302, { Location: dest + encodeURIComponent(q) });
+    res.end();
+  }
+
+  return { routes, oauthCallback, openAddonStream, listTools, enabled: Boolean(sealer) };
 }
 
 module.exports = { init, MODEL_RE };

@@ -97,6 +97,11 @@ const CFG = {
   secretKey: env('SECRET_KEY'),
   // مفتاح تشفير مفاتيح الإضافات (32 بايت hex أو base64). فاضي = الإضافات معطّلة
   addonsMasterKey: env('ADDONS_MASTER_KEY'),
+  addonsPublicBase: env('ADDONS_PUBLIC_BASE'),
+  addonsOauth: {
+    gmail: { id: env('GOOGLE_OAUTH_CLIENT_ID'), secret: env('GOOGLE_OAUTH_CLIENT_SECRET') },
+    canva: { id: env('CANVA_OAUTH_CLIENT_ID'), secret: env('CANVA_OAUTH_CLIENT_SECRET') },
+  },
   shopifyVersion: env('SHOPIFY_API_VERSION', '2025-01'),
   appUrl: env('APP_URL', 'https://ai.mtuaefans.com').replace(/\/$/, ''),
   purchaseUrls: { basic: env('PURCHASE_URL_BASIC'), pro: env('PURCHASE_URL_PRO'), business: env('PURCHASE_URL_BUSINESS') },
@@ -1582,7 +1587,7 @@ function serveImage(req, res, id) {
 
 // أدوات الذكاء الاصطناعي (صوت العلامة، مقيّم الجمهور، من صورة لكود)
 // الإضافات (BYOK): كل مستخدم يربط مفتاحه الخاص، والمزود يحاسبه مباشرة
-const addons = addonsMod.init(db, { send, fail, rateLimited, readJson, now: () => now(), masterKey: CFG.addonsMasterKey });
+const addons = addonsMod.init(db, { send, fail, rateLimited, readJson, now: () => now(), masterKey: CFG.addonsMasterKey, publicBase: CFG.addonsPublicBase, oauth: CFG.addonsOauth });
 const aiTools = aiToolsMod.init(db, {
   readJson, send, fail, reserve, rateLimited,
   complete: (m, t, ms) => complete(m, t, ms),
@@ -2096,6 +2101,9 @@ async function route(req, res) {
     }
     return fail(res, 404, 'not_found', 'المسار غير موجود.');
   }
+
+  // رد المزود بعد الموافقة على OAuth: بلا جلسة، والـ state يربط الرد بالمستخدم
+  if (m === 'GET' && p === '/api/addons/oauth/callback') return addons.oauthCallback(req, res, url);
 
   const user = authUser(req);
   if (!user) return fail(res, 401, 'auth', 'سجّل دخولك الأول.');

@@ -32,6 +32,10 @@
     /* ---- الإضافات (مفتاحك): تبويب ربط مفتاح المزود ---- */
     'مكتبة الإضافات والتكاملات الخارجية': 'Add-ons and external integrations',
     '1. نماذج الذكاء الاصطناعي': '1. AI models',
+    'ربط بحسابي': 'Connect my account',
+    'إعادة الربط بحسابي': 'Reconnect my account',
+    'تعذّر بدء الربط.': 'Could not start the connection.',
+    'تحذف الربط؟ الحساب هيتفصل من الإضافة.': 'Delete the link? The account will be disconnected from the add-on.',
     'بحث في المكونات الإضافية': 'Search add-ons',
     'المثبّتة': 'Pinned',
     'لا توجد نتائج.': 'No results.',

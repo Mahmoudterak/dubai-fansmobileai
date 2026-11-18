@@ -153,6 +153,55 @@
     '.ait-logo svg{width:22px!important;height:22px!important;display:block}' +
     '.ait-marquee-item{background:rgba(127,127,127,.12)!important}';
 
+  // وصف قصير لكل مزود يظهر تحت اسمه في القائمة
+  var ADDON_DESC = {
+    openai: 'نماذج GPT للمحادثة والكتابة',
+    gemini: 'نماذج Google Gemini',
+    claude: 'نماذج Anthropic Claude',
+    groq: 'استدلال سريع لنماذج مفتوحة',
+    openrouter: 'عشرات النماذج بمفتاح واحد',
+    semrush: 'أبحاث الكلمات المفتاحية والمنافسين',
+    ahrefs: 'تحليل الروابط وأبحاث SEO',
+    hubspot: 'CRM وتسويق وأتمتة المبيعات',
+    mailchimp: 'إرسال النشرات والحملات البريدية',
+    'google-trends': 'اتجاهات البحث عبر SerpApi',
+    whatsapp: 'رسائل واتساب للأعمال عبر Meta',
+    canva: 'تصميم ومواد تسويقية',
+    gmail: 'قراءة وإرسال البريد عبر Google'
+  };
+
+  var STATIC_ADDONS = [];
+  Object.assign(PROVIDER_LOGOS, {
+    canva: { hex: '#00C4CC', letter: 'C' },
+    gmail: { hex: '#EA4335', path: 'M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z' },
+    whatsapp: { hex: '#25D366', path: 'M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z' }
+  });
+
+  var ADDON_CSS = '.ait-row{border:1px solid rgba(127,127,127,.22);border-radius:14px;background:rgba(127,127,127,.07);margin-bottom:10px;overflow:hidden}' +
+    '.ait-row-main{display:flex;align-items:center;gap:12px;padding:12px 14px;cursor:pointer}' +
+    '.ait-row-txt{flex:1;min-width:0;display:flex;flex-direction:column}' +
+    '.ait-row-txt small{opacity:.7;font-size:12px;margin-top:2px}' +
+    '.ait-row-end{display:flex;align-items:center;gap:8px}' +
+    '.ait-chip{font-size:12px;opacity:.85;white-space:nowrap}' +
+    '.ait-plus{width:32px;height:32px;border-radius:50%;border:1px solid rgba(127,127,127,.45);background:transparent;color:inherit;font-size:18px;line-height:1;cursor:pointer}' +
+    '.ait-row-det{padding:0 14px 14px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}' +
+    '.ait-row-det[hidden]{display:none}' +
+    '.ait-row-det input{flex:1;min-width:180px}' +
+    '.ait-pinned{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0 6px}' +
+    '.ait-pin{border:1px solid rgba(127,127,127,.25);border-radius:12px;background:rgba(127,127,127,.07);padding:6px;cursor:pointer;display:inline-flex}' +
+    '.ait-search{width:100%;margin:10px 0 12px;padding:10px 14px;border-radius:12px;border:1px solid rgba(127,127,127,.3);background:transparent;color:inherit;box-sizing:border-box}' +
+    '.ait-group{margin:18px 0 8px;font-size:15px}' +
+    '.ait-marquee{overflow:hidden;margin:14px 0 4px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}' +
+    '.ait-marquee-track{display:flex;width:max-content;animation:aitMarquee 36s linear infinite}' +
+    '.ait-marquee:hover .ait-marquee-track{animation-play-state:paused}' +
+    '.ait-marquee-group{display:flex;gap:12px;padding-inline-end:12px}' +
+    '.ait-marquee-item{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border:1px solid rgba(127,127,127,.22);border-radius:12px;background:rgba(127,127,127,.07);white-space:nowrap;font-size:13px}' +
+    '@keyframes aitMarquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}' +
+    '@media (prefers-reduced-motion:reduce){.ait-marquee-track{animation:none}}' +
+    '.ait-logo{width:34px!important;height:34px!important;border:1px solid rgba(0,0,0,.14)!important;box-sizing:border-box}' +
+    '.ait-logo svg{width:22px!important;height:22px!important;display:block}' +
+    '.ait-marquee-item{background:rgba(127,127,127,.12)!important}';
+
   function renderAddons(body) {
     if (!document.getElementById('ait-addons-css')) {
       var st0 = document.createElement('style');
@@ -265,14 +314,14 @@
         if (!items.length) return;
         list.appendChild(el('h3', 'ait-group', g.title));
         items.forEach(function (p) {
-          list.appendChild(p.oauth ? oauthRow(p) : providerRow(p, linkOf(p.slug), cat.enabled));
+          list.appendChild(p.oauth ? oauthRow(p, linkOf(p.slug)) : providerRow(p, linkOf(p.slug), cat.enabled));
         });
       });
       if (!list.children.length) list.appendChild(el('p', 'ait-status', 'لا توجد نتائج.'));
     }
 
-    // صف مزود يحتاج OAuth: بدون حقل مفتاح، مع توضيح سبب التأجيل
-    function oauthRow(p) {
+    // صف مزود يعتمد OAuth: زر ربط يفتح موافقة الحساب، ولا حقل مفتاح
+    function oauthRow(p, link) {
       var wrap = el('div', 'ait-row');
       wrap.setAttribute('data-slug', p.slug);
       var main = el('div', 'ait-row-main');
@@ -281,10 +330,53 @@
       txt.appendChild(el('strong', '', p.name));
       txt.appendChild(el('small', '', ADDON_DESC[p.slug] || ''));
       main.appendChild(txt);
-      main.appendChild(el('span', 'ait-chip', 'يحتاج OAuth'));
+      var end = el('div', 'ait-row-end');
+      if (link) end.appendChild(el('span', 'ait-chip', link.status === 'verified' ? 'مربوطة ✓' : 'الاختبار الأخير فشل'));
+      var plus = el('button', 'ait-plus', open[p.slug] ? '−' : '+');
+      plus.type = 'button';
+      plus.setAttribute('aria-label', 'تفاصيل');
+      end.appendChild(plus);
+      main.appendChild(end);
       wrap.appendChild(main);
       var det = el('div', 'ait-row-det');
-      det.appendChild(el('span', 'ait-status', 'هذه الأداة تحتاج تسجيل دخول بحساب Google أو Canva ولا تُربط بتوكن. متاحة لاحقاً.'));
+      det.hidden = !open[p.slug];
+      var toggle = function () {
+        open[p.slug] = !open[p.slug];
+        det.hidden = !open[p.slug];
+        plus.textContent = open[p.slug] ? '−' : '+';
+      };
+      main.addEventListener('click', toggle);
+      plus.addEventListener('click', function (e) { e.stopPropagation(); toggle(); });
+
+      var go = el('button', link ? 'btn-ghost sm' : 'btn-primary sm', link ? 'إعادة الربط بحسابي' : 'ربط بحسابي');
+      go.type = 'button';
+      go.addEventListener('click', function () {
+        go.disabled = true;
+        D.apiJson('/api/addons/oauth/' + p.slug + '/start')
+          .then(function (d) { window.location.href = d.url; })
+          .catch(function (ex) { D.toast(ex.message || 'تعذّر بدء الربط.'); go.disabled = false; });
+      });
+      det.appendChild(go);
+      if (link) {
+        var test = el('button', 'btn-ghost sm', 'اختبار الآن');
+        test.type = 'button';
+        test.addEventListener('click', function () {
+          test.disabled = true;
+          D.apiJson('/api/addons/integrations/' + link.id + '/test', { method: 'POST' })
+            .then(function (d) { D.toast(d.message || ''); load(); })
+            .catch(function (ex) { D.toast(ex.message || 'تعذّر الاختبار.'); test.disabled = false; });
+        });
+        var del = el('button', 'btn-ghost sm', 'حذف الربط');
+        del.type = 'button';
+        del.addEventListener('click', function () {
+          if (!window.confirm('تحذف الربط؟ الحساب هيتفصل من الإضافة.')) return;
+          D.apiJson('/api/addons/integrations/' + link.id, { method: 'DELETE' })
+            .then(function () { D.toast('اتحذف الربط'); load(); })
+            .catch(function (ex) { D.toast(ex.message || 'تعذّر الحذف.'); });
+        });
+        det.appendChild(test);
+        det.appendChild(del);
+      }
       wrap.appendChild(det);
       return wrap;
     }

@@ -12,6 +12,8 @@ const ADAPTERS = [
   require('./mailchimp.js'),
   require('./google-trends.js'),
   require('./whatsapp.js'),
+  require('./gmail.js'),
+  require('./canva.js'),
 ];
 const BY_SLUG = new Map(ADAPTERS.map((a) => [a.slug, a]));
 const bySlug = (slug) => BY_SLUG.get(String(slug || '')) || null;
