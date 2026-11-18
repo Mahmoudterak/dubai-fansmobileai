@@ -134,7 +134,10 @@
     '.ait-marquee-group{display:flex;gap:12px;padding-inline-end:12px}' +
     '.ait-marquee-item{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border:1px solid rgba(127,127,127,.22);border-radius:12px;background:rgba(127,127,127,.07);white-space:nowrap;font-size:13px}' +
     '@keyframes aitMarquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}' +
-    '@media (prefers-reduced-motion:reduce){.ait-marquee-track{animation:none}}';
+    '@media (prefers-reduced-motion:reduce){.ait-marquee-track{animation:none}}' +
+    '.ait-logo{width:34px!important;height:34px!important;border:1px solid rgba(0,0,0,.14)!important;box-sizing:border-box}' +
+    '.ait-logo svg{width:22px!important;height:22px!important;display:block}' +
+    '.ait-marquee-item{background:rgba(127,127,127,.12)!important}';
 
   function renderAddons(body) {
     if (!document.getElementById('ait-addons-css')) {
