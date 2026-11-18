@@ -6,6 +6,11 @@ const ADAPTERS = [
   require('./claude.js'),
   require('./groq.js'),
   require('./openrouter.js'),
+  require('./semrush.js'),
+  require('./ahrefs.js'),
+  require('./hubspot.js'),
+  require('./mailchimp.js'),
+  require('./google-trends.js'),
 ];
 const BY_SLUG = new Map(ADAPTERS.map((a) => [a.slug, a]));
 const bySlug = (slug) => BY_SLUG.get(String(slug || '')) || null;

@@ -31,6 +31,7 @@
 
     /* ---- الإضافات (مفتاحك): تبويب ربط مفتاح المزود ---- */
     'مكتبة الإضافات والتكاملات الخارجية': 'Add-ons and external integrations',
+    '1. نماذج الذكاء الاصطناعي': '1. AI models',
     'اربط مفتاح مزودك وفعّل إضافته': 'Connect your provider key and turn on its add-on',
     'اربط مفتاح API الخاص بك عند المزود. المزود يحاسبك مباشرة على استخدامك، ولا نستخدم مفاتيح أي مستخدم غيرك. عند تفعيل الإضافة يرسل سياق المحادثة إلى مزودك.': 'Connect your own API key from the provider. The provider bills you directly for your usage, and we never use anyone else’s keys. When an add-on is on, the conversation context is sent to your provider.',
     'جارٍ التحميل…': 'Loading…',

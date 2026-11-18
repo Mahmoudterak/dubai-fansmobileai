@@ -190,6 +190,7 @@ function init(db, deps) {
     const body = await readJson(req, 1024);
     const on = body.enabled === true;
     const ts = now();
+    if (on && !adapter.chat) return fail(res, 409, 'not_chat', 'هذه الأداة لا تدعم المحادثة بعد.');
     if (on) {
       const row = st.idByUserSlug.get(user.id, slug);
       const cred = row && st.credForUser.get(row.id, user.id);
@@ -244,6 +245,7 @@ function init(db, deps) {
   async function openAddonStream(userId, slug, messages, maxTokens, signal, model) {
     if (!sealer) throw addonError('الإضافات غير مفعّلة على السيرفر حالياً.', 503);
     const { adapter, ciphertext } = resolveTool(userId, slug);
+    if (!adapter.chat) throw addonError('هذه الأداة لا تدعم المحادثة بعد. اربطها للتأكد من المفتاح فقط.', 400);
     let apiKey;
     try { apiKey = sealer.open(ciphertext, aadFor(userId, slug)); }
     catch { throw addonError('تعذّر فك تشفير المفتاح. اربطه من جديد.', 500); }
