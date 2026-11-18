@@ -78,12 +78,34 @@
 
   // ---------- الإضافات (BYOK): المستخدم يضيف مفتاح مزوده بنفسه ----------
   // المفتاح يُرسل للسيرفر مرة واحدة ويُمسح من الحقل فوراً، ولا يُعرض أو يُحفظ في المتصفح.
+  // الإضافة المختارة للمحادثة (بالسلاج فقط، لا مفاتيح). تُحفظ في المتصفح كتفضيل للمستخدم
+  D.getAddon = function () {
+    try { return localStorage.getItem('dfai.addon') || ''; } catch (e) { return ''; }
+  };
+  D.setAddon = function (slug) {
+    try { if (slug) localStorage.setItem('dfai.addon', slug); else localStorage.removeItem('dfai.addon'); } catch (e) { /* تجاهل */ }
+  };
+
   function renderAddons(body) {
     body.appendChild(el('p', '', 'اربط مفتاح API الخاص بك عند المزود. المزود يحاسبك مباشرة على استخدامك، ولا نستخدم مفاتيح أي مستخدم غيرك. عند تفعيل الإضافة يرسل سياق المحادثة إلى مزودك.'));
+    var picked = el('div', 'ait-status');
+    body.appendChild(picked);
     var status = el('div', 'ait-status', 'جارٍ التحميل…');
     body.appendChild(status);
     var list = el('div', 'ait-addons');
     body.appendChild(list);
+
+    function renderPicked() {
+      var cur = D.getAddon();
+      picked.innerHTML = '';
+      if (!cur) return;
+      picked.appendChild(el('span', '', 'المحادثة تستخدم إضافتك الآن: ' + cur + ' '));
+      var off = el('button', 'btn-ghost sm', 'رجوع للنموذج العادي');
+      off.type = 'button';
+      off.addEventListener('click', function () { D.setAddon(''); renderPicked(); load(); });
+      picked.appendChild(off);
+    }
+    renderPicked();
 
     function load() {
       status.textContent = 'جارٍ التحميل…';
@@ -161,6 +183,11 @@
           .catch(function (ex) { D.toast(ex.message || 'تعذّر الحذف.'); });
       });
       box.appendChild(on);
+      var use = el('button', 'btn-primary sm', D.getAddon() === p.slug ? 'مستخدمة في المحادثة الآن' : 'استخدم في المحادثة');
+      use.type = 'button';
+      use.disabled = !link.enabled || link.status !== 'verified' || D.getAddon() === p.slug;
+      use.addEventListener('click', function () { D.setAddon(p.slug); D.toast('تم اختيار الإضافة للمحادثة'); load(); });
+      box.appendChild(use);
       box.appendChild(test);
       box.appendChild(del);
       return card;

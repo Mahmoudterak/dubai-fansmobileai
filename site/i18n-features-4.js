@@ -55,5 +55,10 @@
     'اتفعّلت الإضافة ✅': 'Add-on turned on ✅',
     'تعذّر التغيير.': 'Could not change.',
     'تعذّر الاختبار.': 'Test failed.',
+    'استخدم في المحادثة': 'Use in chat',
+    'مستخدمة في المحادثة الآن': 'Used in chat now',
+    'رجوع للنموذج العادي': 'Back to the regular model',
+    'تم اختيار الإضافة للمحادثة': 'Add-on selected for chat',
+    'المحادثة تستخدم إضافتك الآن: ': 'Chat is using your add-on now: ',
   });
 })();

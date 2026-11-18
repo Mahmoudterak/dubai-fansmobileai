@@ -1908,7 +1908,7 @@
     api('/api/chat', {
       method: 'POST',
       signal: controller.signal,
-      body: JSON.stringify({ tool: chat.tool, agent: chat.agent, messages: historyFor(chat), voice: !!state.voiceMode, lang: window.DFAI_LANG || 'ar', model: (window.DFAI && DFAI.getModel) ? DFAI.getModel() : 'auto', chatId: chat.id, reqId: reqId })
+      body: JSON.stringify({ tool: chat.tool, agent: chat.agent, messages: historyFor(chat), voice: !!state.voiceMode, lang: window.DFAI_LANG || 'ar', model: (window.DFAI && DFAI.getModel) ? DFAI.getModel() : 'auto', addon: (window.DFAI && DFAI.getAddon) ? DFAI.getAddon() : '', chatId: chat.id, reqId: reqId })
     }).then(function (res) {
       if (res.status === 401) { logout(true); throw new Error('انتهت الجلسة، سجّل دخولك تاني.'); }
       if (!res.ok) {
