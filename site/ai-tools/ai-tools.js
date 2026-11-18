@@ -19,7 +19,6 @@
     { id: 'leads', label: 'باحث العملاء' },
     { id: 'advisor', label: 'المستشار' },
     { id: 'bench', label: 'قارن بالمنافس' },
-    { id: 'addons', label: 'الإضافات (مفتاحك)' },
     { id: 'tasks', label: 'المهام' }
   ];
 
@@ -56,7 +55,6 @@
       else if (id === 'advisor') renderAdvisor(body);
       else if (id === 'bench') renderBench(body);
       else if (id === 'tasks') renderTasks(body);
-      else if (id === 'addons') renderAddons(body);
       else renderShot(body);
     }
 
@@ -85,6 +83,9 @@
   D.setAddon = function (slug) {
     try { if (slug) localStorage.setItem('dfai.addon', slug); else localStorage.removeItem('dfai.addon'); } catch (e) { /* تجاهل */ }
   };
+
+  // يُعرض من إعدادات الحساب (site/settings.js) وليس من مركز الأدوات
+  D.renderAddons = renderAddons;
 
   function renderAddons(body) {
     body.appendChild(el('p', '', 'اربط مفتاح API الخاص بك عند المزود. المزود يحاسبك مباشرة على استخدامك، ولا نستخدم مفاتيح أي مستخدم غيرك. عند تفعيل الإضافة يرسل سياق المحادثة إلى مزودك.'));

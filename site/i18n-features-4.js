@@ -35,6 +35,7 @@
     'اربط مفتاح API الخاص بك عند المزود. المزود يحاسبك مباشرة على استخدامك، ولا نستخدم مفاتيح أي مستخدم غيرك. عند تفعيل الإضافة يرسل سياق المحادثة إلى مزودك.': 'Connect your own API key from the provider. The provider bills you directly for your usage, and we never use anyone else’s keys. When an add-on is on, the conversation context is sent to your provider.',
     'جارٍ التحميل…': 'Loading…',
     'الإضافات غير مفعّلة على السيرفر حالياً.': 'Add-ons are currently disabled on the server.',
+    'الإضافات غير متاحة الآن.': 'Add-ons are not available right now.',
     'تعذّر تحميل الإضافات.': 'Could not load add-ons.',
     'غير مربوطة': 'Not connected',
     'اختبار واربط': 'Test and connect',
