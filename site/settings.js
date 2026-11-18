@@ -195,7 +195,7 @@
       row(T('الاشتراك', 'Subscription'), { fn: function () { D.openPlans(); }, value: planName }),
       row(T('الاستخدام', 'Usage'), { fn: function () { D.hidePanel(); D.openUsage(); } }),
       row(T('مفاتيح الربط (ChatGPT / Claude)', 'Connection keys (ChatGPT / Claude)'), { fn: openMcpKeys }),
-      row(T('الإضافات (مفتاحك)', 'Add-ons (your key)'), { fn: openAddons }),
+      row(T('مكتبة الإضافات والتكاملات الخارجية', 'Add-ons and external integrations'), { fn: openAddons }),
       row(T('المظهر', 'Appearance'), { fn: function () { D.hidePanel(); D.openDesign(); } })
     ]));
 
@@ -224,7 +224,7 @@
   // ---------- الإضافات (BYOK): مفتاح كل مزود يربطه المستخدم بنفسه ----------
   // الواجهة نفسها في ai-tools.js (D.renderAddons)، هنا فقط صفحة الإعدادات
   function openAddons() {
-    var body = page(T('الإضافات (مفتاحك)', 'Add-ons (your key)'), openSettings);
+    var body = page(T('مكتبة الإضافات والتكاملات الخارجية', 'Add-ons and external integrations'), openSettings);
     if (D.renderAddons) D.renderAddons(body);
     else body.appendChild(hint(T('الإضافات غير متاحة الآن.', 'Add-ons are not available right now.')));
   }
